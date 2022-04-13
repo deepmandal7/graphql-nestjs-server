@@ -18,7 +18,7 @@ export class Pet {
     type?: String
 
     @Column()
-    @Field(type => Int, {nullable: true})
+    @Field(type => Int)
     ownerId: number
 
     @ManyToOne(() => Owner, owner => owner.pets)
