@@ -6,7 +6,9 @@ import { GraphQLModule } from '@nestjs/graphql'
 import { join } from 'path'
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Pet } from './pets/pet.entity';
+import { Pet } from './pets/entities/pet.entity';
+import { OwnersModule } from './owners/owners.module';
+import { Owner } from './owners/entities/owner.entity';
 
 @Module({
   imports: [GraphQLModule.forRoot<ApolloDriverConfig>({
@@ -20,11 +22,12 @@ import { Pet } from './pets/pet.entity';
       username: 'postgres',
       password: 'postgres',
       database: 'testdb',
-      entities: [Pet],
-      synchronize: true,
+      entities: [Pet, Owner],
+      synchronize: false,
     }),
-    PetsModule],
+    PetsModule,
+    OwnersModule],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService,],
 })
 export class AppModule {}
