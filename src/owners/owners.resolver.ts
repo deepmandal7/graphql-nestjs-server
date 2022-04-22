@@ -14,13 +14,14 @@ export class OwnersResolver {
   }
 
   @Query(() => [Owner], { name: 'owners' })
-  findAll() {
-    return this.ownersService.findAll();
+  findAll(@Args('skip', {type:()=> Int}) skip: number, 
+          @Args('take', {type:()=> Int}) take: number, ) {
+    return this.ownersService.findAll(skip, take);
   }
 
   @Query(() => Owner, { name: 'owner' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.ownersService.findOne(id);
+  findOne(@Args('id', { type: () => Int }) id: number,) {
+    return this.ownersService.findOne({id});
   }
 
   
@@ -31,7 +32,7 @@ export class OwnersResolver {
   }
 
   @Mutation(() => Owner)
-  removeOwner(@Args('id', { type: () => Int }) id: number) {
+  deleteOwner(@Args('id', { type: () => Int }) id: number) {
     return this.ownersService.remove(id);
   }
 }

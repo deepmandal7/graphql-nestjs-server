@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Prisma } from '@prisma/client';
+import { PrismaService } from 'src/prisma.service';
 import { Repository } from 'typeorm';
 import { CreateOwnerInput } from './dto/create-owner.input';
 import { UpdateOwnerInput } from './dto/update-owner.input';
@@ -7,20 +9,25 @@ import { Owner } from './entities/owner.entity';
 
 @Injectable()
 export class OwnersService {
-  constructor(@InjectRepository(Owner) private ownersRepository: Repository<Owner>) {}
+  constructor(private prisma: PrismaService) {}
 
-  create(createOwnerInput: CreateOwnerInput) {
-    const newOwner = this.ownersRepository.create(createOwnerInput)
-
-    return this.ownersRepository.save(newOwner)
+  create(data: Prisma.OwnerCreateInput): Promise<Owner> {
+    return this.prisma.owner.create({ data })
+     
   }
 
-  findAll(): Promise<Owner[]> {
-    return this.ownersRepository.find()
+  findAll(skip, take): Promise<Owner[]> {
+    return this.prisma.owner.findMany({
+      skip,
+      take,
+    })
   }
 
-  findOne(id: any): Promise<Owner> {
-    return this.ownersRepository.findOneOrFail(id)
+  findOne(ownerWhereUniqueInput: Prisma.OwnerWhereUniqueInput,
+    ): Promise<Owner | null> {
+    return this.prisma.owner.findUnique({
+      where: ownerWhereUniqueInput
+    })
   }
 
   update(id: number, updateOwnerInput: UpdateOwnerInput) {
