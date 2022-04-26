@@ -8,7 +8,6 @@ type Pet {
   id: ID!
   name: String!
   owner: Owner
-  ownerId: ID
 }
 
 input NewOwner {
@@ -17,7 +16,7 @@ input NewOwner {
 
 input NewPet {
   name: String!
-  ownerId: ID!
+  ownerId: Int!
 }
 
 input UpdatePet {

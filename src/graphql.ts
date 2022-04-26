@@ -13,7 +13,7 @@ export class NewOwner {
 
 export class NewPet {
     name: string;
-    ownerId: string;
+    ownerId: number;
 }
 
 export class UpdatePet {
@@ -36,7 +36,6 @@ export class Pet {
     id: string;
     name: string;
     owner?: Nullable<Owner>;
-    ownerId?: Nullable<string>;
 }
 
 export abstract class IQuery {
