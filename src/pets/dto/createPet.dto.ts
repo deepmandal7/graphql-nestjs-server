@@ -1,11 +1,12 @@
-import { Field, InputType } from "@nestjs/graphql";
-import { IsAlpha } from "class-validator";
+import { Field, InputType } from '@nestjs/graphql';
+import { IsAlpha, IsInt } from 'class-validator';
 @InputType()
 export class CreatePetInput {
-    @IsAlpha()
-    @Field()
-    name: string
+  @IsAlpha()
+  @Field()
+  name: string;
 
-    @Field()
-    ownerId: number 
+  @Field()
+  @IsInt()
+  ownerId: number;
 }
