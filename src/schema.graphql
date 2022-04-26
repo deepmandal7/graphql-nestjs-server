@@ -33,6 +33,7 @@ input UpdateOwner {
 type Query {
   owner(id: Int!): Owner!
   owners(skip: Int!, take: Int!): [Owner!]!
+  pet(id: Int!): Pet!
   pets: [Pet!]!
 }
 
@@ -40,7 +41,7 @@ type Mutation {
   createOwner(createOwnerInput: NewOwner!): Owner!
   updateOwner(input: UpdateOwner!): Owner!
   deleteOwner(id: ID!): Owner!
-  createPet(input: NewPet!): Pet!
+  createPet(createPetInput: NewPet!): Pet!
   updatePet(input: UpdatePet!): Pet!
   deletePet(id: ID!): Pet!
 }

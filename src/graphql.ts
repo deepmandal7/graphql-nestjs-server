@@ -44,6 +44,8 @@ export abstract class IQuery {
 
     abstract owners(skip: number, take: number): Owner[] | Promise<Owner[]>;
 
+    abstract pet(id: number): Pet | Promise<Pet>;
+
     abstract pets(): Pet[] | Promise<Pet[]>;
 }
 
@@ -54,7 +56,7 @@ export abstract class IMutation {
 
     abstract deleteOwner(id: string): Owner | Promise<Owner>;
 
-    abstract createPet(input: NewPet): Pet | Promise<Pet>;
+    abstract createPet(createPetInput: NewPet): Pet | Promise<Pet>;
 
     abstract updatePet(input: UpdatePet): Pet | Promise<Pet>;
 

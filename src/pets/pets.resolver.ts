@@ -1,31 +1,39 @@
 import { Mutation, Query, Resolver, Args, Int, Parent, ResolveField } from '@nestjs/graphql';
-import { Owner } from '../owners/entities/owner.entity';
+import { Owner, Pet } from '../graphql';
+import { Owner as OwnerType, Pet as PetType } from '@prisma/client';
 import { CreatePetInput } from './dto/createPet.dto';
-import { Pet } from './entities/pet.entity';
 import { PetsService } from './pets.service';
 
-@Resolver(of => Pet)
+@Resolver(() => Pet)
 export class PetsResolver {
     constructor (private petsService: PetsService) {}
 
-    @Query(returns => Pet)
-    getPet(@Args('id', {type: () => Int}) id: number) {
-        return this.petsService.findOne({where: {id}})
+    @Query(() => Pet,  { name: 'pet' })
+    findOne(@Args('id', {type: () => Int}) id: number) {
+        return this.petsService.findOne({ where: { id } })
     }
 
-    @Query(returns => [Pet])
-    pets(): Promise<Pet[]> {
+    @Query(() => [Pet])
+    pets(): Promise<PetType[]> {
         return this.petsService.findAll()
     }
 
 
-    @ResolveField(returns => Owner)
+    @ResolveField(() => Owner)
     owner(@Parent() pet: Pet) {
         return this.petsService.getOwner(pet.ownerId) 
     }
 
     @Mutation(() => Pet)
-    createPet(@Args('createPetInput') createPetInput: CreatePetInput): Promise<Pet> {
-        return this.petsService.create(createPetInput)
+    createPet(@Args('createPetInput') createPetInput: CreatePetInput): Promise<PetType> {
+        let data = {
+            name: createPetInput.name,
+            Owner: {
+                connect: {
+                    id: createPetInput.ownerId
+                }
+            }
+        }
+        return this.petsService.create(data)
     }
 }

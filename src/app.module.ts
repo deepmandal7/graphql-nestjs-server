@@ -16,7 +16,7 @@ import { OwnersModule } from './owners/owners.module';
       outputAs: 'class',
     },
     }),
-    // PetsModule,
+    PetsModule,
     OwnersModule],
   controllers: [AppController],
   providers: [AppService],

@@ -19,6 +19,6 @@ model Owner {
 model Pet {
   id      Int     @id @default(autoincrement())
   name    String? @unique
-  Owner   Owner?  @relation(fields: [ownerId], references: [id])
-  ownerId Int?
+  author  Owner   @relation(fields: [ownerId], references: [id])
+  ownerId Int
 }

@@ -1,6 +1,7 @@
 import { Resolver, Query, Mutation, Args, Int, Parent } from '@nestjs/graphql';
 import { OwnersService } from './owners.service';
 import { Owner } from '../graphql';
+import { Owner as OwnerType, Pet as PetType } from '@prisma/client';
 import { CreateOwnerInput } from './dto/create-owner.input';
 import { UpdateOwnerInput } from './dto/update-owner.input';
 
@@ -9,13 +10,13 @@ export class OwnersResolver {
   constructor(private readonly ownersService: OwnersService) {}
 
   @Mutation(() => Owner)
-  createOwner(@Args('createOwnerInput') createOwnerInput: CreateOwnerInput) {
+  createOwner(@Args('createOwnerInput') createOwnerInput: CreateOwnerInput): Promise<OwnerType> {
     return this.ownersService.create(createOwnerInput);
   }
 
   @Query(() => [Owner], { name: 'owners' })
   findAll(@Args('skip', {type:()=> Int}) skip: number, 
-          @Args('take', {type:()=> Int}) take: number, ) {
+          @Args('take', {type:()=> Int}) take: number, ): Promise<OwnerType[]> {
     return this.ownersService.findAll(skip, take);
   }
 

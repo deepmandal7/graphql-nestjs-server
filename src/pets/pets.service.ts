@@ -1,30 +1,26 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { CreatePetInput } from './dto/createPet.dto';
-import { Pet } from './entities/pet.entity';
+import { Prisma, Owner, Pet } from '@prisma/client';
 import { OwnersService } from '../owners/owners.service';
-import { Owner } from 'src/owners/entities/owner.entity';
+import { PrismaService } from 'src/prisma.service';
 
 @Injectable()
 export class PetsService {
-    constructor(@InjectRepository(Pet) private petsRepository: Repository<Pet>, private ownersService: OwnersService) {}
+    constructor(private prisma: PrismaService, private ownersService: OwnersService) {}
 
     findOne(id: any): Promise<Pet> {
-        return this.petsRepository.findOneOrFail(id)
+        return this.prisma.pet.findUnique(id)
     }
 
     findAll(): Promise<Pet[]> {
-        return this.petsRepository.find()
+        return this.prisma.pet.findMany()
     }
 
     getOwner(ownerId: any): Promise<Owner> {
         return this.ownersService.findOne(ownerId)
     }
 
-    create(createPetInput: CreatePetInput): Promise<Pet> {
-        const newPet =  this.petsRepository.create(createPetInput)
-
-        return this.petsRepository.save(newPet)
+    async create(data: Prisma.PetCreateInput): Promise<Pet> {
+        console.log("Data:", data)
+        return await this.prisma.pet.create({ data })
     }
 }
