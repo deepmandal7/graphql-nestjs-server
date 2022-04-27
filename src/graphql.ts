@@ -35,7 +35,8 @@ export class Owner {
 export class Pet {
     id: string;
     name: string;
-    owner?: Nullable<Owner>;
+    ownerId: number;
+    Owner?: Nullable<Owner>;
 }
 
 export abstract class IQuery {
@@ -45,7 +46,7 @@ export abstract class IQuery {
 
     abstract pet(id: number): Pet | Promise<Pet>;
 
-    abstract pets(): Pet[] | Promise<Pet[]>;
+    abstract pets(take: number, cursor?: Nullable<number>): Pet[] | Promise<Pet[]>;
 }
 
 export abstract class IMutation {

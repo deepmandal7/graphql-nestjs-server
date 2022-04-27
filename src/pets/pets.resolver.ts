@@ -18,12 +18,13 @@ export class PetsResolver {
 
   @Query(() => Pet, { name: 'pet' })
   findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.petsService.findOne({ where: { id } });
+    return this.petsService.findOne({id})
   }
 
   @Query(() => [Pet])
-  pets(): Promise<PetType[]> {
-    return this.petsService.findAll();
+  pets(@Args('take', {type:()=> Int}) take: number,
+  @Args('cursor', {type:()=> Int}) cursor: number | null,): Promise<PetType[]> {
+    return this.petsService.findAll(take, cursor);
   }
 
   // @ResolveField(() => Owner)
@@ -37,7 +38,7 @@ export class PetsResolver {
   ): Promise<PetType> {
     let data = {
       name: createPetInput.name,
-      owner: {
+      Owner: {
         connect: {
           id: createPetInput.ownerId,
         },

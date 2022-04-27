@@ -9,20 +9,25 @@ export class OwnersService {
 
   create(data: Prisma.OwnerCreateInput): Promise<Owner> {
     return this.prisma.owner.create({ data })
-     
   }
 
   findAll(skip, take): Promise<Owner[]> {
     return this.prisma.owner.findMany({
       skip,
       take,
+      include: {
+        pets: true
+      }
     })
   }
 
   findOne(ownerWhereUniqueInput: Prisma.OwnerWhereUniqueInput,
     ): Promise<Owner | null> {
     return this.prisma.owner.findUnique({
-      where: ownerWhereUniqueInput
+      where: ownerWhereUniqueInput,
+      include: {
+        pets: true
+      }
     })
   }
 

@@ -7,7 +7,8 @@ type Owner {
 type Pet {
   id: ID!
   name: String!
-  owner: Owner
+  ownerId: Int!
+  Owner: Owner
 }
 
 input NewOwner {
@@ -33,7 +34,7 @@ type Query {
   owner(id: Int!): Owner!
   owners(skip: Int!, take: Int!): [Owner!]!
   pet(id: Int!): Pet!
-  pets: [Pet!]!
+  pets(take: Int!, cursor: Int): [Pet!]!
 }
 
 type Mutation {

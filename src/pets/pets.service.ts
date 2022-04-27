@@ -10,12 +10,40 @@ export class PetsService {
     private ownersService: OwnersService,
   ) {}
 
-  findOne(id: any): Promise<Pet> {
-    return this.prisma.pet.findUnique(id);
+  findOne(petWhereUniqueInput: Prisma.PetWhereUniqueInput,): Promise<any> | null {
+    return this.prisma.pet.findUnique({
+      where: petWhereUniqueInput,
+      include: {
+        Owner: true
+      },
+    })
   }
 
-  findAll(): Promise<Pet[]> {
-    return this.prisma.pet.findMany();
+  findAll(take: number, cursor: number | null): Promise<Pet[]> {
+    if (cursor) {
+      return this.prisma.pet.findMany({
+        include: {
+          Owner: true
+        },
+        orderBy: {
+          id: 'asc',
+        },
+        take: take,
+        skip: 1, 
+        cursor: {
+          id: cursor,
+        },
+      });
+    }
+    return this.prisma.pet.findMany({
+      include: {
+        Owner: true
+      },
+      orderBy: {
+        id: 'asc',
+      },
+      take: take,
+    });
   }
 
   getOwner(ownerId: any): Promise<Owner> {
