@@ -36,14 +36,13 @@ export class PetsResolver {
   createPet(
     @Args('createPetInput') createPetInput: CreatePetInput,
   ): Promise<PetType> {
-    let data = {
+    return this.petsService.create({
       name: createPetInput.name,
-      Owner: {
+      owner: {
         connect: {
           id: createPetInput.ownerId,
         },
       },
-    };
-    return this.petsService.create(data);
+    });
   }
 }

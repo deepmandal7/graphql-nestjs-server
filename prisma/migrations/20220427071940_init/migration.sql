@@ -10,7 +10,7 @@ CREATE TABLE "Owner" (
 CREATE TABLE "Pet" (
     "id" SERIAL NOT NULL,
     "name" TEXT,
-    "ownerId" INTEGER,
+    "ownerId" INTEGER NOT NULL,
 
     CONSTRAINT "Pet_pkey" PRIMARY KEY ("id")
 );
@@ -22,4 +22,4 @@ CREATE UNIQUE INDEX "Owner_name_key" ON "Owner"("name");
 CREATE UNIQUE INDEX "Pet_name_key" ON "Pet"("name");
 
 -- AddForeignKey
-ALTER TABLE "Pet" ADD CONSTRAINT "Pet_ownerId_fkey" FOREIGN KEY ("ownerId") REFERENCES "Owner"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "Pet" ADD CONSTRAINT "Pet_ownerId_fkey" FOREIGN KEY ("ownerId") REFERENCES "Owner"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

@@ -36,7 +36,7 @@ export class Pet {
     id: string;
     name: string;
     ownerId: number;
-    Owner?: Nullable<Owner>;
+    owner?: Nullable<Owner>;
 }
 
 export abstract class IQuery {

@@ -14,7 +14,7 @@ export class PetsService {
     return this.prisma.pet.findUnique({
       where: petWhereUniqueInput,
       include: {
-        Owner: true
+        owner: true
       },
     })
   }
@@ -23,12 +23,12 @@ export class PetsService {
     if (cursor) {
       return this.prisma.pet.findMany({
         include: {
-          Owner: true
+          owner: true
         },
         orderBy: {
           id: 'asc',
         },
-        take: take,
+        take,
         skip: 1, 
         cursor: {
           id: cursor,
@@ -37,12 +37,12 @@ export class PetsService {
     }
     return this.prisma.pet.findMany({
       include: {
-        Owner: true
+        owner: true
       },
       orderBy: {
         id: 'asc',
       },
-      take: take,
+      take,
     });
   }
 
