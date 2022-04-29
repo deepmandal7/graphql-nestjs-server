@@ -6,6 +6,10 @@ import { GraphQLModule } from '@nestjs/graphql'
 import { join } from 'path'
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { OwnersModule } from './owners/owners.module';
+import { JobsModule } from './jobs/jobs.module';
+import { SubJobsModule } from './sub-jobs/sub-jobs.module';
+import { ShiftsModule } from './shifts/shifts.module';
+import { JobsModule } from './jobs/jobs.module';
 
 @Module({
   imports: [GraphQLModule.forRoot<ApolloDriverConfig>({
@@ -17,7 +21,10 @@ import { OwnersModule } from './owners/owners.module';
     },
     }),
     PetsModule,
-    OwnersModule],
+    OwnersModule,
+    JobsModule,
+    ShiftsModule,
+    SubJobsModule],
   controllers: [AppController],
   providers: [AppService],
 })

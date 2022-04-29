@@ -1,0 +1,42 @@
+type RepeatDetails {
+  repeat_type: String!
+  repeat_interval: Int!
+  end_repeat_after_shifts: Int!
+  week_days: [Int!]
+}
+
+type Shift {
+  id: ID!
+  shift_title: String!
+  shift_date: String!
+  shift_start_time: String!
+  shift_end_time: String!
+  shift_timezone: String!
+  shift_job_id: ID!
+  spots_to_claim: Int!
+  users_id: [ID!]!
+  shift_tasks_id: [ID!]
+  repeat_details: [
+
+  ]
+}
+
+input CreateShiftInput {
+  # Example field (placeholder)
+  exampleField: Int
+}
+
+input UpdateShiftInput {
+  id: Int!
+}
+
+type Query {
+  shifts: [Shift]!
+  shift(id: Int!): Shift
+}
+
+type Mutation {
+  createShift(createShiftInput: CreateShiftInput!): Shift!
+  updateShift(updateShiftInput: UpdateShiftInput!): Shift!
+  removeShift(id: Int!): Shift
+}

@@ -1,0 +1,33 @@
+type Job {
+  id: ID!
+  job_title: String!
+  qualified_users_id: [ID!]
+  qualified_groups_id: [ID!]
+  subjobs_id: [ID!]
+}
+
+input CreateJobInput {
+  job_title: String!
+  qualified_users: [ID!]
+  qualified_groups: [ID!]
+  subjobs: [String!]
+}
+
+input UpdateJobInput {
+  id: Int!
+  job_title: String
+  qualified_users: [ID!]
+  qualified_groups: [ID!]
+  subjobs: [String!]
+}
+
+type Query {
+  jobs: [Job]!
+  job(id: Int!): Job
+}
+
+type Mutation {
+  createJob(createJobInput: CreateJobInput!): Job!
+  updateJob(updateJobInput: UpdateJobInput!): Job!
+  removeJob(id: Int!): Job
+}
