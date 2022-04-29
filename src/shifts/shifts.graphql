@@ -1,4 +1,11 @@
-type RepeatDetails {
+input RepeatDetailsInput {
+  repeat_type: String!
+  repeat_interval: Int!
+  end_repeat_after_shifts: Int!
+  week_days: [Int!]
+}
+
+type RepeatDetailsType {
   repeat_type: String!
   repeat_interval: Int!
   end_repeat_after_shifts: Int!
@@ -16,14 +23,20 @@ type Shift {
   spots_to_claim: Int!
   users_id: [ID!]!
   shift_tasks_id: [ID!]
-  repeat_details: [
-
-  ]
+  repeat_details: RepeatDetailsType
 }
 
 input CreateShiftInput {
-  # Example field (placeholder)
-  exampleField: Int
+  shift_title: String!
+  shift_date: String!
+  shift_start_time: String!
+  shift_end_time: String!
+  shift_timezone: String!
+  shift_job_id: ID!
+  spots_to_claim: Int!
+  users_id: [ID!]!
+  shift_tasks_id: [ID!]
+  repeat_details: RepeatDetailsInput
 }
 
 input UpdateShiftInput {

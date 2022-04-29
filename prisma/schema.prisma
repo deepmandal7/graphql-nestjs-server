@@ -10,15 +10,28 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Owner {
-  id   Int     @id @default(autoincrement())
-  name String? @unique
-  pets Pet[]
+model job {
+  id                  Int      @id @default(autoincrement())
+  job_title           String   @unique
+  qualified_users_id  Int[]
+  qualified_groups_id Int[]
+  shift               shift[]
+  subjobs_id          Int[]
+  created_at          DateTime @default(now())
 }
 
-model Pet {
-  id      Int     @id @default(autoincrement())
-  name    String? @unique
-  owner   Owner   @relation(fields: [ownerId], references: [id])
-  ownerId Int
+model shift {
+  id               Int      @id @default(autoincrement())
+  shift_title      String   @unique
+  shift_date       DateTime
+  shift_start_time String
+  shift_end_time   String
+  shift_timezone   String
+  job              job      @relation(fields: [shift_job_id], references: [id])
+  shift_job_id     Int
+  spots_to_claim   Int
+  users_id         Int[]
+  shift_tasks_id   Int[]
+  repeat_details   Json?
+  created_at       DateTime @default(now())
 }

@@ -1,5 +1,7 @@
 import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { JobsService } from './jobs.service';
+import { Job } from '../graphql';
+import { job as JobType } from '@prisma/client';
 import { CreateJobInput } from './dto/create-job.input';
 import { UpdateJobInput } from './dto/update-job.input';
 
@@ -7,18 +9,20 @@ import { UpdateJobInput } from './dto/update-job.input';
 export class JobsResolver {
   constructor(private readonly jobsService: JobsService) {}
 
-  @Mutation('createJob')
-  create(@Args('createJobInput') createJobInput: CreateJobInput) {
+  @Mutation(() => Job)
+  createJob(@Args('createJobInput') createJobInput: CreateJobInput): Promise<JobType> {
+    console.log(createJobInput)
     return this.jobsService.create(createJobInput);
   }
 
   @Query('jobs')
-  findAll() {
-    return this.jobsService.findAll();
+  findAll(@Args('skip') skip: number,
+          @Args('take') take: number,) {
+    return this.jobsService.findAll(skip, take);
   }
 
   @Query('job')
-  findOne(@Args('id') id: number) {
+  findOne(@Args('id') id: string) {
     return this.jobsService.findOne(id);
   }
 
@@ -28,7 +32,7 @@ export class JobsResolver {
   }
 
   @Mutation('removeJob')
-  remove(@Args('id') id: number) {
+  remove(@Args('id') id: string) {
     return this.jobsService.remove(id);
   }
 }

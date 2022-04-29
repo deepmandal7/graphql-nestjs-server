@@ -1,26 +1,30 @@
 import { Injectable } from '@nestjs/common';
+import { Prisma, job as JobType ,} from '@prisma/client';
+import { PrismaService } from 'src/prisma.service';
 import { CreateJobInput } from './dto/create-job.input';
 import { UpdateJobInput } from './dto/update-job.input';
 
 @Injectable()
 export class JobsService {
-  create(createJobInput: CreateJobInput) {
-    return 'This action adds a new job';
+  constructor(private prisma: PrismaService) {}
+  async create(createJobInput: Prisma.jobCreateInput): Promise<JobType> {
+    console.log(createJobInput)
+    return this.prisma.job.create({ data: createJobInput });
   }
 
-  findAll() {
+  findAll(skip, takes) {
     return `This action returns all jobs`;
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
     return `This action returns a #${id} job`;
   }
 
-  update(id: number, updateJobInput: UpdateJobInput) {
+  update(id: string, updateJobInput: UpdateJobInput) {
     return `This action updates a #${id} job`;
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return `This action removes a #${id} job`;
   }
 }

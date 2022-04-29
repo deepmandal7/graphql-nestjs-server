@@ -8,16 +8,16 @@ type Job {
 
 input CreateJobInput {
   job_title: String!
-  qualified_users: [ID!]
-  qualified_groups: [ID!]
-  subjobs: [String!]
+  qualified_users_id: [Int!]
+  qualified_groups_id: [Int!]!
+  subjobs_id: [Int!]
 }
 
 input UpdateJobInput {
   id: Int!
   job_title: String
-  qualified_users: [ID!]
-  qualified_groups: [ID!]
+  qualified_users: [Int!]
+  qualified_groups: [Int!]
   subjobs: [String!]
 }
 
