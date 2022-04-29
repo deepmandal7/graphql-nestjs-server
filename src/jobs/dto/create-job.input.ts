@@ -12,7 +12,7 @@ export class CreateJobInput {
     qualified_users_id?: number[]
 
     @Field((type) => [Int])
-    qualified_groups_id: number[]
+    qualified_groups_id?: number[]
 
     @Field((type) => [Int])
     subjobs_id?: number[]

@@ -10,7 +10,7 @@
 export class CreateJobInput {
     job_title: string;
     qualified_users_id?: Nullable<number[]>;
-    qualified_groups_id: number[];
+    qualified_groups_id?: Nullable<number[]>;
     subjobs_id?: Nullable<number[]>;
 }
 

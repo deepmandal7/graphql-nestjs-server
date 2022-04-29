@@ -11,7 +11,6 @@ export class JobsResolver {
 
   @Mutation(() => Job)
   createJob(@Args('createJobInput') createJobInput: CreateJobInput): Promise<JobType> {
-    console.log(createJobInput)
     return this.jobsService.create(createJobInput);
   }
 
