@@ -1,0 +1,52 @@
+scalar DateTime
+
+enum TaskFrequencyEnum {
+  ONEOFF
+  RECURRING
+}
+
+type Task {
+  id: ID!
+  task_title: String!
+  task_description: String!
+  task_file_id: [String]
+  task_frequency: TaskFrequencyEnum
+  task_start_utc_date_time: DateTime
+  task_end_utc_date_time: DateTime
+  task_coordinates: String
+  task_location: String
+  task_board_id: Int
+  created_by: Int
+  created_at: DateTime
+  updated_at: DateTime
+}
+
+input CreateTaskInput {
+  task_title: String!
+  task_description: String!
+  task_file_id: [String]
+  task_frequency: TaskFrequencyEnum
+  task_start_utc_date_time: DateTime
+  task_end_utc_date_time: DateTime
+  task_coordinates: String
+  task_location: String
+  task_board_id: Int
+  created_by: Int
+  created_at: DateTime
+  updated_at: DateTime
+}
+
+input UpdateTaskInput {
+  id: Int!
+}
+
+type Query {
+  tasks: [Task]!
+  task(id: Int!): Task
+}
+
+type Mutation {
+  createTask(createTaskInput: CreateTaskInput!): Task!
+  updateTask(updateTaskInput: UpdateTaskInput!): Task!
+  removeTask(id: Int!): Task
+}

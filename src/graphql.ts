@@ -7,170 +7,137 @@
 
 /* tslint:disable */
 /* eslint-disable */
-export class CreateJobInput {
-    job_title: string;
-    qualified_users_id?: Nullable<number[]>;
-    qualified_groups_id?: Nullable<number[]>;
-    subjobs_id?: Nullable<number[]>;
+export enum TaskFrequencyEnum {
+    ONEOFF = "ONEOFF",
+    RECURRING = "RECURRING"
 }
 
-export class UpdateJobInput {
+export enum CanCreateEnum {
+    EVERYONE = "EVERYONE",
+    ADMIN = "ADMIN"
+}
+
+export class CreateTaskInput {
+    task_title: string;
+    task_description: string;
+    task_file_id?: Nullable<Nullable<string>[]>;
+    task_frequency?: Nullable<TaskFrequencyEnum>;
+    task_start_utc_date_time?: Nullable<DateTime>;
+    task_end_utc_date_time?: Nullable<DateTime>;
+    task_coordinates?: Nullable<string>;
+    task_location?: Nullable<string>;
+    task_board_id?: Nullable<number>;
+    created_by?: Nullable<number>;
+    created_at?: Nullable<DateTime>;
+    updated_at?: Nullable<DateTime>;
+}
+
+export class UpdateTaskInput {
     id: number;
-    job_title?: Nullable<string>;
-    qualified_users?: Nullable<number[]>;
-    qualified_groups?: Nullable<number[]>;
-    subjobs?: Nullable<string[]>;
 }
 
-export class NewOwner {
-    name: string;
+export class TagInput {
+    tag_name?: Nullable<string>;
+    tag_type?: Nullable<string>;
 }
 
-export class NewPet {
-    name: string;
-    ownerId: number;
+export class CustomisationMandatoryInput {
+    mandatory?: Nullable<boolean>;
 }
 
-export class UpdatePet {
-    name: string;
-    ownerId: string;
+export class CustomisationMandatoryCheckedInput {
+    mandatory?: Nullable<boolean>;
+    checked?: Nullable<boolean>;
 }
 
-export class UpdateOwner {
+export class CustomisationInput {
+    task_title?: Nullable<CustomisationMandatoryInput>;
+    task_description?: Nullable<CustomisationMandatoryCheckedInput>;
+    task_location?: Nullable<CustomisationMandatoryCheckedInput>;
+}
+
+export class CreateTaskBoardInput {
+    task_board_name: string;
+    tags?: Nullable<TagInput[]>;
+    customisation: CustomisationInput;
+    can_create: CanCreateEnum;
+    created_by: number;
+}
+
+export class UpdateTaskBoardInput {
+    id: number;
+}
+
+export class Task {
     id: string;
-    pets: string[];
-}
-
-export class RepeatDetailsInput {
-    repeat_type: string;
-    repeat_interval: number;
-    end_repeat_after_shifts: number;
-    week_days?: Nullable<number[]>;
-}
-
-export class CreateShiftInput {
-    shift_title: string;
-    shift_date: string;
-    shift_start_time: string;
-    shift_end_time: string;
-    shift_timezone: string;
-    shift_job_id: string;
-    spots_to_claim: number;
-    users_id: string[];
-    shift_tasks_id?: Nullable<string[]>;
-    repeat_details?: Nullable<RepeatDetailsInput>;
-}
-
-export class UpdateShiftInput {
-    id: number;
-}
-
-export class CreateSubJobInput {
-    exampleField?: Nullable<number>;
-}
-
-export class UpdateSubJobInput {
-    id: number;
-}
-
-export class Job {
-    id: string;
-    job_title: string;
-    qualified_users_id?: Nullable<string[]>;
-    qualified_groups_id?: Nullable<string[]>;
-    subjobs_id?: Nullable<string[]>;
+    task_title: string;
+    task_description: string;
+    task_file_id?: Nullable<Nullable<string>[]>;
+    task_frequency?: Nullable<TaskFrequencyEnum>;
+    task_start_utc_date_time?: Nullable<DateTime>;
+    task_end_utc_date_time?: Nullable<DateTime>;
+    task_coordinates?: Nullable<string>;
+    task_location?: Nullable<string>;
+    task_board_id?: Nullable<number>;
+    created_by?: Nullable<number>;
+    created_at?: Nullable<DateTime>;
+    updated_at?: Nullable<DateTime>;
 }
 
 export abstract class IQuery {
-    abstract jobs(): Nullable<Job>[] | Promise<Nullable<Job>[]>;
+    abstract tasks(): Nullable<Task>[] | Promise<Nullable<Task>[]>;
 
-    abstract job(id: number): Nullable<Job> | Promise<Nullable<Job>>;
+    abstract task(id: number): Nullable<Task> | Promise<Nullable<Task>>;
 
-    abstract owner(id: number): Owner | Promise<Owner>;
+    abstract taskBoards(): Nullable<TaskBoard>[] | Promise<Nullable<TaskBoard>[]>;
 
-    abstract owners(skip: number, take: number): Owner[] | Promise<Owner[]>;
-
-    abstract pet(id: number): Pet | Promise<Pet>;
-
-    abstract pets(take: number, cursor?: Nullable<number>): Pet[] | Promise<Pet[]>;
-
-    abstract shifts(): Nullable<Shift>[] | Promise<Nullable<Shift>[]>;
-
-    abstract shift(id: number): Nullable<Shift> | Promise<Nullable<Shift>>;
-
-    abstract subJobs(): Nullable<SubJob>[] | Promise<Nullable<SubJob>[]>;
-
-    abstract subJob(id: number): Nullable<SubJob> | Promise<Nullable<SubJob>>;
+    abstract taskBoard(id: number): Nullable<TaskBoard> | Promise<Nullable<TaskBoard>>;
 }
 
 export abstract class IMutation {
-    abstract createJob(createJobInput: CreateJobInput): Job | Promise<Job>;
+    abstract createTask(createTaskInput: CreateTaskInput): Task | Promise<Task>;
 
-    abstract updateJob(updateJobInput: UpdateJobInput): Job | Promise<Job>;
+    abstract updateTask(updateTaskInput: UpdateTaskInput): Task | Promise<Task>;
 
-    abstract removeJob(id: number): Nullable<Job> | Promise<Nullable<Job>>;
+    abstract removeTask(id: number): Nullable<Task> | Promise<Nullable<Task>>;
 
-    abstract createOwner(createOwnerInput: NewOwner): string | Promise<string>;
+    abstract createTaskBoard(createTaskBoardInput: CreateTaskBoardInput): TaskBoard | Promise<TaskBoard>;
 
-    abstract updateOwner(input: UpdateOwner): Owner | Promise<Owner>;
+    abstract updateTaskBoard(updateTaskBoardInput: UpdateTaskBoardInput): TaskBoard | Promise<TaskBoard>;
 
-    abstract deleteOwner(id: string): Owner | Promise<Owner>;
-
-    abstract createPet(createPetInput: NewPet): Pet | Promise<Pet>;
-
-    abstract updatePet(input: UpdatePet): Pet | Promise<Pet>;
-
-    abstract deletePet(id: string): Pet | Promise<Pet>;
-
-    abstract createShift(createShiftInput: CreateShiftInput): Shift | Promise<Shift>;
-
-    abstract updateShift(updateShiftInput: UpdateShiftInput): Shift | Promise<Shift>;
-
-    abstract removeShift(id: number): Nullable<Shift> | Promise<Nullable<Shift>>;
-
-    abstract createSubJob(createSubJobInput: CreateSubJobInput): SubJob | Promise<SubJob>;
-
-    abstract updateSubJob(updateSubJobInput: UpdateSubJobInput): SubJob | Promise<SubJob>;
-
-    abstract removeSubJob(id: number): Nullable<SubJob> | Promise<Nullable<SubJob>>;
+    abstract removeTaskBoard(id: number): Nullable<TaskBoard> | Promise<Nullable<TaskBoard>>;
 }
 
-export class Owner {
+export class TagType {
+    tag_name?: Nullable<string>;
+    tag_type?: Nullable<string>;
+}
+
+export class CustomisationMandatoryCheckedType {
+    mandatory?: Nullable<boolean>;
+    checked?: Nullable<boolean>;
+}
+
+export class CustomisationMandatoryType {
+    mandatory?: Nullable<boolean>;
+}
+
+export class CustomisationType {
+    task_title?: Nullable<CustomisationMandatoryType>;
+    task_description?: Nullable<CustomisationMandatoryCheckedType>;
+    task_location?: Nullable<CustomisationMandatoryCheckedType>;
+}
+
+export class TaskBoard {
     id: string;
-    name: string;
-    pets?: Nullable<Nullable<Pet>[]>;
+    task_board_name: string;
+    tags?: Nullable<TagType[]>;
+    customisation: CustomisationType;
+    can_create: CanCreateEnum;
+    created_by: number;
+    created_at?: Nullable<DateTime>;
+    updated_at?: Nullable<DateTime>;
 }
 
-export class Pet {
-    id: string;
-    name: string;
-    ownerId: number;
-    owner?: Nullable<Owner>;
-}
-
-export class RepeatDetailsType {
-    repeat_type: string;
-    repeat_interval: number;
-    end_repeat_after_shifts: number;
-    week_days?: Nullable<number[]>;
-}
-
-export class Shift {
-    id: string;
-    shift_title: string;
-    shift_date: string;
-    shift_start_time: string;
-    shift_end_time: string;
-    shift_timezone: string;
-    shift_job_id: string;
-    spots_to_claim: number;
-    users_id: string[];
-    shift_tasks_id?: Nullable<string[]>;
-    repeat_details?: Nullable<RepeatDetailsType>;
-}
-
-export class SubJob {
-    exampleField?: Nullable<number>;
-}
-
+export type DateTime = any;
 type Nullable<T> = T | null;

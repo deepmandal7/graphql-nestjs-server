@@ -4,9 +4,8 @@ import { AppService } from './app.service';
 import { GraphQLModule } from '@nestjs/graphql'
 import { join } from 'path'
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
-import { JobsModule } from './jobs/jobs.module';
-import { SubJobsModule } from './sub-jobs/sub-jobs.module';
-import { ShiftsModule } from './shifts/shifts.module';
+import { TaskBoardModule } from './task_board/task_board.module';
+import { TaskModule } from './task/task.module';
 
 @Module({
   imports: [GraphQLModule.forRoot<ApolloDriverConfig>({
@@ -17,9 +16,8 @@ import { ShiftsModule } from './shifts/shifts.module';
       outputAs: 'class',
     },
     }),
-    JobsModule,
-    ShiftsModule,
-    SubJobsModule],
+    TaskBoardModule,
+    TaskModule],
   controllers: [AppController],
   providers: [AppService],
 })
