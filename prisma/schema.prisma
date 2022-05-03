@@ -10,28 +10,47 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model job {
-  id                  Int      @id @default(autoincrement())
-  job_title           String   @unique
-  qualified_users_id  Int[]
-  qualified_groups_id Int[]
-  shift               shift[]
-  subjobs_id          Int[]
-  created_at          DateTime @default(now())
+model task_board {
+  id              Int      @id @default(autoincrement())
+  task_board_name String   @unique
+  team_users_id   Int[]
+  admin_id        Int[]
+  task            task[]
+  created_at      DateTime @default(now())
+  updated_at      DateTime
+  created_by      Int
 }
 
-model shift {
-  id               Int      @id @default(autoincrement())
-  shift_title      String   @unique
-  shift_date       DateTime
-  shift_start_time String
-  shift_end_time   String
-  shift_timezone   String
-  job              job      @relation(fields: [shift_job_id], references: [id])
-  shift_job_id     Int
-  spots_to_claim   Int
-  users_id         Int[]
-  shift_tasks_id   Int[]
-  repeat_details   Json?
-  created_at       DateTime @default(now())
+model task {
+  id                       Int            @id @default(autoincrement())
+  task_title               String         @unique
+  task_description         String
+  task_file_id             String
+  task_frequency           task_frequency
+  task_start_utc_date_time DateTime
+  task_end_utc_date_time   DateTime
+  task_timezone            String
+  task_coordinates         Float[]
+  task_location            String
+  task_board               task_board     @relation(fields: [task_board_id], references: [id])
+  task_board_id            Int
+  sub_task                 sub_task[]
+  created_at               DateTime       @default(now())
+  updated_at               DateTime
+  created_by               Int
+}
+
+enum task_frequency {
+  ONEOFF
+  RECURRING
+}
+
+model sub_task {
+  id                Int      @id @default(autoincrement())
+  task              task     @relation(fields: [task_id], references: [id])
+  task_id           Int
+  due_utc_date_time DateTime
+  created_at        DateTime @default(now())
+  updated_at        DateTime
+  created_by        Int
 }
