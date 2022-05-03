@@ -25,7 +25,7 @@ model task {
   id                       Int            @id @default(autoincrement())
   task_title               String         @unique
   task_description         String
-  task_file_id             String
+  task_file_id             String[]
   task_frequency           task_frequency
   task_start_utc_date_time DateTime
   task_end_utc_date_time   DateTime
