@@ -17,7 +17,7 @@ model task_board {
   admin_id        Int[]
   task            task[]
   created_at      DateTime @default(now())
-  updated_at      DateTime
+  updated_at      DateTime @updatedAt
   created_by      Int
 }
 
@@ -36,7 +36,7 @@ model task {
   task_board_id            Int
   sub_task                 sub_task[]
   created_at               DateTime       @default(now())
-  updated_at               DateTime
+  updated_at               DateTime       @updatedAt
   created_by               Int
 }
 
@@ -51,6 +51,6 @@ model sub_task {
   task_id           Int
   due_utc_date_time DateTime
   created_at        DateTime @default(now())
-  updated_at        DateTime
+  updated_at        DateTime @updatedAt
   created_by        Int
 }
