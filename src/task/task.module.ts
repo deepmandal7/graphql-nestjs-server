@@ -4,6 +4,6 @@ import { TaskResolver } from './task.resolver';
 import { PrismaService } from 'src/prisma.service';
 
 @Module({
-  providers: [PrismaService, TaskResolver, TaskService]
+  providers: [PrismaService, TaskResolver, TaskService],
 })
 export class TaskModule {}

@@ -6,6 +6,7 @@ import { join } from 'path'
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { TaskBoardModule } from './task_board/task_board.module';
 import { TaskModule } from './task/task.module';
+import { PrismaService } from './prisma.service';
 
 @Module({
   imports: [GraphQLModule.forRoot<ApolloDriverConfig>({
@@ -17,7 +18,8 @@ import { TaskModule } from './task/task.module';
     },
     }),
     TaskBoardModule,
-    TaskModule],
+    TaskModule,
+    ],
   controllers: [AppController],
   providers: [AppService],
 })

@@ -42,6 +42,8 @@ model task {
   task_board               task_board          @relation(fields: [task_board_id], references: [id])
   task_board_id            Int
   sub_task                 sub_task[]
+  repeat_details           repeat_details?
+  task_status              String
   created_at               DateTime            @default(now())
   updated_at               DateTime            @updatedAt
   created_by               Int
@@ -60,4 +62,24 @@ model sub_task {
   created_at        DateTime @default(now())
   updated_at        DateTime @updatedAt
   created_by        Int
+}
+
+enum repeat_type_enum {
+  DAILY
+  WEEKLY
+  MONTHLY
+  YEARLY
+}
+
+model repeat_details {
+  id               Int              @id @default(autoincrement())
+  stop_repeat      DateTime?
+  repeat_type      repeat_type_enum
+  task             task             @relation(fields: [task_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  task_id          Int              @unique
+  how_often_repeat Int
+  day_of_week      Int[]
+  day_of_month     Int?
+  week_of_month    Int?
+  month_of_year    Int?
 }

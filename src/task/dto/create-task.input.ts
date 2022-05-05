@@ -1,9 +1,43 @@
 import { Field, InputType, ID, Int  } from '@nestjs/graphql';
-import { IsAlpha, IsAlphanumeric, IsArray, IsDateString, IsEnum, IsInt, IsLatLong, IsObject, IsOptional, IsString, Length, MaxLength, MinLength } from 'class-validator';
+import { ArrayMaxSize, ArrayMinSize, IsAlpha, IsAlphanumeric, IsArray, IsBoolean, IsDateString, IsEnum, IsInt, IsLatLong, IsObject, IsOptional, IsString, Length, MaxLength, MinLength } from 'class-validator';
 
 enum TaskFrequencyEnum{
     ONEOFF = 'ONEOFF',
     RECURRING = 'RECURRING'
+}
+
+enum RepeatTypeEnum {
+    DAILY = 'DAILY',
+    WEEKLY = 'WEEKLY',
+    MONTHLY = 'MONTHLY',
+    YEARLY = 'YEARLY'
+  }
+
+export class RepeatDetails {
+    @IsInt()
+    task_id?: number
+
+    @IsDateString()
+    stop_repeat?: Date
+
+    @IsInt()
+    how_often_repeat: number
+
+    @IsAlpha()
+    repeat_type: RepeatTypeEnum
+
+    @ArrayMinSize(1)
+    @ArrayMaxSize(7)
+    day_of_week?: number[]
+
+    @IsInt()
+    day_of_month?: number
+
+    @IsInt()
+    week_of_month?: number
+
+    @IsInt()
+    month_of_year?: number
 }
 
 @InputType()
@@ -22,6 +56,10 @@ export class CreateTaskInput {
     @IsEnum(TaskFrequencyEnum)
     @Field((type) => TaskFrequencyEnum)
     task_frequency: TaskFrequencyEnum
+
+    @IsAlpha()
+    @Field()
+    task_status: string;
 
     @IsDateString()
     @Field((type) => Date)
@@ -45,4 +83,9 @@ export class CreateTaskInput {
     @Field((type) => Int)
     @IsInt()
     created_by: number
+
+
+    @Field((type) => RepeatDetails)
+    @IsOptional()
+    repeat_details?: RepeatDetails
 }

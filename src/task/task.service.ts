@@ -1,20 +1,39 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { task, Prisma } from '@prisma/client';
-import { CreateTaskInput } from './dto/create-task.input';
 import { UpdateTaskInput } from './dto/update-task.input';
 
 @Injectable()
 export class TaskService {
-
   constructor(private prisma: PrismaService) {}
 
-  create(data: Prisma.taskCreateInput) {
-    return this.prisma.task.create({data});
+  async create(data: Prisma.taskCreateInput) :Promise<task> {
+    return await this.prisma.task.create({data})
   }
 
-  findAll() {
-    return `This action returns all task`;
+  async findAll(take: number, cursor: Prisma.taskWhereUniqueInput | null) {
+    if (cursor) {
+      return await this.prisma.task.findMany({
+        include: {
+          repeat_details: true
+        },
+        orderBy: {
+          id: 'asc',
+        },
+        take,
+        skip: 1, 
+        cursor
+      })
+    }
+    return await this.prisma.task.findMany({
+      include: {
+        repeat_details: true
+      },
+      orderBy: {
+        id: 'asc',
+      },
+      take,
+    })
   }
 
   findOne(id: number) {

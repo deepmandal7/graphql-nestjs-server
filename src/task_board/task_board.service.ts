@@ -6,16 +6,14 @@ import { UpdateTaskBoardInput } from './dto/update-task_board.input';
 
 @Injectable()
 export class TaskBoardService {
-
   constructor(private prisma: PrismaService) {}
 
-
   create(data: Prisma.task_boardCreateInput) {
-    return this.prisma.task_board.create({data});
+    return this.prisma.task_board.create({data})
   }
 
   findAll() {
-    return `This action returns all taskBoard`;
+    return this.prisma.task_board.findMany({  });
   }
 
   findOne(id: number) {

@@ -5,6 +5,37 @@ enum TaskFrequencyEnum {
   RECURRING
 }
 
+enum RepeatTypeEnum {
+  DAILY
+  WEEKLY
+  MONTHLY
+  YEARLY
+}
+
+# Repeat Details Type
+type RepeatDetailsType {
+  id: Int!
+  how_often_repeat: Int!
+  stop_repeat: DateTime
+  repeat_type: RepeatTypeEnum
+  day_of_week: [Int!]
+  day_of_month: Int
+  week_of_month: Int
+  month_of_year: Int
+}
+
+# Repeat Details Input
+input RepeatDetailsInput {
+  how_often_repeat: Int!
+  stop_repeat: DateTime
+  repeat_type: RepeatTypeEnum
+  day_of_week: [Int!]
+  day_of_month: Int
+  week_of_month: Int
+  month_of_year: Int
+}
+
+# Task type
 type Task {
   id: ID!
   task_title: String!
@@ -16,6 +47,7 @@ type Task {
   task_coordinates: String
   task_location: String
   task_board_id: Int
+  repeat_details: RepeatDetailsType
   created_by: Int
   created_at: DateTime
   updated_at: DateTime
@@ -31,6 +63,8 @@ input CreateTaskInput {
   task_coordinates: String
   task_location: String
   task_board_id: Int
+  repeat_details: RepeatDetailsInput
+  task_status: String
   created_by: Int
   created_at: DateTime
   updated_at: DateTime
@@ -41,7 +75,7 @@ input UpdateTaskInput {
 }
 
 type Query {
-  tasks: [Task]!
+  tasks(take: Int!, cursor: Int): [Task]!
   task(id: Int!): Task
 }
 

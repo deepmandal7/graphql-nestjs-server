@@ -12,9 +12,26 @@ export enum TaskFrequencyEnum {
     RECURRING = "RECURRING"
 }
 
+export enum RepeatTypeEnum {
+    DAILY = "DAILY",
+    WEEKLY = "WEEKLY",
+    MONTHLY = "MONTHLY",
+    YEARLY = "YEARLY"
+}
+
 export enum CanCreateEnum {
     EVERYONE = "EVERYONE",
     ADMIN = "ADMIN"
+}
+
+export class RepeatDetailsInput {
+    how_often_repeat: number;
+    stop_repeat?: Nullable<DateTime>;
+    repeat_type?: Nullable<RepeatTypeEnum>;
+    day_of_week?: Nullable<number[]>;
+    day_of_month?: Nullable<number>;
+    week_of_month?: Nullable<number>;
+    month_of_year?: Nullable<number>;
 }
 
 export class CreateTaskInput {
@@ -27,6 +44,8 @@ export class CreateTaskInput {
     task_coordinates?: Nullable<string>;
     task_location?: Nullable<string>;
     task_board_id?: Nullable<number>;
+    repeat_details?: Nullable<RepeatDetailsInput>;
+    task_status?: Nullable<string>;
     created_by?: Nullable<number>;
     created_at?: Nullable<DateTime>;
     updated_at?: Nullable<DateTime>;
@@ -68,6 +87,17 @@ export class UpdateTaskBoardInput {
     id: number;
 }
 
+export class RepeatDetailsType {
+    id: number;
+    how_often_repeat: number;
+    stop_repeat?: Nullable<DateTime>;
+    repeat_type?: Nullable<RepeatTypeEnum>;
+    day_of_week?: Nullable<number[]>;
+    day_of_month?: Nullable<number>;
+    week_of_month?: Nullable<number>;
+    month_of_year?: Nullable<number>;
+}
+
 export class Task {
     id: string;
     task_title: string;
@@ -79,13 +109,14 @@ export class Task {
     task_coordinates?: Nullable<string>;
     task_location?: Nullable<string>;
     task_board_id?: Nullable<number>;
+    repeat_details?: Nullable<RepeatDetailsType>;
     created_by?: Nullable<number>;
     created_at?: Nullable<DateTime>;
     updated_at?: Nullable<DateTime>;
 }
 
 export abstract class IQuery {
-    abstract tasks(): Nullable<Task>[] | Promise<Nullable<Task>[]>;
+    abstract tasks(take: number, cursor?: Nullable<number>): Nullable<Task>[] | Promise<Nullable<Task>[]>;
 
     abstract task(id: number): Nullable<Task> | Promise<Nullable<Task>>;
 
