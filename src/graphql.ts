@@ -39,14 +39,24 @@ export class CreateTaskInput {
     task_description: string;
     task_file_id?: Nullable<Nullable<string>[]>;
     task_frequency?: Nullable<TaskFrequencyEnum>;
-    task_start_utc_date_time?: Nullable<DateTime>;
-    task_end_utc_date_time?: Nullable<DateTime>;
+    syear?: Nullable<number>;
+    smonth?: Nullable<number>;
+    sdate?: Nullable<number>;
+    shour?: Nullable<number>;
+    sminute?: Nullable<number>;
+    eyear?: Nullable<number>;
+    emonth?: Nullable<number>;
+    edate?: Nullable<number>;
+    ehour?: Nullable<number>;
+    eminute?: Nullable<number>;
     task_coordinates?: Nullable<string>;
     task_location?: Nullable<string>;
     task_board_id?: Nullable<number>;
     repeat_details?: Nullable<RepeatDetailsInput>;
     task_status?: Nullable<string>;
+    user_ids?: Nullable<Nullable<number>[]>;
     created_by?: Nullable<number>;
+    tag_ids?: Nullable<Nullable<number>[]>;
     created_at?: Nullable<DateTime>;
     updated_at?: Nullable<DateTime>;
 }
@@ -76,8 +86,8 @@ export class CustomisationInput {
 }
 
 export class CreateTaskBoardInput {
+    org_id: number;
     task_board_name: string;
-    tags?: Nullable<TagInput[]>;
     customisation: CustomisationInput;
     can_create: CanCreateEnum;
     created_by: number;
@@ -104,19 +114,30 @@ export class Task {
     task_description: string;
     task_file_id?: Nullable<Nullable<string>[]>;
     task_frequency?: Nullable<TaskFrequencyEnum>;
-    task_start_utc_date_time?: Nullable<DateTime>;
-    task_end_utc_date_time?: Nullable<DateTime>;
+    syear?: Nullable<number>;
+    smonth?: Nullable<number>;
+    sdate?: Nullable<number>;
+    shour?: Nullable<number>;
+    sminute?: Nullable<number>;
+    eyear?: Nullable<number>;
+    emonth?: Nullable<number>;
+    edate?: Nullable<number>;
+    ehour?: Nullable<number>;
+    eminute?: Nullable<number>;
     task_coordinates?: Nullable<string>;
     task_location?: Nullable<string>;
     task_board_id?: Nullable<number>;
     repeat_details?: Nullable<RepeatDetailsType>;
+    task_status?: Nullable<string>;
+    user_ids?: Nullable<Nullable<number>[]>;
     created_by?: Nullable<number>;
+    tag_ids?: Nullable<Nullable<number>[]>;
     created_at?: Nullable<DateTime>;
     updated_at?: Nullable<DateTime>;
 }
 
 export abstract class IQuery {
-    abstract tasks(take: number, cursor?: Nullable<number>): Nullable<Task>[] | Promise<Nullable<Task>[]>;
+    abstract tasks(take: number, orgId: number, cursor?: Nullable<number>, isUnassigned?: Nullable<boolean>, userIds?: Nullable<Nullable<number>[]>, dates?: Nullable<string>, fromStartYear?: Nullable<number>, fromStartMonth?: Nullable<number>, fromStartDate?: Nullable<number>, toStartYear?: Nullable<number>, toStartMonth?: Nullable<number>, toStartDate?: Nullable<number>, tagIds?: Nullable<Nullable<number>[]>, createdBy?: Nullable<number>, taskStatus?: Nullable<string>): Nullable<Task>[] | Promise<Nullable<Task>[]>;
 
     abstract task(id: number): Nullable<Task> | Promise<Nullable<Task>>;
 
@@ -162,6 +183,7 @@ export class CustomisationType {
 export class TaskBoard {
     id: string;
     task_board_name: string;
+    org_id: number;
     tags?: Nullable<TagType[]>;
     customisation: CustomisationType;
     can_create: CanCreateEnum;

@@ -13,8 +13,12 @@ export class TaskBoardResolver {
       task_board_name: createTaskBoardInput.task_board_name,
       created_by: createTaskBoardInput.created_by,
       can_create: createTaskBoardInput.can_create,
-      tags: JSON.stringify(createTaskBoardInput.tags),
-      customisation: JSON.stringify(createTaskBoardInput.customisation)
+      customisation: JSON.stringify(createTaskBoardInput.customisation),
+      org: {
+        connect: {
+          id: createTaskBoardInput.org_id
+        }
+      }
     });
   }
 

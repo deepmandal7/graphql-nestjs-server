@@ -61,14 +61,38 @@ export class CreateTaskInput {
     @Field()
     task_status: string;
 
-    @IsDateString()
-    @Field((type) => Date)
-    task_start_utc_date_time: Date
+    @Field((type) => [Int])
+    user_ids:  number[]
 
-    @IsDateString()
-    @Field((type) => Date)
-    task_end_utc_date_time: Date
+    @Field((type) => Int)
+    syear: number
 
+    @Field((type) => Int)
+    smonth: number
+
+    @Field((type) => Int)
+    sdate: number
+
+    @Field((type) => Int)
+    shour: number
+
+  @Field((type) => Int)
+  sminute: number
+
+  @Field((type) => Int)
+  eyear: number
+
+  @Field((type) => Int)
+  emonth: number
+
+  @Field((type) => Int)
+  edate: number
+
+  @Field((type) => Int)
+  ehour: number
+
+  @Field((type) => Int)
+  eminute: number
 
     @Field()
     @IsLatLong()
@@ -83,6 +107,10 @@ export class CreateTaskInput {
     @Field((type) => Int)
     @IsInt()
     created_by: number
+
+    @Field((type) => [Int])
+    @IsOptional()
+    tag_ids: number[]
 
 
     @Field((type) => RepeatDetails)

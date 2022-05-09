@@ -26,6 +26,9 @@ class Customisation {
 
 @InputType()
 export class CreateTaskBoardInput {
+
+    @Field((type) => Int)
+    org_id: number
     @Field()
     @Length(4, 20)
     task_board_name: string
@@ -39,9 +42,6 @@ export class CreateTaskBoardInput {
 
     // @Field((type) => [ID])
     // admin_ids: typeof ID[]
-
-    @Field((type) => [Tag])
-    tags?: Tag[]
 
     @Field((type) => [Customisation])
     customisation: Customisation

@@ -33,6 +33,7 @@ type CustomisationType {
 type TaskBoard {
   id: ID!
   task_board_name: String!
+  org_id: Int!
   tags: [TagType!]
   customisation: CustomisationType!
   can_create: CanCreateEnum!
@@ -57,8 +58,8 @@ input CustomisationInput {
 }
 
 input CreateTaskBoardInput {
+  org_id: Int!
   task_board_name: String!
-  tags: [TagInput!]
   customisation: CustomisationInput!
   can_create: CanCreateEnum!
   created_by: Int!
