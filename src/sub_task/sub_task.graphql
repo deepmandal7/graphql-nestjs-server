@@ -1,0 +1,64 @@
+type SubTask {
+  id: ID!
+  task_id: Int!
+  task_description: String
+  syear: Int
+  smonth: Int
+  sdate: Int
+  shour: Int
+  sminute: Int
+  eyear: Int
+  emonth: Int
+  edate: Int
+  ehour: Int
+  eminute: Int
+  created_by: Int
+  user_ids: [Int]
+}
+
+input CreateSubTaskInput {
+  task_id: Int!
+  task_description: String
+  syear: Int
+  smonth: Int
+  sdate: Int
+  shour: Int
+  sminute: Int
+  eyear: Int
+  emonth: Int
+  edate: Int
+  ehour: Int
+  eminute: Int
+  created_by: Int
+  user_ids: [Int]
+}
+
+input UpdateSubTaskInput {
+  id: Int!
+  task_id: Int!
+  task_description: String
+  syear: Int
+  smonth: Int
+  sdate: Int
+  shour: Int
+  sminute: Int
+  eyear: Int
+  emonth: Int
+  edate: Int
+  ehour: Int
+  eminute: Int
+  created_by: Int
+  user_ids: [Int]
+}
+
+type Query {
+  subTasks: [SubTask]!
+  subTask(id: Int!): SubTask
+  userSubTasks(userId: Int!): [SubTask]!
+}
+
+type Mutation {
+  createSubTask(createSubTaskInput: CreateSubTaskInput!): SubTask!
+  updateSubTask(updateSubTaskInput: UpdateSubTaskInput!): SubTask!
+  removeSubTask(id: Int!): SubTask
+}

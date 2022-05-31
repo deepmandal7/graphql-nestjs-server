@@ -24,6 +24,57 @@ export enum CanCreateEnum {
     ADMIN = "ADMIN"
 }
 
+export class CreateSubTaskInput {
+    task_id: number;
+    task_description?: Nullable<string>;
+    syear?: Nullable<number>;
+    smonth?: Nullable<number>;
+    sdate?: Nullable<number>;
+    shour?: Nullable<number>;
+    sminute?: Nullable<number>;
+    eyear?: Nullable<number>;
+    emonth?: Nullable<number>;
+    edate?: Nullable<number>;
+    ehour?: Nullable<number>;
+    eminute?: Nullable<number>;
+    created_by?: Nullable<number>;
+    user_ids?: Nullable<Nullable<number>[]>;
+}
+
+export class UpdateSubTaskInput {
+    id: number;
+    task_id: number;
+    task_description?: Nullable<string>;
+    syear?: Nullable<number>;
+    smonth?: Nullable<number>;
+    sdate?: Nullable<number>;
+    shour?: Nullable<number>;
+    sminute?: Nullable<number>;
+    eyear?: Nullable<number>;
+    emonth?: Nullable<number>;
+    edate?: Nullable<number>;
+    ehour?: Nullable<number>;
+    eminute?: Nullable<number>;
+    created_by?: Nullable<number>;
+    user_ids?: Nullable<Nullable<number>[]>;
+}
+
+export class SubTaskInput {
+    task_description?: Nullable<string>;
+    syear?: Nullable<number>;
+    smonth?: Nullable<number>;
+    sdate?: Nullable<number>;
+    shour?: Nullable<number>;
+    sminute?: Nullable<number>;
+    eyear?: Nullable<number>;
+    emonth?: Nullable<number>;
+    edate?: Nullable<number>;
+    ehour?: Nullable<number>;
+    eminute?: Nullable<number>;
+    user_ids?: Nullable<number[]>;
+    created_by?: Nullable<number>;
+}
+
 export class RepeatDetailsInput {
     how_often_repeat: number;
     stop_repeat?: Nullable<DateTime>;
@@ -59,10 +110,16 @@ export class CreateTaskInput {
     tag_ids?: Nullable<Nullable<number>[]>;
     created_at?: Nullable<DateTime>;
     updated_at?: Nullable<DateTime>;
+    sub_task?: Nullable<Nullable<SubTaskInput>[]>;
 }
 
 export class UpdateTaskInput {
     id: number;
+}
+
+export class UpdateTaskStatusInput {
+    id: number;
+    task_status: string;
 }
 
 export class TagInput {
@@ -95,6 +152,106 @@ export class CreateTaskBoardInput {
 
 export class UpdateTaskBoardInput {
     id: number;
+}
+
+export class CreateTaskCommentInput {
+    user_id: number;
+    comment: string;
+    task_id: number;
+}
+
+export class UpdateTaskCommentInput {
+    id: number;
+    comment: string;
+}
+
+export class SubTask {
+    id: string;
+    task_id: number;
+    task_description?: Nullable<string>;
+    syear?: Nullable<number>;
+    smonth?: Nullable<number>;
+    sdate?: Nullable<number>;
+    shour?: Nullable<number>;
+    sminute?: Nullable<number>;
+    eyear?: Nullable<number>;
+    emonth?: Nullable<number>;
+    edate?: Nullable<number>;
+    ehour?: Nullable<number>;
+    eminute?: Nullable<number>;
+    created_by?: Nullable<number>;
+    user_ids?: Nullable<Nullable<number>[]>;
+}
+
+export abstract class IQuery {
+    abstract subTasks(): Nullable<SubTask>[] | Promise<Nullable<SubTask>[]>;
+
+    abstract subTask(id: number): Nullable<SubTask> | Promise<Nullable<SubTask>>;
+
+    abstract userSubTasks(userId: number): Nullable<SubTask>[] | Promise<Nullable<SubTask>[]>;
+
+    abstract tasks(take: number, orgId: number, cursor?: Nullable<number>, isUnassigned?: Nullable<boolean>, userIds?: Nullable<Nullable<number>[]>, dates?: Nullable<string>, fromStartYear?: Nullable<number>, fromStartMonth?: Nullable<number>, fromStartDate?: Nullable<number>, toStartYear?: Nullable<number>, toStartMonth?: Nullable<number>, toStartDate?: Nullable<number>, tagIds?: Nullable<Nullable<number>[]>, createdBy?: Nullable<number>, taskStatus?: Nullable<string>): Nullable<Task>[] | Promise<Nullable<Task>[]>;
+
+    abstract task(id: number): Nullable<Task> | Promise<Nullable<Task>>;
+
+    abstract userTasks(userId: number): Nullable<Task>[] | Promise<Nullable<Task>[]>;
+
+    abstract taskBoards(): Nullable<TaskBoard>[] | Promise<Nullable<TaskBoard>[]>;
+
+    abstract taskBoard(id: number): Nullable<TaskBoard> | Promise<Nullable<TaskBoard>>;
+
+    abstract taskComments(taskId: number): Nullable<TaskComment>[] | Promise<Nullable<TaskComment>[]>;
+
+    abstract taskComment(id: number): Nullable<TaskComment> | Promise<Nullable<TaskComment>>;
+}
+
+export abstract class IMutation {
+    abstract createSubTask(createSubTaskInput: CreateSubTaskInput): SubTask | Promise<SubTask>;
+
+    abstract updateSubTask(updateSubTaskInput: UpdateSubTaskInput): SubTask | Promise<SubTask>;
+
+    abstract removeSubTask(id: number): Nullable<SubTask> | Promise<Nullable<SubTask>>;
+
+    abstract createTask(createTaskInput: CreateTaskInput): Task | Promise<Task>;
+
+    abstract createTasks(createTaskInput: Nullable<CreateTaskInput>[]): number | Promise<number>;
+
+    abstract updateTask(updateTaskInput: UpdateTaskInput): Task | Promise<Task>;
+
+    abstract updateTaskStatus(updateTaskStatusInput: UpdateTaskStatusInput): Task | Promise<Task>;
+
+    abstract removeTask(id: number): Nullable<Task> | Promise<Nullable<Task>>;
+
+    abstract createTaskBoard(createTaskBoardInput: CreateTaskBoardInput): TaskBoard | Promise<TaskBoard>;
+
+    abstract updateTaskBoard(updateTaskBoardInput: UpdateTaskBoardInput): TaskBoard | Promise<TaskBoard>;
+
+    abstract removeTaskBoard(id: number): Nullable<TaskBoard> | Promise<Nullable<TaskBoard>>;
+
+    abstract createTaskComment(createTaskCommentInput: CreateTaskCommentInput): TaskComment | Promise<TaskComment>;
+
+    abstract updateTaskComment(updateTaskCommentInput: UpdateTaskCommentInput): TaskComment | Promise<TaskComment>;
+
+    abstract removeTaskComment(id: number): Nullable<TaskComment> | Promise<Nullable<TaskComment>>;
+}
+
+export class SubTaskType {
+    id: number;
+    task: number;
+    task_description?: Nullable<string>;
+    task_id: number;
+    syear?: Nullable<number>;
+    smonth?: Nullable<number>;
+    sdate?: Nullable<number>;
+    shour?: Nullable<number>;
+    sminute?: Nullable<number>;
+    eyear?: Nullable<number>;
+    emonth?: Nullable<number>;
+    edate?: Nullable<number>;
+    ehour?: Nullable<number>;
+    eminute?: Nullable<number>;
+    user_ids?: Nullable<number[]>;
+    created_by?: Nullable<number>;
 }
 
 export class RepeatDetailsType {
@@ -134,30 +291,7 @@ export class Task {
     tag_ids?: Nullable<Nullable<number>[]>;
     created_at?: Nullable<DateTime>;
     updated_at?: Nullable<DateTime>;
-}
-
-export abstract class IQuery {
-    abstract tasks(take: number, orgId: number, cursor?: Nullable<number>, isUnassigned?: Nullable<boolean>, userIds?: Nullable<Nullable<number>[]>, dates?: Nullable<string>, fromStartYear?: Nullable<number>, fromStartMonth?: Nullable<number>, fromStartDate?: Nullable<number>, toStartYear?: Nullable<number>, toStartMonth?: Nullable<number>, toStartDate?: Nullable<number>, tagIds?: Nullable<Nullable<number>[]>, createdBy?: Nullable<number>, taskStatus?: Nullable<string>): Nullable<Task>[] | Promise<Nullable<Task>[]>;
-
-    abstract task(id: number): Nullable<Task> | Promise<Nullable<Task>>;
-
-    abstract taskBoards(): Nullable<TaskBoard>[] | Promise<Nullable<TaskBoard>[]>;
-
-    abstract taskBoard(id: number): Nullable<TaskBoard> | Promise<Nullable<TaskBoard>>;
-}
-
-export abstract class IMutation {
-    abstract createTask(createTaskInput: CreateTaskInput): Task | Promise<Task>;
-
-    abstract updateTask(updateTaskInput: UpdateTaskInput): Task | Promise<Task>;
-
-    abstract removeTask(id: number): Nullable<Task> | Promise<Nullable<Task>>;
-
-    abstract createTaskBoard(createTaskBoardInput: CreateTaskBoardInput): TaskBoard | Promise<TaskBoard>;
-
-    abstract updateTaskBoard(updateTaskBoardInput: UpdateTaskBoardInput): TaskBoard | Promise<TaskBoard>;
-
-    abstract removeTaskBoard(id: number): Nullable<TaskBoard> | Promise<Nullable<TaskBoard>>;
+    sub_task?: Nullable<Nullable<SubTaskType>[]>;
 }
 
 export class TagType {
@@ -190,6 +324,13 @@ export class TaskBoard {
     created_by: number;
     created_at?: Nullable<DateTime>;
     updated_at?: Nullable<DateTime>;
+}
+
+export class TaskComment {
+    id: string;
+    user_id: number;
+    comment: string;
+    task_id: number;
 }
 
 export type DateTime = any;

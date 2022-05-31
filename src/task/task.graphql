@@ -12,6 +12,41 @@ enum RepeatTypeEnum {
   YEARLY
 }
 
+type SubTaskType {
+  id: Int!
+  task: Int!
+  task_description: String
+  task_id: Int!
+  syear: Int
+  smonth: Int
+  sdate: Int
+  shour: Int
+  sminute: Int
+  eyear: Int
+  emonth: Int
+  edate: Int
+  ehour: Int
+  eminute: Int
+  user_ids: [Int!]
+  created_by: Int
+}
+
+input SubTaskInput {
+  task_description: String
+  syear: Int
+  smonth: Int
+  sdate: Int
+  shour: Int
+  sminute: Int
+  eyear: Int
+  emonth: Int
+  edate: Int
+  ehour: Int
+  eminute: Int
+  user_ids: [Int!]
+  created_by: Int
+}
+
 # Repeat Details Type
 type RepeatDetailsType {
   id: Int!
@@ -62,6 +97,7 @@ type Task {
   tag_ids: [Int]
   created_at: DateTime
   updated_at: DateTime
+  sub_task: [SubTaskType]
 }
 
 input CreateTaskInput {
@@ -89,10 +125,16 @@ input CreateTaskInput {
   tag_ids: [Int]
   created_at: DateTime
   updated_at: DateTime
+  sub_task: [SubTaskInput]
 }
 
 input UpdateTaskInput {
   id: Int!
+}
+
+input UpdateTaskStatusInput {
+  id: Int!
+  task_status: String!
 }
 
 type Query {
@@ -114,10 +156,13 @@ type Query {
     taskStatus: String
   ): [Task]!
   task(id: Int!): Task
+  userTasks(userId: Int!): [Task]!
 }
 
 type Mutation {
   createTask(createTaskInput: CreateTaskInput!): Task!
+  createTasks(createTaskInput: [CreateTaskInput]!): Int!
   updateTask(updateTaskInput: UpdateTaskInput!): Task!
+  updateTaskStatus(updateTaskStatusInput: UpdateTaskStatusInput!): Task!
   removeTask(id: Int!): Task
 }

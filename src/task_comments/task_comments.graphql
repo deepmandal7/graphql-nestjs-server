@@ -1,0 +1,32 @@
+type TaskComment {
+  id: ID!
+  user_id: Int!
+  comment: String!
+  task_id: Int!
+}
+
+input CreateTaskCommentInput {
+  user_id: Int!
+  comment: String!
+  task_id: Int!
+}
+
+input UpdateTaskCommentInput {
+  id: Int!
+  comment: String!
+}
+
+type Query {
+  taskComments(taskId: Int!): [TaskComment]!
+  taskComment(id: Int!): TaskComment
+}
+
+type Mutation {
+  createTaskComment(
+    createTaskCommentInput: CreateTaskCommentInput!
+  ): TaskComment!
+  updateTaskComment(
+    updateTaskCommentInput: UpdateTaskCommentInput!
+  ): TaskComment!
+  removeTaskComment(id: Int!): TaskComment
+}

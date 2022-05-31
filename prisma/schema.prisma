@@ -10,16 +10,29 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model user {
+  id           Int          @id @default(autoincrement())
+  first_name   String
+  last_name    String
+  tasks        task[]
+  clock_ins    clock_ins[]
+  sub_tasks    sub_task[]
+  organization organization @relation(fields: [org_id], references: [id])
+  org_id       Int
+}
+
 model organization {
   id         Int          @id @default(autoincrement())
-  org_name   String       @unique
+  org_name   String
   timezone   String
   task_board task_board[]
+  shift      shift[]
+  user       user[]
 }
 
 model task_board {
   id              Int             @id @default(autoincrement())
-  task_board_name String          @unique
+  task_board_name String
   // team_user_ids   Int[]
   // admin_ids       Int[]
   task            task[]
@@ -39,7 +52,7 @@ enum can_create_enum {
 
 model task {
   id                   Int                 @id @default(autoincrement())
-  task_title           String              @unique
+  task_title           String
   task_description     String
   task_file_id         String[]
   task_frequency       task_frequency_enum
@@ -60,13 +73,14 @@ model task {
   task_board           task_board          @relation(fields: [task_board_id], references: [id])
   task_board_id        Int
   sub_task             sub_task[]
+  task_status          String              @default("Scheduled")
   repeat_details       repeat_details?
-  task_status          String
-  user_ids             Int[]
   created_at           DateTime            @default(now())
   updated_at           DateTime            @updatedAt
   created_by           Int
   task_tag             task_tag[]
+  task_comments        task_comments[]
+  user                 user[]
 }
 
 enum task_frequency_enum {
@@ -75,17 +89,27 @@ enum task_frequency_enum {
 }
 
 model sub_task {
-  id         Int      @id @default(autoincrement())
-  task       task     @relation(fields: [task_id], references: [id])
-  task_id    Int
-  eyear      Int
-  emonth     Int
-  edate      Int
-  ehour      Int
-  eminute    Int
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-  created_by Int
+  id                       Int      @id @default(autoincrement())
+  task                     task     @relation(fields: [task_id], references: [id])
+  task_description         String
+  task_id                  Int
+  syear                    Int
+  smonth                   Int
+  sdate                    Int
+  shour                    Int
+  sminute                  Int
+  eyear                    Int
+  emonth                   Int
+  edate                    Int
+  ehour                    Int
+  eminute                  Int
+  task_status              String   @default("Scheduled")
+  sub_task_start_date_time String?
+  sub_task_end_date_time   String?
+  user_ids                 user[]
+  created_at               DateTime @default(now())
+  updated_at               DateTime @updatedAt
+  created_by               Int
 }
 
 enum repeat_type_enum {
@@ -122,4 +146,53 @@ model task_tag {
   tag_id  Int
 
   @@id([task_id, tag_id])
+}
+
+model task_comments {
+  id         Int      @id @default(autoincrement())
+  user_id    Int
+  comment    String
+  task       task     @relation(fields: [task_id], references: [id])
+  task_id    Int
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model timeclock {
+  id            Int         @id @default(autoincrement())
+  title         String
+  assign_to_all Boolean?
+  group_ids     Int[]
+  clockin_time  DateTime
+  clockout_time DateTime
+  locale        String
+  timezone      String
+  user_id       Int
+  org_id        Int
+  created_by    Int
+  clock_ins     clock_ins[]
+}
+
+model clock_ins {
+  id           Int       @id @default(autoincrement())
+  timeclock    timeclock @relation(fields: [timeclock_id], references: [id])
+  timeclock_id Int
+  user         user[]
+}
+
+model shift {
+  id      Int          @id @default(autoincrement())
+  user_id Int
+  org     organization @relation(fields: [org_id], references: [id])
+  org_id  Int
+  syear   Int?
+  smonth  Int?
+  sdate   Int?
+  shour   Int?
+  sminute Int?
+  eyear   Int?
+  emonth  Int?
+  edate   Int?
+  ehour   Int?
+  eminute Int?
 }
