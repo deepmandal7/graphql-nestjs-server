@@ -119,7 +119,6 @@ input CreateTaskInput {
   task_location: String
   task_board_id: Int
   repeat_details: RepeatDetailsInput
-  task_status: String
   user_ids: [Int]
   created_by: Int
   tag_ids: [Int]
@@ -141,6 +140,7 @@ type Query {
   tasks(
     take: Int!
     orgId: Int!
+    taskBoardId: Int!
     cursor: Int
     isUnassigned: Boolean
     userIds: [Int]
@@ -153,7 +153,7 @@ type Query {
     toStartDate: Int
     tagIds: [Int]
     createdBy: Int
-    taskStatus: String
+    taskStatus: [String]
   ): [Task]!
   task(id: Int!): Task
   userTasks(userId: Int!): [Task]!

@@ -803,10 +803,10 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@novu/node@^0.4.1-alpha.0":
-  version "0.4.1-alpha.0"
-  resolved "https://registry.yarnpkg.com/@novu/node/-/node-0.4.1-alpha.0.tgz#1ad0b775b027cbbc34ee4e516159fa4a87d24c1b"
-  integrity sha512-DezhPQo1h4vHhnbPprw8RVYLDh6+6lCs80Z9IQErAddluaEcUPqEbMDml+IXX9heAjgTrxzSdw4D5hhoYQt4kg==
+"@novu/node@^0.4.1":
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/@novu/node/-/node-0.4.1.tgz#468298929da954cc2449f04ac1c4c4259333947f"
+  integrity sha512-MNZXnya34EHB1O+6T05Sm1oKirYBnehcc/TiOYY0qmAvr6MhfqClEVIIhru29XGy4XSPfAjBy8bvWQljp91GJA==
   dependencies:
     axios "^0.26.1"
     handlebars "^4.7.7"

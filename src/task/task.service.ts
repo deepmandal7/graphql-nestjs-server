@@ -9,84 +9,106 @@ export class TaskService {
   constructor(private prisma: PrismaService) {}
 
   async create(data: Prisma.taskCreateInput, subTasks): Promise<task> {
-    return await this.prisma.task.create({ data }).then(async (result) => {
-      const novu = new Novu('10de244c8fe844a7674746629f38d13d');
-      const subscriber = await novu.subscribers.identify('2', {
-        email: 'deepmandal4742@gmail.com',
-        firstName: 'Deep',
-        lastName: 'Mandal',
-        phone: '7864805108',
-        avatar: 'some avatar',
-      });
-      let upd = await novu.subscribers.update('62902ebd3c3e82001812b90a', {
-        email: 'deepmandal4742@gmail.com',
-      });
-      console.log(upd.data);
-      console.log(subscriber.data);
-      let notifRes = await novu.trigger('test-notification', {
-        to: {
-          email: 'deepmandal4742@gmail.com',
-          subscriberId: '62902ebd3c3e82001812b90a',
+    return await this.prisma.task
+      .create({
+        data,
+        include: {
+          user: true,
         },
-        payload: {},
-      });
-      console.log(notifRes.data);
-      for (let subTask of subTasks) {
-        subTask.task_id = result.id;
-        subTask.user_ids = {
-          connect: subTask.user_ids
-            ? subTask.user_ids.map((userId) => {
-                return { id: userId };
-              })
-            : [],
-        };
-        await this.prisma.sub_task.create({
-          data: {
-            task: {
-              connect: {
-                id: subTask.task_id,
+      })
+      .then(async (result) => {
+        // const novu = new Novu('10de244c8fe844a7674746629f38d13d');
+        // const subscriber = await novu.subscribers.identify('2', {
+        //   email: 'deepmandal4742@gmail.com',
+        //   firstName: 'Deep',
+        //   lastName: 'Mandal',
+        //   phone: '7864805108',
+        //   avatar: 'some avatar',
+        // });
+        // let upd = await novu.subscribers.update('62902ebd3c3e82001812b90a', {
+        //   email: 'deepmandal4742@gmail.com',
+        // });
+        // console.log(upd.data);
+        // console.log(subscriber.data);
+        // let notifRes = await novu.trigger('test-notification', {
+        //   to: {
+        //     email: 'deepmandal4742@gmail.com',
+        //     subscriberId: '62902ebd3c3e82001812b90a',
+        //   },
+        //   payload: {},
+        // });
+        // console.log(notifRes.data);
+        // console.log(subTasks);
+        if (subTasks) {
+          for (let subTask of subTasks) {
+            let subTaskObj: any = subTask;
+            subTaskObj.task_id = result.id;
+            console.log(subTaskObj);
+            // subTaskObj.user_ids = {
+            //   connect: subTaskObj.user_ids
+            //     ? subTaskObj.user_ids.map((userId) => {
+            //         return { id: userId };
+            //       })
+            //     : [],
+            // };
+            await this.prisma.sub_task.create({
+              data: {
+                task: {
+                  connect: {
+                    id: subTaskObj.task_id,
+                  },
+                },
+                task_description: subTaskObj.task_description,
+                syear: subTaskObj.syear,
+                smonth: subTaskObj.smonth,
+                sdate: subTaskObj.sdate,
+                shour: subTaskObj.shour,
+                sminute: subTaskObj.sminute,
+                eyear: subTaskObj.eyear,
+                emonth: subTaskObj.emonth,
+                edate: subTaskObj.edate,
+                ehour: subTaskObj.ehour,
+                eminute: subTaskObj.eminute,
+                sub_task_start_date_time: subTaskObj.syear
+                  ? `${subTaskObj.syear}-${String(subTaskObj.smonth).padStart(
+                      2,
+                      '0',
+                    )}-${String(subTaskObj.sdate).padStart(2, '0')} ${String(
+                      subTaskObj.shour,
+                    ).padStart(2, '0')}:${String(subTaskObj.sminute).padStart(
+                      2,
+                      '0',
+                    )}`
+                  : null,
+                sub_task_end_date_time: subTaskObj.eyear
+                  ? `${subTaskObj.eyear}-${String(subTaskObj.emonth).padStart(
+                      2,
+                      '0',
+                    )}-${String(subTaskObj.edate).padStart(2, '0')} ${String(
+                      subTaskObj.ehour,
+                    ).padStart(2, '0')}:${String(subTaskObj.eminute).padStart(
+                      2,
+                      '0',
+                    )}`
+                  : null,
+                created_by: subTaskObj.created_by,
+                user_ids: {
+                  connect: subTaskObj.user_ids
+                    ? subTaskObj.user_ids.map((userId) => {
+                        return { id: userId };
+                      })
+                    : [],
+                },
               },
-            },
-            task_description: subTask.task_description,
-            syear: subTask.syear,
-            smonth: subTask.smonth,
-            sdate: subTask.sdate,
-            shour: subTask.shour,
-            sminute: subTask.sminute,
-            eyear: subTask.eyear,
-            emonth: subTask.emonth,
-            edate: subTask.edate,
-            ehour: subTask.ehour,
-            eminute: subTask.eminute,
-            sub_task_start_date_time: subTask.syear
-              ? `${subTask.syear}-${String(subTask.smonth).padStart(
-                  2,
-                  '0',
-                )}-${String(subTask.sdate).padStart(2, '0')} ${String(
-                  subTask.shour,
-                ).padStart(2, '0')}:${String(subTask.sminute).padStart(2, '0')}`
-              : null,
-            sub_task_end_date_time: subTask.eyear
-              ? `${subTask.eyear}-${String(subTask.emonth).padStart(
-                  2,
-                  '0',
-                )}-${String(subTask.edate).padStart(2, '0')} ${String(
-                  subTask.ehour,
-                ).padStart(2, '0')}:${String(subTask.eminute).padStart(2, '0')}`
-              : null,
-            created_by: subTask.created_by,
-            user_ids: {
-              connect: subTask.user_ids
-                ? subTask.user_ids.map((userId) => {
-                    return { id: userId };
-                  })
-                : [],
-            },
-          },
-        });
-      }
-      return result;
-    });
+              include: {
+                user_ids: true,
+              },
+            });
+          }
+        }
+        // console.log(result);
+        return result;
+      });
   }
 
   async createMany(
@@ -126,6 +148,7 @@ export class TaskService {
     take: number,
     cursor: Prisma.taskWhereUniqueInput | null,
     orgId: number,
+    taskBoardId: number,
     isUnassigned: boolean,
     userIds: number[],
     dates: string,
@@ -138,14 +161,22 @@ export class TaskService {
     toStartDate: number,
     tagId: number[],
     createdBy: number,
-    taskStatus: String,
+    taskStatus: string[],
   ) {
     let filter: any = {
-      where: {},
+      where: {
+        task_board_id: {
+          equals: taskBoardId,
+        },
+      },
       // orderBy: {
       //   created_at: 'asc',
       // },
       take,
+      include: {
+        user: true,
+        task_tag: true,
+      },
     };
     let timezone: any;
     let orgLocalTime: any;
@@ -155,20 +186,21 @@ export class TaskService {
     let orgHours: number;
     let orgMinutes: number;
     if (isUnassigned || userIds) {
-      filter.where.OR = [];
       if (isUnassigned) {
-        filter.where.OR.push({
-          user_ids: {
-            equals: null,
+        filter.where.user = {
+          every: {
+            id: undefined,
           },
-        });
+        };
       }
       if (userIds) {
-        filter.where.OR.push({
-          user_ids: {
-            hasSome: userIds,
+        filter.where.user = {
+          some: {
+            id: {
+              in: userIds,
+            },
           },
-        });
+        };
       }
     }
 
@@ -284,12 +316,12 @@ export class TaskService {
     }
     if (taskStatus) {
       filter.where.task_status = {
-        equals: taskStatus,
+        in: taskStatus,
       };
     }
     if (tagId) {
       filter.where.task_tag = {
-        every: {
+        some: {
           tag_id: {
             in: tagId,
           },
@@ -305,9 +337,28 @@ export class TaskService {
       filter.cursor = cursor;
       filter.skip = 1;
     }
-
-    let data = await this.prisma.task.findMany(filter);
-
+    let data: any = await this.prisma.task.findMany(filter);
+    if (isUnassigned) {
+      data = data.filter((item) => !item.user.length);
+    }
+    if (userIds) {
+      data = data.filter((item) => {
+        let count = 0;
+        item.user.forEach((user) => {
+          if (userIds.includes(user.id)) count++;
+        });
+        if (count === userIds.length) return item;
+      });
+    }
+    if (tagId) {
+      data = data.filter((item) => {
+        let count = 0;
+        item.task_tag.forEach((taskTag) => {
+          if (tagId.includes(taskTag.tag_id)) count++;
+        });
+        if (count === tagId.length) return item;
+      });
+    }
     return data;
   }
 
@@ -373,15 +424,14 @@ export class TaskService {
           },
           data: updateTaskInput,
         });
-        break;
     }
   }
 
   async findUserTasks(userId: number) {
-    return this.prisma.task.findMany({
+    return await this.prisma.task.findMany({
       where: {
         user: {
-          every: {
+          some: {
             id: {
               equals: userId,
             },

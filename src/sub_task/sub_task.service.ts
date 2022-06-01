@@ -18,14 +18,26 @@ export class SubTaskService {
     return `This action returns a #${id} subTask`;
   }
 
-  update(id: number, updateSubTaskInput: Prisma.sub_taskUpdateInput) {
+  async findUserSubTasks(userId: number) {
+    return await this.prisma.sub_task.findMany({
+      where: {
+        user_ids: {
+          some: {
+            id: {
+              equals: userId,
+            },
+          },
+        },
+      },
+    });
+  }
+
+  update(id: number, data: Prisma.sub_taskUpdateInput) {
     return this.prisma.sub_task.update({
       where: {
         id,
       },
-      data: {
-        updateSubTaskInput,
-      },
+      data,
     });
   }
 

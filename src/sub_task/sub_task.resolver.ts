@@ -57,28 +57,9 @@ export class SubTaskResolver {
     });
   }
 
-  @Query('subTask')
+  @Query('subTasks')
   findAll() {
     return this.subTaskService.findAll();
-  }
-
-  @Mutation('updateSubTaskStatus')
-  updateStatus(
-    @Args('updateSubTaskStatusInput')
-    updateSubTaskStatusInput: UpdateSubTaskInput,
-  ) {
-    let updateData: any = updateSubTaskStatusInput
-    updateData.user_ids = {
-      connect: updateSubTaskStatusInput.user_ids
-        ? updateSubTaskStatusInput.user_ids.map((userId) => {
-            return { id: userId };
-          })
-        : [],
-    },
-    return this.subTaskService.update(
-      updateSubTaskStatusInput.id,
-      updateSubTaskStatusInput,
-    );
   }
 
   @Query('subTask')
@@ -86,12 +67,32 @@ export class SubTaskResolver {
     return this.subTaskService.findOne(id);
   }
 
+  @Query('userSubTasks')
+  findUserSubTasks(@Args('userId') userId: number) {
+    return this.subTaskService.findUserSubTasks(userId);
+  }
+
   @Mutation('updateSubTask')
   update(@Args('updateSubTaskInput') updateSubTaskInput: UpdateSubTaskInput) {
-    return this.subTaskService.update(
-      updateSubTaskInput.id,
-      updateSubTaskInput,
-    );
+    let updateData: any = updateSubTaskInput;
+
+    updateData.sub_task_start_date_time = `${updateData.syear}-${String(
+      updateData.smonth,
+    ).padStart(2, '0')}-${String(updateData.sdate).padStart(2, '0')} ${String(
+      updateData.shour,
+    ).padStart(2, '0')}:${String(updateData.sminute).padStart(2, '0')}`;
+
+    updateData.sub_task_end_date_time = `${updateData.eyear}-${String(
+      updateData.emonth,
+    ).padStart(2, '0')}-${String(updateData.edate).padStart(2, '0')} ${String(
+      updateData.ehour,
+    ).padStart(2, '0')}:${String(updateData.eminute).padStart(2, '0')}`;
+
+    updateData.user_ids.set = updateData.user_ids.map((id) => {
+      return { id };
+    });
+
+    return this.subTaskService.update(updateSubTaskInput.id, updateData);
   }
 
   @Mutation('removeSubTask')

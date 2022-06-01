@@ -104,10 +104,6 @@ export class CreateTaskInput {
   @Field((type) => TaskFrequencyEnum)
   task_frequency: TaskFrequencyEnum;
 
-  @IsAlpha()
-  @Field()
-  task_status: string;
-
   @Field((type) => [Int])
   user_ids: number[];
 

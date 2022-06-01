@@ -13,6 +13,7 @@ export class TaskResolver {
     @Args('createTaskInput') createTaskInput: CreateTaskInput[],
   ) {
     let tasks: any = createTaskInput;
+    let taskTags = [];
     for (let task of tasks) {
       task.syear = task.syear || 0;
       task.smonth = task.smonth || 0;
@@ -45,9 +46,6 @@ export class TaskResolver {
         parseFloat(task.task_coordinates.split(',')[0]),
         parseFloat(task.task_coordinates.split(',')[1]),
       ];
-    }
-    let taskTags = [];
-    for (let task of tasks) {
       if (task.tag_ids) {
         for (let tagId of task.tag_ids) {
           taskTags.push({ task_title: task.task_title, tag_id: tagId });
@@ -83,7 +81,6 @@ export class TaskResolver {
           parseFloat(createTaskInput.task_coordinates.split(',')[1]),
         ],
         task_location: createTaskInput.task_location,
-        task_status: createTaskInput.task_status,
         created_by: createTaskInput.created_by,
         task_start_date_time: createTaskInput.syear
           ? `${createTaskInput.syear}-${String(createTaskInput.smonth).padStart(
@@ -139,6 +136,7 @@ export class TaskResolver {
     @Args('take') take: number,
     @Args('cursor') cursor: number,
     @Args('orgId') orgId: number,
+    @Args('taskBoardId') taskBoardId: number,
     @Args('isUnassigned') isUnassigned: boolean,
     @Args('userIds') userIds: number[],
     @Args('dates') dates: string,
@@ -149,7 +147,7 @@ export class TaskResolver {
     @Args('toStartYear') toStartYear: number,
     @Args('toStartMonth') toStartMonth: number,
     @Args('toStartDate') toStartDate: number,
-    @Args('taskStatus') taskStatus: string,
+    @Args('taskStatus') taskStatus: string[],
     @Args('tagIds') tagIds: number[],
     @Args('createdBy') createdBy: number,
   ) {
@@ -157,6 +155,7 @@ export class TaskResolver {
       take,
       cursor ? { id: cursor } : null,
       orgId,
+      taskBoardId,
       isUnassigned,
       userIds,
       dates,
@@ -178,11 +177,6 @@ export class TaskResolver {
     return this.taskService.findOne(id);
   }
 
-  @Query('userSubTasks')
-  findUserSubTasks(@Args('userId') userId: number) {
-    return this.taskService.findOne(userId);
-  }
-
   @Query('userTasks')
   findUserTasks(@Args('userId') userId: number) {
     return this.taskService.findUserTasks(userId);
@@ -193,9 +187,7 @@ export class TaskResolver {
     let updateData: any = updateTaskInput;
     delete updateData.id;
     updateData.user_ids = {
-      upsert: {
-        
-      },
+      upsert: {},
     };
     return this.taskService.update(updateTaskInput.id, updateData);
   }

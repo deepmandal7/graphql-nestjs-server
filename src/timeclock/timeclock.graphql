@@ -1,0 +1,33 @@
+type Timeclock {
+  id: ID!
+  title: String!
+  assign_to_all: Boolean
+  group_ids: [Int!]
+  locale: String
+  timezone: String
+  user_ids: [Int]
+  admin_ids: [Int]
+  org_id: Int
+  created_by: Int
+  clock_ins: [Int]
+}
+
+input CreateTimeclockInput {
+  # Example field (placeholder)
+  exampleField: Int
+}
+
+input UpdateTimeclockInput {
+  id: Int!
+}
+
+type Query {
+  timeclocks: [Timeclock]!
+  timeclock(id: Int!): Timeclock
+}
+
+type Mutation {
+  createTimeclock(createTimeclockInput: CreateTimeclockInput!): Timeclock!
+  updateTimeclock(updateTimeclockInput: UpdateTimeclockInput!): Timeclock!
+  removeTimeclock(id: Int!): Timeclock
+}

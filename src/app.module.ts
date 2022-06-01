@@ -8,6 +8,7 @@ import { TaskBoardModule } from './task_board/task_board.module';
 import { TaskModule } from './task/task.module';
 import { TaskCommentsModule } from './task_comments/task_comments.module';
 import { SubTaskModule } from './sub_task/sub_task.module';
+import { TimeclockModule } from './timeclock/timeclock.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { SubTaskModule } from './sub_task/sub_task.module';
     TaskModule,
     TaskCommentsModule,
     SubTaskModule,
+    TimeclockModule,
   ],
   controllers: [AppController],
   providers: [AppService],

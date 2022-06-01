@@ -104,7 +104,6 @@ export class CreateTaskInput {
     task_location?: Nullable<string>;
     task_board_id?: Nullable<number>;
     repeat_details?: Nullable<RepeatDetailsInput>;
-    task_status?: Nullable<string>;
     user_ids?: Nullable<Nullable<number>[]>;
     created_by?: Nullable<number>;
     tag_ids?: Nullable<Nullable<number>[]>;
@@ -165,6 +164,14 @@ export class UpdateTaskCommentInput {
     comment: string;
 }
 
+export class CreateTimeclockInput {
+    exampleField?: Nullable<number>;
+}
+
+export class UpdateTimeclockInput {
+    id: number;
+}
+
 export class SubTask {
     id: string;
     task_id: number;
@@ -190,7 +197,7 @@ export abstract class IQuery {
 
     abstract userSubTasks(userId: number): Nullable<SubTask>[] | Promise<Nullable<SubTask>[]>;
 
-    abstract tasks(take: number, orgId: number, cursor?: Nullable<number>, isUnassigned?: Nullable<boolean>, userIds?: Nullable<Nullable<number>[]>, dates?: Nullable<string>, fromStartYear?: Nullable<number>, fromStartMonth?: Nullable<number>, fromStartDate?: Nullable<number>, toStartYear?: Nullable<number>, toStartMonth?: Nullable<number>, toStartDate?: Nullable<number>, tagIds?: Nullable<Nullable<number>[]>, createdBy?: Nullable<number>, taskStatus?: Nullable<string>): Nullable<Task>[] | Promise<Nullable<Task>[]>;
+    abstract tasks(take: number, orgId: number, taskBoardId: number, cursor?: Nullable<number>, isUnassigned?: Nullable<boolean>, userIds?: Nullable<Nullable<number>[]>, dates?: Nullable<string>, fromStartYear?: Nullable<number>, fromStartMonth?: Nullable<number>, fromStartDate?: Nullable<number>, toStartYear?: Nullable<number>, toStartMonth?: Nullable<number>, toStartDate?: Nullable<number>, tagIds?: Nullable<Nullable<number>[]>, createdBy?: Nullable<number>, taskStatus?: Nullable<Nullable<string>[]>): Nullable<Task>[] | Promise<Nullable<Task>[]>;
 
     abstract task(id: number): Nullable<Task> | Promise<Nullable<Task>>;
 
@@ -203,6 +210,10 @@ export abstract class IQuery {
     abstract taskComments(taskId: number): Nullable<TaskComment>[] | Promise<Nullable<TaskComment>[]>;
 
     abstract taskComment(id: number): Nullable<TaskComment> | Promise<Nullable<TaskComment>>;
+
+    abstract timeclocks(): Nullable<Timeclock>[] | Promise<Nullable<Timeclock>[]>;
+
+    abstract timeclock(id: number): Nullable<Timeclock> | Promise<Nullable<Timeclock>>;
 }
 
 export abstract class IMutation {
@@ -233,6 +244,12 @@ export abstract class IMutation {
     abstract updateTaskComment(updateTaskCommentInput: UpdateTaskCommentInput): TaskComment | Promise<TaskComment>;
 
     abstract removeTaskComment(id: number): Nullable<TaskComment> | Promise<Nullable<TaskComment>>;
+
+    abstract createTimeclock(createTimeclockInput: CreateTimeclockInput): Timeclock | Promise<Timeclock>;
+
+    abstract updateTimeclock(updateTimeclockInput: UpdateTimeclockInput): Timeclock | Promise<Timeclock>;
+
+    abstract removeTimeclock(id: number): Nullable<Timeclock> | Promise<Nullable<Timeclock>>;
 }
 
 export class SubTaskType {
@@ -331,6 +348,20 @@ export class TaskComment {
     user_id: number;
     comment: string;
     task_id: number;
+}
+
+export class Timeclock {
+    id: string;
+    title: string;
+    assign_to_all?: Nullable<boolean>;
+    group_ids?: Nullable<number[]>;
+    locale?: Nullable<string>;
+    timezone?: Nullable<string>;
+    user_ids?: Nullable<Nullable<number>[]>;
+    admin_ids?: Nullable<Nullable<number>[]>;
+    org_id?: Nullable<number>;
+    created_by?: Nullable<number>;
+    clock_ins?: Nullable<Nullable<number>[]>;
 }
 
 export type DateTime = any;

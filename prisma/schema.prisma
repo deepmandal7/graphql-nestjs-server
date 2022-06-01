@@ -11,14 +11,16 @@ datasource db {
 }
 
 model user {
-  id           Int          @id @default(autoincrement())
-  first_name   String
-  last_name    String
-  tasks        task[]
-  clock_ins    clock_ins[]
-  sub_tasks    sub_task[]
-  organization organization @relation(fields: [org_id], references: [id])
-  org_id       Int
+  id              Int          @id @default(autoincrement())
+  first_name      String
+  last_name       String
+  tasks           task[]
+  clock_ins       clock_ins[]
+  sub_tasks       sub_task[]
+  organization    organization @relation(fields: [org_id], references: [id])
+  org_id          Int
+  user_timeclock  timeclock[]  @relation("user_ids")
+  admin_timeclock timeclock[]  @relation("admin_ids")
 }
 
 model organization {
@@ -73,7 +75,7 @@ model task {
   task_board           task_board          @relation(fields: [task_board_id], references: [id])
   task_board_id        Int
   sub_task             sub_task[]
-  task_status          String              @default("Scheduled")
+  task_status          String              @default("Open")
   repeat_details       repeat_details?
   created_at           DateTime            @default(now())
   updated_at           DateTime            @updatedAt
@@ -163,11 +165,10 @@ model timeclock {
   title         String
   assign_to_all Boolean?
   group_ids     Int[]
-  clockin_time  DateTime
-  clockout_time DateTime
   locale        String
   timezone      String
-  user_id       Int
+  user_ids      user[]      @relation("user_ids")
+  admin_ids     user[]      @relation("admin_ids")
   org_id        Int
   created_by    Int
   clock_ins     clock_ins[]
