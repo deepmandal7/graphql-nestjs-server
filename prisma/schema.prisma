@@ -33,18 +33,29 @@ model organization {
 }
 
 model task_board {
-  id              Int             @id @default(autoincrement())
-  task_board_name String
+  id                       Int                       @id @default(autoincrement())
+  task_board_name          String
   // team_user_ids   Int[]
   // admin_ids       Int[]
-  task            task[]
-  org             organization    @relation(fields: [org_id], references: [id])
-  org_id          Int
-  can_create      can_create_enum
-  customisation   Json            @db.JsonB
-  created_at      DateTime        @default(now())
-  updated_at      DateTime        @updatedAt
-  created_by      Int
+  task                     task[]
+  org                      organization              @relation(fields: [org_id], references: [id])
+  org_id                   Int
+  can_create               can_create_enum
+  created_at               DateTime                  @default(now())
+  updated_at               DateTime                  @updatedAt
+  created_by               Int
+  task_board_customisation task_board_customisation?
+}
+
+model task_board_customisation {
+  id                    Int        @id @default(autoincrement())
+  task_title_mandatory  Boolean    @default(true)
+  description_required  Boolean    @default(true)
+  description_mandatory Boolean    @default(true)
+  location_required     Boolean    @default(true)
+  location_mandatory    Boolean    @default(true)
+  task_board            task_board @relation(fields: [task_board_id], references: [id])
+  task_board_id         Int        @unique
 }
 
 enum can_create_enum {
@@ -54,8 +65,8 @@ enum can_create_enum {
 
 model task {
   id                   Int                 @id @default(autoincrement())
-  task_title           String
-  task_description     String
+  task_title           String?
+  task_description     String?
   task_file_id         String[]
   task_frequency       task_frequency_enum
   syear                Int?
@@ -71,7 +82,7 @@ model task {
   task_start_date_time String?
   task_end_date_time   String?
   task_coordinates     Float[]
-  task_location        String
+  task_location        String?
   task_board           task_board          @relation(fields: [task_board_id], references: [id])
   task_board_id        Int
   sub_task             sub_task[]

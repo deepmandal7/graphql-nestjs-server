@@ -8,17 +8,21 @@ export class TaskBoardResolver {
   constructor(private readonly taskBoardService: TaskBoardService) {}
 
   @Mutation('createTaskBoard')
-  create(@Args('createTaskBoardInput') createTaskBoardInput: CreateTaskBoardInput) {
+  create(
+    @Args('createTaskBoardInput') createTaskBoardInput: CreateTaskBoardInput,
+  ) {
     return this.taskBoardService.create({
       task_board_name: createTaskBoardInput.task_board_name,
       created_by: createTaskBoardInput.created_by,
       can_create: createTaskBoardInput.can_create,
-      customisation: JSON.stringify(createTaskBoardInput.customisation),
       org: {
         connect: {
-          id: createTaskBoardInput.org_id
-        }
-      }
+          id: createTaskBoardInput.org_id,
+        },
+      },
+      task_board_customisation: {
+        create: {},
+      },
     });
   }
 
@@ -33,8 +37,13 @@ export class TaskBoardResolver {
   }
 
   @Mutation('updateTaskBoard')
-  update(@Args('updateTaskBoardInput') updateTaskBoardInput: UpdateTaskBoardInput) {
-    return this.taskBoardService.update(updateTaskBoardInput.id, updateTaskBoardInput);
+  update(
+    @Args('updateTaskBoardInput') updateTaskBoardInput: UpdateTaskBoardInput,
+  ) {
+    return this.taskBoardService.update(
+      updateTaskBoardInput.id,
+      updateTaskBoardInput,
+    );
   }
 
   @Mutation('removeTaskBoard')

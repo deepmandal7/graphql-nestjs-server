@@ -8,140 +8,26 @@ import { Novu } from '@novu/node';
 export class TaskService {
   constructor(private prisma: PrismaService) {}
 
-  async create(data: Prisma.taskCreateInput, subTasks): Promise<task> {
-    return await this.prisma.task
-      .create({
-        data,
-        include: {
-          user: true,
-        },
-      })
-      .then(async (result) => {
-        // const novu = new Novu('10de244c8fe844a7674746629f38d13d');
-        // const subscriber = await novu.subscribers.identify('2', {
-        //   email: 'deepmandal4742@gmail.com',
-        //   firstName: 'Deep',
-        //   lastName: 'Mandal',
-        //   phone: '7864805108',
-        //   avatar: 'some avatar',
-        // });
-        // let upd = await novu.subscribers.update('62902ebd3c3e82001812b90a', {
-        //   email: 'deepmandal4742@gmail.com',
-        // });
-        // console.log(upd.data);
-        // console.log(subscriber.data);
-        // let notifRes = await novu.trigger('test-notification', {
-        //   to: {
-        //     email: 'deepmandal4742@gmail.com',
-        //     subscriberId: '62902ebd3c3e82001812b90a',
-        //   },
-        //   payload: {},
-        // });
-        // console.log(notifRes.data);
-        // console.log(subTasks);
-        if (subTasks) {
-          for (let subTask of subTasks) {
-            let subTaskObj: any = subTask;
-            subTaskObj.task_id = result.id;
-            console.log(subTaskObj);
-            // subTaskObj.user_ids = {
-            //   connect: subTaskObj.user_ids
-            //     ? subTaskObj.user_ids.map((userId) => {
-            //         return { id: userId };
-            //       })
-            //     : [],
-            // };
-            await this.prisma.sub_task.create({
-              data: {
-                task: {
-                  connect: {
-                    id: subTaskObj.task_id,
-                  },
-                },
-                task_description: subTaskObj.task_description,
-                syear: subTaskObj.syear,
-                smonth: subTaskObj.smonth,
-                sdate: subTaskObj.sdate,
-                shour: subTaskObj.shour,
-                sminute: subTaskObj.sminute,
-                eyear: subTaskObj.eyear,
-                emonth: subTaskObj.emonth,
-                edate: subTaskObj.edate,
-                ehour: subTaskObj.ehour,
-                eminute: subTaskObj.eminute,
-                sub_task_start_date_time: subTaskObj.syear
-                  ? `${subTaskObj.syear}-${String(subTaskObj.smonth).padStart(
-                      2,
-                      '0',
-                    )}-${String(subTaskObj.sdate).padStart(2, '0')} ${String(
-                      subTaskObj.shour,
-                    ).padStart(2, '0')}:${String(subTaskObj.sminute).padStart(
-                      2,
-                      '0',
-                    )}`
-                  : null,
-                sub_task_end_date_time: subTaskObj.eyear
-                  ? `${subTaskObj.eyear}-${String(subTaskObj.emonth).padStart(
-                      2,
-                      '0',
-                    )}-${String(subTaskObj.edate).padStart(2, '0')} ${String(
-                      subTaskObj.ehour,
-                    ).padStart(2, '0')}:${String(subTaskObj.eminute).padStart(
-                      2,
-                      '0',
-                    )}`
-                  : null,
-                created_by: subTaskObj.created_by,
-                user_ids: {
-                  connect: subTaskObj.user_ids
-                    ? subTaskObj.user_ids.map((userId) => {
-                        return { id: userId };
-                      })
-                    : [],
-                },
-              },
-              include: {
-                user_ids: true,
-              },
-            });
-          }
-        }
-        // console.log(result);
-        return result;
-      });
-  }
-
-  async createMany(
-    data: Prisma.taskCreateManyInput[],
-    taskTags,
-  ): Promise<number> {
-    let createCount = await this.prisma.task.createMany({ data });
-    let taskTitle = [];
-    let taskBoardId = data[0].task_board_id;
-    for (let taskTag of taskTags) {
-      taskTitle.push(taskTag.task_title);
-    }
-    let tasks = await this.prisma.task.findMany({
-      where: {
-        task_title: {
-          in: taskTitle,
-        },
-        task_board_id: taskBoardId,
+  async create(data: Prisma.taskCreateInput): Promise<task> {
+    return await this.prisma.task.create({
+      data,
+      include: {
+        user: true,
       },
     });
-    for (let task of tasks) {
-      for (let item of taskTags) {
-        if (item.task_title === task.task_title) {
-          item.task_id = task.id;
-          delete item.task_title;
-        }
-      }
-    }
-    await this.prisma.task_tag.createMany({
-      data: taskTags,
-    });
+  }
 
-    return createCount.count;
+  async createMany(data): Promise<task[]> {
+    return await Promise.all(
+      data.map((task) => {
+        return this.prisma.task.create({
+          data: task,
+          include: {
+            user: true,
+          },
+        });
+      }),
+    );
   }
 
   async findAll(
@@ -445,3 +331,96 @@ export class TaskService {
     return `This action removes a #${id} task`;
   }
 }
+
+//   // const novu = new Novu('10de244c8fe844a7674746629f38d13d');
+//   // const subscriber = await novu.subscribers.identify('2', {
+//   //   email: 'deepmandal4742@gmail.com',
+//   //   firstName: 'Deep',
+//   //   lastName: 'Mandal',
+//   //   phone: '7864805108',
+//   //   avatar: 'some avatar',
+//   // });
+//   // let upd = await novu.subscribers.update('62902ebd3c3e82001812b90a', {
+//   //   email: 'deepmandal4742@gmail.com',
+//   // });
+//   // console.log(upd.data);
+//   // console.log(subscriber.data);
+//   // let notifRes = await novu.trigger('test-notification', {
+//   //   to: {
+//   //     email: 'deepmandal4742@gmail.com',
+//   //     subscriberId: '62902ebd3c3e82001812b90a',
+//   //   },
+//   //   payload: {},
+//   // });
+//   // console.log(notifRes.data);
+//   // console.log(subTasks);
+//   if (subTasks) {
+//     for (let subTask of subTasks) {
+//       let subTaskObj: any = subTask;
+//       subTaskObj.task_id = result.id;
+//       console.log(subTaskObj);
+//       // subTaskObj.user_ids = {
+//       //   connect: subTaskObj.user_ids
+//       //     ? subTaskObj.user_ids.map((userId) => {
+//       //         return { id: userId };
+//       //       })
+//       //     : [],
+//       // };
+//       await this.prisma.sub_task.create({
+//         data: {
+//           task: {
+//             connect: {
+//               id: subTaskObj.task_id,
+//             },
+//           },
+//           task_description: subTaskObj.task_description,
+//           syear: subTaskObj.syear,
+//           smonth: subTaskObj.smonth,
+//           sdate: subTaskObj.sdate,
+//           shour: subTaskObj.shour,
+//           sminute: subTaskObj.sminute,
+//           eyear: subTaskObj.eyear,
+//           emonth: subTaskObj.emonth,
+//           edate: subTaskObj.edate,
+//           ehour: subTaskObj.ehour,
+//           eminute: subTaskObj.eminute,
+//           sub_task_start_date_time: subTaskObj.syear
+//             ? `${subTaskObj.syear}-${String(subTaskObj.smonth).padStart(
+//                 2,
+//                 '0',
+//               )}-${String(subTaskObj.sdate).padStart(2, '0')} ${String(
+//                 subTaskObj.shour,
+//               ).padStart(2, '0')}:${String(subTaskObj.sminute).padStart(
+//                 2,
+//                 '0',
+//               )}`
+//             : null,
+//           sub_task_end_date_time: subTaskObj.eyear
+//             ? `${subTaskObj.eyear}-${String(subTaskObj.emonth).padStart(
+//                 2,
+//                 '0',
+//               )}-${String(subTaskObj.edate).padStart(2, '0')} ${String(
+//                 subTaskObj.ehour,
+//               ).padStart(2, '0')}:${String(subTaskObj.eminute).padStart(
+//                 2,
+//                 '0',
+//               )}`
+//             : null,
+//           created_by: subTaskObj.created_by,
+//           user_ids: {
+//             connect: subTaskObj.user_ids
+//               ? subTaskObj.user_ids.map((userId) => {
+//                   return { id: userId };
+//                 })
+//               : [],
+//           },
+//         },
+//         include: {
+//           user_ids: true,
+//         },
+//       });
+//     }
+//   }
+//   // console.log(result);
+//   return result;
+// })

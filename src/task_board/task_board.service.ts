@@ -9,11 +9,11 @@ export class TaskBoardService {
   constructor(private prisma: PrismaService) {}
 
   create(data: Prisma.task_boardCreateInput) {
-    return this.prisma.task_board.create({data})
+    return this.prisma.task_board.create({ data });
   }
 
   findAll() {
-    return this.prisma.task_board.findMany({  });
+    return this.prisma.task_board.findMany({});
   }
 
   findOne(id: number) {

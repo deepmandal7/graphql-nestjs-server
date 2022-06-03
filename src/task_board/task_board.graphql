@@ -15,52 +15,20 @@ input TagInput {
   tag_type: String
 }
 
-type CustomisationMandatoryCheckedType {
-  mandatory: Boolean
-  checked: Boolean
-}
-
-type CustomisationMandatoryType {
-  mandatory: Boolean
-}
-
-type CustomisationType {
-  task_title: CustomisationMandatoryType
-  task_description: CustomisationMandatoryCheckedType
-  task_location: CustomisationMandatoryCheckedType
-}
-
 type TaskBoard {
   id: ID!
   task_board_name: String!
   org_id: Int!
   tags: [TagType!]
-  customisation: CustomisationType!
   can_create: CanCreateEnum!
   created_by: Int!
   created_at: DateTime
   updated_at: DateTime
 }
 
-input CustomisationMandatoryInput {
-  mandatory: Boolean
-}
-
-input CustomisationMandatoryCheckedInput {
-  mandatory: Boolean
-  checked: Boolean
-}
-
-input CustomisationInput {
-  task_title: CustomisationMandatoryInput
-  task_description: CustomisationMandatoryCheckedInput
-  task_location: CustomisationMandatoryCheckedInput
-}
-
 input CreateTaskBoardInput {
   org_id: Int!
   task_board_name: String!
-  customisation: CustomisationInput!
   can_create: CanCreateEnum!
   created_by: Int!
 }

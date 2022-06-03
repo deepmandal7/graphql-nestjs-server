@@ -86,8 +86,8 @@ export class RepeatDetailsInput {
 }
 
 export class CreateTaskInput {
-    task_title: string;
-    task_description: string;
+    task_title?: Nullable<string>;
+    task_description?: Nullable<string>;
     task_file_id?: Nullable<Nullable<string>[]>;
     task_frequency?: Nullable<TaskFrequencyEnum>;
     syear?: Nullable<number>;
@@ -126,31 +126,24 @@ export class TagInput {
     tag_type?: Nullable<string>;
 }
 
-export class CustomisationMandatoryInput {
-    mandatory?: Nullable<boolean>;
-}
-
-export class CustomisationMandatoryCheckedInput {
-    mandatory?: Nullable<boolean>;
-    checked?: Nullable<boolean>;
-}
-
-export class CustomisationInput {
-    task_title?: Nullable<CustomisationMandatoryInput>;
-    task_description?: Nullable<CustomisationMandatoryCheckedInput>;
-    task_location?: Nullable<CustomisationMandatoryCheckedInput>;
-}
-
 export class CreateTaskBoardInput {
     org_id: number;
     task_board_name: string;
-    customisation: CustomisationInput;
     can_create: CanCreateEnum;
     created_by: number;
 }
 
 export class UpdateTaskBoardInput {
     id: number;
+}
+
+export class UpdateTaskBoardCustomisationInput {
+    id: number;
+    task_title_mandatory?: Nullable<boolean>;
+    description_required?: Nullable<boolean>;
+    description_mandatory?: Nullable<boolean>;
+    location_required?: Nullable<boolean>;
+    location_mandatory?: Nullable<boolean>;
 }
 
 export class CreateTaskCommentInput {
@@ -207,6 +200,8 @@ export abstract class IQuery {
 
     abstract taskBoard(id: number): Nullable<TaskBoard> | Promise<Nullable<TaskBoard>>;
 
+    abstract taskBoardCustomisation(taskBoardId: number): Nullable<TaskBoardCustomisation> | Promise<Nullable<TaskBoardCustomisation>>;
+
     abstract taskComments(taskId: number): Nullable<TaskComment>[] | Promise<Nullable<TaskComment>[]>;
 
     abstract taskComment(id: number): Nullable<TaskComment> | Promise<Nullable<TaskComment>>;
@@ -225,7 +220,7 @@ export abstract class IMutation {
 
     abstract createTask(createTaskInput: CreateTaskInput): Task | Promise<Task>;
 
-    abstract createTasks(createTaskInput: Nullable<CreateTaskInput>[]): number | Promise<number>;
+    abstract createTasks(createTaskInput: Nullable<CreateTaskInput>[]): Task[] | Promise<Task[]>;
 
     abstract updateTask(updateTaskInput: UpdateTaskInput): Task | Promise<Task>;
 
@@ -238,6 +233,8 @@ export abstract class IMutation {
     abstract updateTaskBoard(updateTaskBoardInput: UpdateTaskBoardInput): TaskBoard | Promise<TaskBoard>;
 
     abstract removeTaskBoard(id: number): Nullable<TaskBoard> | Promise<Nullable<TaskBoard>>;
+
+    abstract updateTaskBoardCustomisation(updateTaskBoardCustomisationInput: UpdateTaskBoardCustomisationInput): TaskBoardCustomisation | Promise<TaskBoardCustomisation>;
 
     abstract createTaskComment(createTaskCommentInput: CreateTaskCommentInput): TaskComment | Promise<TaskComment>;
 
@@ -284,8 +281,8 @@ export class RepeatDetailsType {
 
 export class Task {
     id: string;
-    task_title: string;
-    task_description: string;
+    task_title?: Nullable<string>;
+    task_description?: Nullable<string>;
     task_file_id?: Nullable<Nullable<string>[]>;
     task_frequency?: Nullable<TaskFrequencyEnum>;
     syear?: Nullable<number>;
@@ -316,31 +313,24 @@ export class TagType {
     tag_type?: Nullable<string>;
 }
 
-export class CustomisationMandatoryCheckedType {
-    mandatory?: Nullable<boolean>;
-    checked?: Nullable<boolean>;
-}
-
-export class CustomisationMandatoryType {
-    mandatory?: Nullable<boolean>;
-}
-
-export class CustomisationType {
-    task_title?: Nullable<CustomisationMandatoryType>;
-    task_description?: Nullable<CustomisationMandatoryCheckedType>;
-    task_location?: Nullable<CustomisationMandatoryCheckedType>;
-}
-
 export class TaskBoard {
     id: string;
     task_board_name: string;
     org_id: number;
     tags?: Nullable<TagType[]>;
-    customisation: CustomisationType;
     can_create: CanCreateEnum;
     created_by: number;
     created_at?: Nullable<DateTime>;
     updated_at?: Nullable<DateTime>;
+}
+
+export class TaskBoardCustomisation {
+    id: string;
+    task_title_mandatory?: Nullable<boolean>;
+    description_required?: Nullable<boolean>;
+    description_mandatory?: Nullable<boolean>;
+    location_required?: Nullable<boolean>;
+    location_mandatory?: Nullable<boolean>;
 }
 
 export class TaskComment {
