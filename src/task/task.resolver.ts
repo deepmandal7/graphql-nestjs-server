@@ -145,7 +145,9 @@ export class TaskResolver {
           ]
         : [],
       task_location: createTaskInput.task_location,
-      created_by: createTaskInput.created_by,
+      created_by: {
+        connect: { id: createTaskInput.created_by },
+      },
       task_start_date_time: createTaskInput.syear
         ? `${createTaskInput.syear}-${String(createTaskInput.smonth).padStart(
             2,
@@ -250,6 +252,7 @@ export class TaskResolver {
     @Args('taskBoardId') taskBoardId: number,
     @Args('isUnassigned') isUnassigned: boolean,
     @Args('userIds') userIds: number[],
+    @Args('userId') userId: number,
     @Args('dates') dates: string,
     @Args('startDates') startDates: string,
     @Args('fromStartYear') fromStartYear: number,
@@ -269,6 +272,7 @@ export class TaskResolver {
       taskBoardId,
       isUnassigned,
       userIds,
+      userId,
       dates,
       startDates,
       fromStartYear,
@@ -297,9 +301,25 @@ export class TaskResolver {
   update(@Args('updateTaskInput') updateTaskInput: UpdateTaskInput) {
     let updateData: any = updateTaskInput;
     delete updateData.id;
-    updateData.user_ids = {
-      upsert: {},
-    };
+    if (updateTaskInput.user_ids) {
+      updateData.user = {
+        set: updateTaskInput.user_ids.map((userId) => {
+          return { id: userId };
+        }),
+      };
+    }
+    if (updateTaskInput.tag_ids) {
+      updateData.task_tag = {
+        set: updateTaskInput.tag_ids.map((tagId) => {
+          return {
+            task_id_tag_id: {
+              task_id: updateTaskInput.id,
+              tag_id: tagId,
+            },
+          };
+        }),
+      };
+    }
     return this.taskService.update(updateTaskInput.id, updateData);
   }
 

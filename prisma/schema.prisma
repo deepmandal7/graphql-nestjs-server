@@ -21,6 +21,7 @@ model user {
   org_id          Int
   user_timeclock  timeclock[]  @relation("user_ids")
   admin_timeclock timeclock[]  @relation("admin_ids")
+  tasks_created   task[]       @relation("tasks_created")
 }
 
 model organization {
@@ -90,10 +91,11 @@ model task {
   repeat_details       repeat_details?
   created_at           DateTime            @default(now())
   updated_at           DateTime            @updatedAt
-  created_by           Int
   task_tag             task_tag[]
   task_comments        task_comments[]
   user                 user[]
+  created_by           user?               @relation("tasks_created", fields: [created_by_id], references: [id])
+  created_by_id        Int?
 }
 
 enum task_frequency_enum {

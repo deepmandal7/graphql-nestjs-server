@@ -140,10 +140,11 @@ type Query {
   tasks(
     take: Int!
     orgId: Int!
-    taskBoardId: Int!
+    taskBoardId: Int
     cursor: Int
     isUnassigned: Boolean
     userIds: [Int]
+    userId: Int
     dates: String
     fromStartYear: Int
     fromStartMonth: Int

@@ -37,6 +37,7 @@ export class TaskService {
     taskBoardId: number,
     isUnassigned: boolean,
     userIds: number[],
+    userId: number,
     dates: string,
     startDate: string,
     fromStartYear: number,
@@ -50,11 +51,7 @@ export class TaskService {
     taskStatus: string[],
   ) {
     let filter: any = {
-      where: {
-        task_board_id: {
-          equals: taskBoardId,
-        },
-      },
+      where: {},
       // orderBy: {
       //   created_at: 'asc',
       // },
@@ -71,6 +68,11 @@ export class TaskService {
     let orgDate: number;
     let orgHours: number;
     let orgMinutes: number;
+    if (taskBoardId) {
+      filter.where.task_board_id = {
+        equals: taskBoardId,
+      };
+    }
     if (isUnassigned || userIds) {
       if (isUnassigned) {
         filter.where.user = {
@@ -88,6 +90,15 @@ export class TaskService {
           },
         };
       }
+    }
+    if (userId) {
+      filter.where.user = {
+        some: {
+          id: {
+            equals: userId,
+          },
+        },
+      };
     }
 
     if (dates || startDate) {
@@ -252,12 +263,15 @@ export class TaskService {
     return `This action returns a #${id} task`;
   }
 
-  async update(id: number, updateTaskInput: Prisma.sub_taskUpdateInput) {
+  async update(id: number, updateTaskInput: Prisma.taskUpdateInput) {
     switch (updateTaskInput.task_status) {
       case 'Duplicate':
         let task = await this.prisma.task.findUnique({
           where: {
             id,
+          },
+          include: {
+            created_by: true,
           },
         });
         return await this.prisma.task
@@ -287,7 +301,9 @@ export class TaskService {
                 },
               },
               task_status: task.task_status,
-              created_by: task.created_by,
+              created_by: {
+                connect: { id: task.created_by.id },
+              },
             },
           })
           .then(async (result) => {
@@ -301,6 +317,7 @@ export class TaskService {
                 await this.prisma.sub_task.createMany({
                   data: subTasks,
                 });
+                return result;
               });
           });
       default:
