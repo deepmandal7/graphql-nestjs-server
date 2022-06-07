@@ -1,3 +1,5 @@
+#import User, Tag from schema.graphql
+
 scalar DateTime
 
 type TagType {

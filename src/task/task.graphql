@@ -1,3 +1,6 @@
+#import SubTask, CreateSubTaskInput from sub_task.graphql
+#import User, Tag from schema.graphql
+
 scalar DateTime
 
 enum TaskFrequencyEnum {
@@ -10,41 +13,6 @@ enum RepeatTypeEnum {
   WEEKLY
   MONTHLY
   YEARLY
-}
-
-type SubTaskType {
-  id: Int!
-  task: Int!
-  task_description: String
-  task_id: Int!
-  syear: Int
-  smonth: Int
-  sdate: Int
-  shour: Int
-  sminute: Int
-  eyear: Int
-  emonth: Int
-  edate: Int
-  ehour: Int
-  eminute: Int
-  user_ids: [Int!]
-  created_by: Int
-}
-
-input SubTaskInput {
-  task_description: String
-  syear: Int
-  smonth: Int
-  sdate: Int
-  shour: Int
-  sminute: Int
-  eyear: Int
-  emonth: Int
-  edate: Int
-  ehour: Int
-  eminute: Int
-  user_ids: [Int!]
-  created_by: Int
 }
 
 # Repeat Details Type
@@ -92,12 +60,12 @@ type Task {
   task_board_id: Int
   repeat_details: RepeatDetailsType
   task_status: String
-  user_ids: [Int]
+  user: [User!]
   created_by: Int
-  tag_ids: [Int]
+  task_tag: [Tag!]
   created_at: DateTime
   updated_at: DateTime
-  sub_task: [SubTaskType]
+  sub_task: [SubTask]
 }
 
 input CreateTaskInput {
@@ -119,12 +87,12 @@ input CreateTaskInput {
   task_location: String
   task_board_id: Int
   repeat_details: RepeatDetailsInput
-  user_ids: [Int]
+  user_ids: [Int!]
   created_by: Int
   tag_ids: [Int]
   created_at: DateTime
   updated_at: DateTime
-  sub_task: [SubTaskInput]
+  sub_task: [CreateSubTaskInput]
 }
 
 input UpdateTaskInput {

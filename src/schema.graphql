@@ -1,0 +1,14 @@
+type User {
+  id: ID!
+  first_name: String
+}
+
+type Tag {
+  tag: TagItem
+}
+
+type TagItem {
+  id: ID!
+  tag_name: String
+  tag_color: String
+}

@@ -51,14 +51,24 @@ export class TaskService {
     taskStatus: string[],
   ) {
     let filter: any = {
-      where: {},
+      where: {
+        task_board: {
+          is: {
+            org_id: orgId,
+          },
+        },
+      },
       // orderBy: {
       //   created_at: 'asc',
       // },
       take,
       include: {
         user: true,
-        task_tag: true,
+        task_tag: {
+          include: {
+            tag: true,
+          },
+        },
       },
     };
     let timezone: any;
@@ -235,6 +245,7 @@ export class TaskService {
       filter.skip = 1;
     }
     let data: any = await this.prisma.task.findMany(filter);
+    // console.log(data);
     if (isUnassigned) {
       data = data.filter((item) => !item.user.length);
     }

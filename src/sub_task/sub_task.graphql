@@ -1,3 +1,5 @@
+#import User from schema.graphql
+
 type SubTask {
   id: ID!
   task_id: Int!
@@ -12,12 +14,12 @@ type SubTask {
   edate: Int
   ehour: Int
   eminute: Int
-  created_by: Int
-  user_ids: [Int]
+  created_by: User
+  user: [User!]
 }
 
 input CreateSubTaskInput {
-  task_id: Int!
+  task_id: Int
   task_description: String
   syear: Int
   smonth: Int

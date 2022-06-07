@@ -25,7 +25,7 @@ export enum CanCreateEnum {
 }
 
 export class CreateSubTaskInput {
-    task_id: number;
+    task_id?: Nullable<number>;
     task_description?: Nullable<string>;
     syear?: Nullable<number>;
     smonth?: Nullable<number>;
@@ -59,22 +59,6 @@ export class UpdateSubTaskInput {
     user_ids?: Nullable<Nullable<number>[]>;
 }
 
-export class SubTaskInput {
-    task_description?: Nullable<string>;
-    syear?: Nullable<number>;
-    smonth?: Nullable<number>;
-    sdate?: Nullable<number>;
-    shour?: Nullable<number>;
-    sminute?: Nullable<number>;
-    eyear?: Nullable<number>;
-    emonth?: Nullable<number>;
-    edate?: Nullable<number>;
-    ehour?: Nullable<number>;
-    eminute?: Nullable<number>;
-    user_ids?: Nullable<number[]>;
-    created_by?: Nullable<number>;
-}
-
 export class RepeatDetailsInput {
     how_often_repeat: number;
     stop_repeat?: Nullable<DateTime>;
@@ -104,12 +88,12 @@ export class CreateTaskInput {
     task_location?: Nullable<string>;
     task_board_id?: Nullable<number>;
     repeat_details?: Nullable<RepeatDetailsInput>;
-    user_ids?: Nullable<Nullable<number>[]>;
+    user_ids?: Nullable<number[]>;
     created_by?: Nullable<number>;
     tag_ids?: Nullable<Nullable<number>[]>;
     created_at?: Nullable<DateTime>;
     updated_at?: Nullable<DateTime>;
-    sub_task?: Nullable<Nullable<SubTaskInput>[]>;
+    sub_task?: Nullable<Nullable<CreateSubTaskInput>[]>;
 }
 
 export class UpdateTaskInput {
@@ -165,6 +149,21 @@ export class UpdateTimeclockInput {
     id: number;
 }
 
+export class User {
+    id: string;
+    first_name?: Nullable<string>;
+}
+
+export class Tag {
+    tag?: Nullable<TagItem>;
+}
+
+export class TagItem {
+    id: string;
+    tag_name?: Nullable<string>;
+    tag_color?: Nullable<string>;
+}
+
 export class SubTask {
     id: string;
     task_id: number;
@@ -179,8 +178,8 @@ export class SubTask {
     edate?: Nullable<number>;
     ehour?: Nullable<number>;
     eminute?: Nullable<number>;
-    created_by?: Nullable<number>;
-    user_ids?: Nullable<Nullable<number>[]>;
+    created_by?: Nullable<User>;
+    user?: Nullable<User[]>;
 }
 
 export abstract class IQuery {
@@ -249,25 +248,6 @@ export abstract class IMutation {
     abstract removeTimeclock(id: number): Nullable<Timeclock> | Promise<Nullable<Timeclock>>;
 }
 
-export class SubTaskType {
-    id: number;
-    task: number;
-    task_description?: Nullable<string>;
-    task_id: number;
-    syear?: Nullable<number>;
-    smonth?: Nullable<number>;
-    sdate?: Nullable<number>;
-    shour?: Nullable<number>;
-    sminute?: Nullable<number>;
-    eyear?: Nullable<number>;
-    emonth?: Nullable<number>;
-    edate?: Nullable<number>;
-    ehour?: Nullable<number>;
-    eminute?: Nullable<number>;
-    user_ids?: Nullable<number[]>;
-    created_by?: Nullable<number>;
-}
-
 export class RepeatDetailsType {
     id: number;
     how_often_repeat: number;
@@ -300,12 +280,12 @@ export class Task {
     task_board_id?: Nullable<number>;
     repeat_details?: Nullable<RepeatDetailsType>;
     task_status?: Nullable<string>;
-    user_ids?: Nullable<Nullable<number>[]>;
+    user?: Nullable<User[]>;
     created_by?: Nullable<number>;
-    tag_ids?: Nullable<Nullable<number>[]>;
+    task_tag?: Nullable<Tag[]>;
     created_at?: Nullable<DateTime>;
     updated_at?: Nullable<DateTime>;
-    sub_task?: Nullable<Nullable<SubTaskType>[]>;
+    sub_task?: Nullable<Nullable<SubTask>[]>;
 }
 
 export class TagType {
