@@ -2,6 +2,11 @@ import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { SubTaskService } from './sub_task.service';
 import { CreateSubTaskInput } from './dto/create-sub_task.input';
 import { UpdateSubTaskInput } from './dto/update-sub_task.input';
+import {
+  digitsToDateTime,
+  coordinatesStringToArray,
+  mapIDArrayToEnum,
+} from '../common/utils/common_utils';
 
 @Resolver('SubTask')
 export class SubTaskResolver {
@@ -16,42 +21,38 @@ export class SubTaskResolver {
         },
       },
       task_description: createSubTaskInput.task_description,
-      syear: createSubTaskInput.syear,
-      smonth: createSubTaskInput.smonth,
-      sdate: createSubTaskInput.sdate,
-      shour: createSubTaskInput.shour,
-      sminute: createSubTaskInput.sminute,
-      eyear: createSubTaskInput.eyear,
-      emonth: createSubTaskInput.emonth,
-      edate: createSubTaskInput.edate,
-      ehour: createSubTaskInput.ehour,
-      eminute: createSubTaskInput.eminute,
+      syear: createSubTaskInput.syear || 0,
+      smonth: createSubTaskInput.smonth || 0,
+      sdate: createSubTaskInput.sdate || 0,
+      shour: createSubTaskInput.shour || 0,
+      sminute: createSubTaskInput.sminute || 0,
+      eyear: createSubTaskInput.eyear || 0,
+      emonth: createSubTaskInput.emonth || 0,
+      edate: createSubTaskInput.edate || 0,
+      ehour: createSubTaskInput.ehour || 0,
+      eminute: createSubTaskInput.eminute || 0,
       sub_task_start_date_time: createSubTaskInput.syear
-        ? `${createSubTaskInput.syear}-${String(
+        ? digitsToDateTime(
+            createSubTaskInput.syear,
             createSubTaskInput.smonth,
-          ).padStart(2, '0')}-${String(createSubTaskInput.sdate).padStart(
-            2,
-            '0',
-          )} ${String(createSubTaskInput.shour).padStart(2, '0')}:${String(
+            createSubTaskInput.sdate,
+            createSubTaskInput.shour,
             createSubTaskInput.sminute,
-          ).padStart(2, '0')}`
+          )
         : null,
       sub_task_end_date_time: createSubTaskInput.eyear
-        ? `${createSubTaskInput.eyear}-${String(
+        ? digitsToDateTime(
+            createSubTaskInput.eyear,
             createSubTaskInput.emonth,
-          ).padStart(2, '0')}-${String(createSubTaskInput.edate).padStart(
-            2,
-            '0',
-          )} ${String(createSubTaskInput.ehour).padStart(2, '0')}:${String(
+            createSubTaskInput.edate,
+            createSubTaskInput.ehour,
             createSubTaskInput.eminute,
-          ).padStart(2, '0')}`
+          )
         : null,
       created_by: createSubTaskInput.created_by,
       user_ids: {
         connect: createSubTaskInput.user_ids
-          ? createSubTaskInput.user_ids.map((userId) => {
-              return { id: userId };
-            })
+          ? mapIDArrayToEnum(createSubTaskInput.user_ids)
           : [],
       },
     });
@@ -76,21 +77,23 @@ export class SubTaskResolver {
   update(@Args('updateSubTaskInput') updateSubTaskInput: UpdateSubTaskInput) {
     let updateData: any = updateSubTaskInput;
 
-    updateData.sub_task_start_date_time = `${updateData.syear}-${String(
+    updateData.sub_task_start_date_time = digitsToDateTime(
+      updateData.syear,
       updateData.smonth,
-    ).padStart(2, '0')}-${String(updateData.sdate).padStart(2, '0')} ${String(
+      updateData.sdate,
       updateData.shour,
-    ).padStart(2, '0')}:${String(updateData.sminute).padStart(2, '0')}`;
+      updateData.sminute,
+    );
 
-    updateData.sub_task_end_date_time = `${updateData.eyear}-${String(
+    updateData.sub_task_end_date_time = digitsToDateTime(
+      updateData.eyear,
       updateData.emonth,
-    ).padStart(2, '0')}-${String(updateData.edate).padStart(2, '0')} ${String(
+      updateData.edate,
       updateData.ehour,
-    ).padStart(2, '0')}:${String(updateData.eminute).padStart(2, '0')}`;
+      updateData.eminute,
+    );
 
-    updateData.user_ids.set = updateData.user_ids.map((id) => {
-      return { id };
-    });
+    updateData.user_ids.set = mapIDArrayToEnum(updateData.user_ids);
 
     return this.subTaskService.update(updateSubTaskInput.id, updateData);
   }

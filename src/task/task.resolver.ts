@@ -7,8 +7,8 @@ import { task } from '@prisma/client';
 import {
   digitsToDateTime,
   coordinatesStringToArray,
-} from '../common/utils/task_utils';
-import { mapIDArrayToEnum } from '../common/utils/common_utils';
+  mapIDArrayToEnum,
+} from '../common/utils/common_utils';
 import { TaskBoardCustomisationService } from 'src/task_board_customisation/task_board_customisation.service';
 
 @Resolver('Task')
@@ -190,16 +190,16 @@ export class TaskResolver {
           ? createTaskInput.sub_task.map((subTask) => {
               return {
                 task_description: subTask.task_description,
-                syear: subTask.syear,
-                smonth: subTask.smonth,
-                sdate: subTask.sdate,
-                shour: subTask.shour,
-                sminute: subTask.sminute,
-                eyear: subTask.eyear,
-                emonth: subTask.emonth,
-                edate: subTask.edate,
-                ehour: subTask.ehour,
-                eminute: subTask.eminute,
+                syear: subTask.syear || 0,
+                smonth: subTask.smonth || 0,
+                sdate: subTask.sdate || 0,
+                shour: subTask.shour || 0,
+                sminute: subTask.sminute || 0,
+                eyear: subTask.eyear || 0,
+                emonth: subTask.emonth || 0,
+                edate: subTask.edate || 0,
+                ehour: subTask.ehour || 0,
+                eminute: subTask.eminute || 0,
                 sub_task_start_date_time: subTask.syear
                   ? digitsToDateTime(
                       subTask.syear,

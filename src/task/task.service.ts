@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { task, Prisma } from '@prisma/client';
-import { digitsToDateTime } from '../common/utils/task_utils';
+import { digitsToDateTime } from '../common/utils/common_utils';
 import { UpdateTaskInput } from './dto/update-task.input';
 import { Novu } from '@novu/node';
 
