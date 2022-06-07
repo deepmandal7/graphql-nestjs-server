@@ -72,7 +72,9 @@ export class TaskResolver {
       if (task.tag_ids) {
         task.task_tag = {
           createMany: {
-            data: mapIDArrayToEnum(task.tag_ids),
+            data: task.tag_ids.map((tagId) => {
+              return { tag_id: tagId };
+            }),
           },
         };
       }
@@ -172,9 +174,11 @@ export class TaskResolver {
       },
       task_tag: {
         createMany: {
-          data: createTaskInput.tag_ids
-            ? mapIDArrayToEnum(createTaskInput.tag_ids)
-            : [],
+          data: createTaskInput.tag_ids.map((tagId) => {
+            return {
+              tag_id: tagId,
+            };
+          }),
         },
       },
       repeat_details: {
