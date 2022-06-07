@@ -123,9 +123,11 @@ type Query {
     tagIds: [Int]
     createdBy: Int
     taskStatus: [String]
+    searchText: String
   ): [Task]!
   task(id: Int!): Task
   userTasks(userId: Int!): [Task]!
+  searchTasks(searchText: String!): [Task!]
 }
 
 type Mutation {

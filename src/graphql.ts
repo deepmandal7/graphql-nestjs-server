@@ -189,11 +189,13 @@ export abstract class IQuery {
 
     abstract userSubTasks(userId: number): Nullable<SubTask>[] | Promise<Nullable<SubTask>[]>;
 
-    abstract tasks(take: number, orgId: number, taskBoardId?: Nullable<number>, cursor?: Nullable<number>, isUnassigned?: Nullable<boolean>, userIds?: Nullable<Nullable<number>[]>, userId?: Nullable<number>, dates?: Nullable<string>, fromStartYear?: Nullable<number>, fromStartMonth?: Nullable<number>, fromStartDate?: Nullable<number>, toStartYear?: Nullable<number>, toStartMonth?: Nullable<number>, toStartDate?: Nullable<number>, tagIds?: Nullable<Nullable<number>[]>, createdBy?: Nullable<number>, taskStatus?: Nullable<Nullable<string>[]>): Nullable<Task>[] | Promise<Nullable<Task>[]>;
+    abstract tasks(take: number, orgId: number, taskBoardId?: Nullable<number>, cursor?: Nullable<number>, isUnassigned?: Nullable<boolean>, userIds?: Nullable<Nullable<number>[]>, userId?: Nullable<number>, dates?: Nullable<string>, fromStartYear?: Nullable<number>, fromStartMonth?: Nullable<number>, fromStartDate?: Nullable<number>, toStartYear?: Nullable<number>, toStartMonth?: Nullable<number>, toStartDate?: Nullable<number>, tagIds?: Nullable<Nullable<number>[]>, createdBy?: Nullable<number>, taskStatus?: Nullable<Nullable<string>[]>, searchText?: Nullable<string>): Nullable<Task>[] | Promise<Nullable<Task>[]>;
 
     abstract task(id: number): Nullable<Task> | Promise<Nullable<Task>>;
 
     abstract userTasks(userId: number): Nullable<Task>[] | Promise<Nullable<Task>[]>;
+
+    abstract searchTasks(searchText: string): Nullable<Task[]> | Promise<Nullable<Task[]>>;
 
     abstract taskBoards(): Nullable<TaskBoard>[] | Promise<Nullable<TaskBoard>[]>;
 

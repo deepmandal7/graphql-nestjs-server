@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { task, Prisma } from '@prisma/client';
+import { digitsToDateTime } from '../common/utils/task_utils';
 import { UpdateTaskInput } from './dto/update-task.input';
 import { Novu } from '@novu/node';
 
@@ -49,7 +50,22 @@ export class TaskService {
     tagId: number[],
     createdBy: number,
     taskStatus: string[],
+    searchText: string,
   ) {
+    if (searchText)
+      return await this.prisma.task.findMany({
+        select: {
+          id: true,
+          task_title: true,
+        },
+        where: {
+          task_board: { is: { org_id: orgId } },
+          task_title: {
+            contains: searchText,
+          },
+        },
+      });
+
     let filter: any = {
       where: {
         task_board: {

@@ -4,6 +4,11 @@ import { TaskService } from './task.service';
 import { CreateTaskInput, SubTask } from './dto/create-task.input';
 import { UpdateTaskInput } from './dto/update-task.input';
 import { task } from '@prisma/client';
+import {
+  digitsToDateTime,
+  coordinatesStringToArray,
+} from '../common/utils/task_utils';
+import { mapIDArrayToEnum } from '../common/utils/common_utils';
 import { TaskBoardCustomisationService } from 'src/task_board_customisation/task_board_customisation.service';
 
 @Resolver('Task')
@@ -32,45 +37,42 @@ export class TaskResolver {
 
       if (task.syear) {
         task.task_start_date_time = task.syear
-          ? `${task.syear}-${String(task.smonth).padStart(2, '0')}-${String(
+          ? digitsToDateTime(
+              task.syear,
+              task.smonth,
               task.sdate,
-            ).padStart(2, '0')} ${String(task.shour).padStart(2, '0')}:${String(
+              task.shour,
               task.sminute,
-            ).padStart(2, '0')}`
+            )
           : null;
       }
 
       if (task.eyear) {
         task.task_end_date_time = task.eyear
-          ? `${task.eyear}-${String(task.emonth).padStart(2, '0')}-${String(
+          ? digitsToDateTime(
+              task.eyear,
+              task.emonth,
               task.edate,
-            ).padStart(2, '0')} ${String(task.ehour).padStart(2, '0')}:${String(
+              task.ehour,
               task.eminute,
-            ).padStart(2, '0')}`
+            )
           : null;
       }
 
       if (task.task_coordinates) {
-        task.task_coordinates = [
-          parseFloat(task.task_coordinates.split(',')[0]),
-          parseFloat(task.task_coordinates.split(',')[1]),
-        ];
+        task.task_coordinates = coordinatesStringToArray(task.task_coordinates);
       }
 
       if (task.user_ids) {
         task.user = {
-          connect: task.user_ids.map((userId) => {
-            return { id: userId };
-          }),
+          connect: mapIDArrayToEnum(task.user_ids),
         };
       }
 
       if (task.tag_ids) {
         task.task_tag = {
           createMany: {
-            data: task.tag_ids.map((tagId) => {
-              return { tag_id: tagId };
-            }),
+            data: mapIDArrayToEnum(task.tag_ids),
           },
         };
       }
@@ -139,52 +141,39 @@ export class TaskResolver {
       ehour: createTaskInput.ehour || 0,
       eminute: createTaskInput.eminute || 0,
       task_coordinates: createTaskInput.task_coordinates
-        ? [
-            parseFloat(createTaskInput.task_coordinates.split(',')[0]),
-            parseFloat(createTaskInput.task_coordinates.split(',')[1]),
-          ]
+        ? coordinatesStringToArray(createTaskInput.task_coordinates)
         : [],
       task_location: createTaskInput.task_location,
       created_by: {
         connect: { id: createTaskInput.created_by },
       },
       task_start_date_time: createTaskInput.syear
-        ? `${createTaskInput.syear}-${String(createTaskInput.smonth).padStart(
-            2,
-            '0',
-          )}-${String(createTaskInput.sdate).padStart(2, '0')} ${String(
+        ? digitsToDateTime(
+            createTaskInput.syear,
+            createTaskInput.smonth,
+            createTaskInput.sdate,
             createTaskInput.shour,
-          ).padStart(2, '0')}:${String(createTaskInput.sminute).padStart(
-            2,
-            '0',
-          )}`
+            createTaskInput.sminute,
+          )
         : null,
       task_end_date_time: createTaskInput.eyear
-        ? `${createTaskInput.eyear}-${String(createTaskInput.emonth).padStart(
-            2,
-            '0',
-          )}-${String(createTaskInput.edate).padStart(2, '0')} ${String(
+        ? digitsToDateTime(
+            createTaskInput.eyear,
+            createTaskInput.emonth,
+            createTaskInput.edate,
             createTaskInput.ehour,
-          ).padStart(2, '0')}:${String(createTaskInput.eminute).padStart(
-            2,
-            '0',
-          )}`
+            createTaskInput.eminute,
+          )
         : null,
       user: {
         connect: createTaskInput.user_ids
-          ? createTaskInput.user_ids.map((userId) => {
-              return { id: userId };
-            })
+          ? mapIDArrayToEnum(createTaskInput.user_ids)
           : [],
       },
       task_tag: {
         createMany: {
           data: createTaskInput.tag_ids
-            ? createTaskInput.tag_ids.map((tagId) => {
-                return {
-                  tag_id: tagId,
-                };
-              })
+            ? mapIDArrayToEnum(createTaskInput.tag_ids)
             : [],
         },
       },
@@ -208,33 +197,27 @@ export class TaskResolver {
                 ehour: subTask.ehour,
                 eminute: subTask.eminute,
                 sub_task_start_date_time: subTask.syear
-                  ? `${subTask.syear}-${String(subTask.smonth).padStart(
-                      2,
-                      '0',
-                    )}-${String(subTask.sdate).padStart(2, '0')} ${String(
+                  ? digitsToDateTime(
+                      subTask.syear,
+                      subTask.smonth,
+                      subTask.sdate,
                       subTask.shour,
-                    ).padStart(2, '0')}:${String(subTask.sminute).padStart(
-                      2,
-                      '0',
-                    )}`
+                      subTask.sminute,
+                    )
                   : null,
                 sub_task_end_date_time: subTask.eyear
-                  ? `${subTask.eyear}-${String(subTask.emonth).padStart(
-                      2,
-                      '0',
-                    )}-${String(subTask.edate).padStart(2, '0')} ${String(
+                  ? digitsToDateTime(
+                      subTask.eyear,
+                      subTask.emonth,
+                      subTask.edate,
                       subTask.ehour,
-                    ).padStart(2, '0')}:${String(subTask.eminute).padStart(
-                      2,
-                      '0',
-                    )}`
+                      subTask.eminute,
+                    )
                   : null,
                 created_by: subTask.created_by,
                 user_ids: {
                   connect: subTask.user_ids
-                    ? subTask.user_ids.map((userId) => {
-                        return { id: userId };
-                      })
+                    ? mapIDArrayToEnum(subTask.user_ids)
                     : [],
                 },
               };
@@ -264,6 +247,7 @@ export class TaskResolver {
     @Args('taskStatus') taskStatus: string[],
     @Args('tagIds') tagIds: number[],
     @Args('createdBy') createdBy: number,
+    @Args('searchText') searchText: string,
   ) {
     return await this.taskService.findAll(
       take,
@@ -284,6 +268,7 @@ export class TaskResolver {
       tagIds,
       createdBy,
       taskStatus,
+      searchText,
     );
   }
 
@@ -303,9 +288,7 @@ export class TaskResolver {
     delete updateData.id;
     if (updateTaskInput.user_ids) {
       updateData.user = {
-        set: updateTaskInput.user_ids.map((userId) => {
-          return { id: userId };
-        }),
+        set: mapIDArrayToEnum(updateTaskInput.user_ids),
       };
     }
     if (updateTaskInput.tag_ids) {
