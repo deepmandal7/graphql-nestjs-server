@@ -91,18 +91,46 @@ export class CreateTaskInput {
     user_ids?: Nullable<number[]>;
     created_by?: Nullable<number>;
     tag_ids?: Nullable<Nullable<number>[]>;
-    created_at?: Nullable<DateTime>;
-    updated_at?: Nullable<DateTime>;
     sub_task?: Nullable<Nullable<CreateSubTaskInput>[]>;
 }
 
 export class UpdateTaskInput {
     id: number;
+    task_title?: Nullable<string>;
+    task_description?: Nullable<string>;
+    task_file_id?: Nullable<Nullable<string>[]>;
+    task_frequency?: Nullable<TaskFrequencyEnum>;
+    syear?: Nullable<number>;
+    smonth?: Nullable<number>;
+    sdate?: Nullable<number>;
+    shour?: Nullable<number>;
+    sminute?: Nullable<number>;
+    eyear?: Nullable<number>;
+    emonth?: Nullable<number>;
+    edate?: Nullable<number>;
+    ehour?: Nullable<number>;
+    eminute?: Nullable<number>;
+    task_coordinates?: Nullable<string>;
+    task_location?: Nullable<string>;
+    task_status?: Nullable<string>;
 }
 
-export class UpdateTaskStatusInput {
-    id: number;
-    task_status: string;
+export class QueryTaskInput {
+    taskBoardId?: Nullable<number>;
+    isUnassigned?: Nullable<boolean>;
+    userIds?: Nullable<Nullable<number>[]>;
+    userId?: Nullable<number>;
+    dates?: Nullable<string>;
+    startDate?: Nullable<string>;
+    fromStartYear?: Nullable<number>;
+    fromStartMonth?: Nullable<number>;
+    fromStartDate?: Nullable<number>;
+    toStartYear?: Nullable<number>;
+    toStartMonth?: Nullable<number>;
+    toStartDate?: Nullable<number>;
+    tagIds?: Nullable<Nullable<number>[]>;
+    createdBy?: Nullable<number>;
+    taskStatus?: Nullable<Nullable<string>[]>;
 }
 
 export class TagInput {
@@ -189,13 +217,11 @@ export abstract class IQuery {
 
     abstract userSubTasks(userId: number): Nullable<SubTask>[] | Promise<Nullable<SubTask>[]>;
 
-    abstract tasks(take: number, orgId: number, taskBoardId?: Nullable<number>, cursor?: Nullable<number>, isUnassigned?: Nullable<boolean>, userIds?: Nullable<Nullable<number>[]>, userId?: Nullable<number>, dates?: Nullable<string>, fromStartYear?: Nullable<number>, fromStartMonth?: Nullable<number>, fromStartDate?: Nullable<number>, toStartYear?: Nullable<number>, toStartMonth?: Nullable<number>, toStartDate?: Nullable<number>, tagIds?: Nullable<Nullable<number>[]>, createdBy?: Nullable<number>, taskStatus?: Nullable<Nullable<string>[]>, searchText?: Nullable<string>): Nullable<Task>[] | Promise<Nullable<Task>[]>;
+    abstract getTasks(take: number, orgId: number, cursor?: Nullable<number>, searchText?: Nullable<string>, queryTaskInput?: Nullable<QueryTaskInput>): Nullable<Task>[] | Promise<Nullable<Task>[]>;
 
-    abstract task(id: number): Nullable<Task> | Promise<Nullable<Task>>;
+    abstract getTask(id: number): Nullable<Task> | Promise<Nullable<Task>>;
 
-    abstract userTasks(userId: number): Nullable<Task>[] | Promise<Nullable<Task>[]>;
-
-    abstract searchTasks(searchText: string): Nullable<Task[]> | Promise<Nullable<Task[]>>;
+    abstract getUserTasks(userId: number): Nullable<Task>[] | Promise<Nullable<Task>[]>;
 
     abstract taskBoards(): Nullable<TaskBoard>[] | Promise<Nullable<TaskBoard>[]>;
 
@@ -224,8 +250,6 @@ export abstract class IMutation {
     abstract createTasks(createTaskInput: Nullable<CreateTaskInput>[]): Task[] | Promise<Task[]>;
 
     abstract updateTask(updateTaskInput: UpdateTaskInput): Task | Promise<Task>;
-
-    abstract updateTaskStatus(updateTaskStatusInput: UpdateTaskStatusInput): Task | Promise<Task>;
 
     abstract removeTask(id: number): Nullable<Task> | Promise<Nullable<Task>>;
 

@@ -37,6 +37,10 @@ export class QueryTaskInput {
 
   @Field()
   @IsString()
+  startDate: string;
+
+  @Field()
+  @IsString()
   dates: string;
 
   @Field((type) => Int)

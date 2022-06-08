@@ -120,6 +120,7 @@ input QueryTaskInput {
   userIds: [Int]
   userId: Int
   dates: String
+  startDate: String
   fromStartYear: Int
   fromStartMonth: Int
   fromStartDate: Int
@@ -129,8 +130,6 @@ input QueryTaskInput {
   tagIds: [Int]
   createdBy: Int
   taskStatus: [String]
-  user: [User!]
-  task_tag: [Tag!]
 }
 
 type Query {
@@ -149,6 +148,5 @@ type Mutation {
   createTask(createTaskInput: CreateTaskInput!): Task!
   createTasks(createTaskInput: [CreateTaskInput]!): [Task!]!
   updateTask(updateTaskInput: UpdateTaskInput!): Task!
-  updateTaskStatus(updateTaskStatusInput: UpdateTaskStatusInput!): Task!
   removeTask(id: Int!): Task
 }

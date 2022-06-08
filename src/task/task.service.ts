@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { task, Prisma } from '@prisma/client';
-import { digitsToDateTime } from '../common/utils/common_utils';
+import { digitsToDateTime, digitsToDate } from '../common/utils/common_utils';
 import { UpdateTaskInput } from './dto/update-task.input';
+import { QueryTaskInput } from './dto/query-task.input';
 import { Novu } from '@novu/node';
 
 @Injectable()
@@ -35,22 +36,8 @@ export class TaskService {
     take: number,
     cursor: Prisma.taskWhereUniqueInput | null,
     orgId: number,
-    taskBoardId: number,
-    isUnassigned: boolean,
-    userIds: number[],
-    userId: number,
-    dates: string,
-    startDate: string,
-    fromStartYear: number,
-    fromStartMonth: number,
-    fromStartDate: number,
-    toStartYear: number,
-    toStartMonth: number,
-    toStartDate: number,
-    tagId: number[],
-    createdBy: number,
-    taskStatus: string[],
     searchText: string,
+    queryTaskInput: QueryTaskInput | null,
   ) {
     if (searchText)
       return await this.prisma.task.findMany({
@@ -87,6 +74,39 @@ export class TaskService {
         },
       },
     };
+
+    if (queryTaskInput.taskBoardId) {
+      filter.where.task_board_id = {
+        equals: queryTaskInput.taskBoardId,
+      };
+    }
+    if (queryTaskInput.isUnassigned || queryTaskInput.userIds) {
+      if (queryTaskInput.isUnassigned) {
+        filter.where.user = {
+          every: {
+            id: undefined,
+          },
+        };
+      }
+      if (queryTaskInput.userIds) {
+        filter.where.user = {
+          some: {
+            id: {
+              in: queryTaskInput.userIds,
+            },
+          },
+        };
+      }
+    }
+    if (queryTaskInput.userId) {
+      filter.where.user = {
+        some: {
+          id: {
+            equals: queryTaskInput.userId,
+          },
+        },
+      };
+    }
     let timezone: any;
     let orgLocalTime: any;
     let orgYear: number;
@@ -94,40 +114,7 @@ export class TaskService {
     let orgDate: number;
     let orgHours: number;
     let orgMinutes: number;
-    if (taskBoardId) {
-      filter.where.task_board_id = {
-        equals: taskBoardId,
-      };
-    }
-    if (isUnassigned || userIds) {
-      if (isUnassigned) {
-        filter.where.user = {
-          every: {
-            id: undefined,
-          },
-        };
-      }
-      if (userIds) {
-        filter.where.user = {
-          some: {
-            id: {
-              in: userIds,
-            },
-          },
-        };
-      }
-    }
-    if (userId) {
-      filter.where.user = {
-        some: {
-          id: {
-            equals: userId,
-          },
-        },
-      };
-    }
-
-    if (dates || startDate) {
+    if (queryTaskInput.dates || queryTaskInput.startDate) {
       timezone = await this.prisma.organization.findUnique({
         select: {
           timezone: true,
@@ -144,8 +131,8 @@ export class TaskService {
       orgDate = orgLocalTime.getDate();
       orgHours = orgLocalTime.getHours();
       orgMinutes = orgLocalTime.getMinutes();
-      if (dates) {
-        switch (dates) {
+      if (queryTaskInput.dates) {
+        switch (queryTaskInput.dates) {
           case 'overdue':
             filter.where.task_end_date_time = {
               lt: orgLocalTime,
@@ -153,22 +140,17 @@ export class TaskService {
             break;
           case 'today':
             filter.where.task_end_date_time = {
-              startsWith: `${orgYear}-${String(orgMonth).padStart(
-                2,
-                '0',
-              )}-${String(orgDate).padStart(2, '0')}`,
+              startsWith: digitsToDate(orgYear, orgMonth, orgDate),
             };
             break;
           case 'tomorrow':
             orgLocalTime.setDate(orgLocalTime.getDate() + 1);
-            let orgTomYear = orgLocalTime.getFullYear();
-            let orgTomMonth = orgLocalTime.getMonth();
-            let orgTomDate = orgLocalTime.getDate();
             filter.where.task_end_date_time = {
-              startsWith: `${orgTomYear}-${String(orgTomMonth).padStart(
-                2,
-                '0',
-              )}-${String(orgTomDate).padStart(2, '0')}`,
+              startsWith: digitsToDate(
+                orgLocalTime.getFullYear(),
+                orgLocalTime.getMonth(),
+                orgLocalTime.getDate(),
+              ),
             };
             break;
           case 'nodue':
@@ -178,19 +160,21 @@ export class TaskService {
             break;
           case 'next':
             filter.where.task_end_date_time = {
-              gte: `${fromStartYear}-${String(fromStartMonth).padStart(
-                2,
-                '0',
-              )}-${String(fromStartDate).padStart(2, '0')}`,
-              lte: `${toStartYear}-${String(toStartMonth).padStart(
-                2,
-                '0',
-              )}-${String(toStartDate).padStart(2, '0')}`,
+              gte: digitsToDate(
+                queryTaskInput.fromStartYear,
+                queryTaskInput.fromStartMonth,
+                queryTaskInput.fromStartDate,
+              ),
+              lte: digitsToDate(
+                queryTaskInput.toStartYear,
+                queryTaskInput.toStartMonth,
+                queryTaskInput.toStartDate,
+              ),
             };
             break;
         }
-        if (startDate) {
-          switch (startDate) {
+        if (queryTaskInput.startDate) {
+          switch (queryTaskInput.startDate) {
             case 'started':
               filter.where.task_start_date_time = {
                 lt: orgLocalTime,
@@ -198,22 +182,17 @@ export class TaskService {
               break;
             case 'today':
               filter.where.task_start_date_time = {
-                startsWith: `${orgYear}-${String(orgMonth).padStart(
-                  2,
-                  '0',
-                )}-${String(orgDate).padStart(2, '0')}`,
+                startsWith: digitsToDate(orgYear, orgMonth, orgDate),
               };
               break;
             case 'tomorrow':
               orgLocalTime.setDate(orgLocalTime.getDate() + 1);
-              let orgTomYear = orgLocalTime.getFullYear();
-              let orgTomMonth = orgLocalTime.getMonth();
-              let orgTomDate = orgLocalTime.getDate();
               filter.where.task_start_date_time = {
-                startsWith: `${orgTomYear}-${String(orgTomMonth).padStart(
-                  2,
-                  '0',
-                )}-${String(orgTomDate).padStart(2, '0')}`,
+                startsWith: digitsToDate(
+                  orgLocalTime.getFullYear(),
+                  orgLocalTime.getMonth(),
+                  orgLocalTime.getDate(),
+                ),
               };
               break;
             case 'nodate':
@@ -223,37 +202,39 @@ export class TaskService {
               break;
             case 'next':
               filter.where.task_end_date_time = {
-                gte: `${fromStartYear}-${String(fromStartMonth).padStart(
-                  2,
-                  '0',
-                )}-${String(fromStartDate).padStart(2, '0')}`,
-                lte: `${toStartYear}-${String(toStartMonth).padStart(
-                  2,
-                  '0',
-                )}-${String(toStartDate).padStart(2, '0')}`,
+                gte: digitsToDate(
+                  queryTaskInput.fromStartYear,
+                  queryTaskInput.fromStartMonth,
+                  queryTaskInput.fromStartDate,
+                ),
+                lte: digitsToDate(
+                  queryTaskInput.toStartYear,
+                  queryTaskInput.toStartMonth,
+                  queryTaskInput.toStartDate,
+                ),
               };
               break;
           }
         }
       }
     }
-    if (taskStatus) {
+    if (queryTaskInput.taskStatus) {
       filter.where.task_status = {
-        in: taskStatus,
+        in: queryTaskInput.taskStatus,
       };
     }
-    if (tagId) {
+    if (queryTaskInput.tagIds) {
       filter.where.task_tag = {
         some: {
           tag_id: {
-            in: tagId,
+            in: queryTaskInput.tagIds,
           },
         },
       };
     }
-    if (createdBy) {
+    if (queryTaskInput.createdBy) {
       filter.where.created_by = {
-        equals: createdBy,
+        equals: queryTaskInput.createdBy,
       };
     }
     if (cursor) {
@@ -262,25 +243,25 @@ export class TaskService {
     }
     let data: any = await this.prisma.task.findMany(filter);
     // console.log(data);
-    if (isUnassigned) {
+    if (queryTaskInput.isUnassigned) {
       data = data.filter((item) => !item.user.length);
     }
-    if (userIds) {
+    if (queryTaskInput.userIds) {
       data = data.filter((item) => {
         let count = 0;
         item.user.forEach((user) => {
-          if (userIds.includes(user.id)) count++;
+          if (queryTaskInput.userIds.includes(user.id)) count++;
         });
-        if (count === userIds.length) return item;
+        if (count === queryTaskInput.userIds.length) return item;
       });
     }
-    if (tagId) {
+    if (queryTaskInput.tagIds) {
       data = data.filter((item) => {
         let count = 0;
         item.task_tag.forEach((taskTag) => {
-          if (tagId.includes(taskTag.tag_id)) count++;
+          if (queryTaskInput.tagIds.includes(taskTag.tag_id)) count++;
         });
-        if (count === tagId.length) return item;
+        if (count === queryTaskInput.tagIds.length) return item;
       });
     }
     return data;
