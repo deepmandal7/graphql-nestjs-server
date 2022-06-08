@@ -3,6 +3,7 @@ import { BadRequestException } from '@nestjs/common';
 import { TaskService } from './task.service';
 import { CreateTaskInput, SubTask } from './dto/create-task.input';
 import { UpdateTaskInput } from './dto/update-task.input';
+import { QueryTaskInput } from './dto/query-task.input';
 import { task } from '@prisma/client';
 import {
   digitsToDateTime,
@@ -231,11 +232,13 @@ export class TaskResolver {
     });
   }
 
-  @Query('tasks')
+  @Query('getTasks')
   async findAll(
     @Args('take') take: number,
     @Args('cursor') cursor: number,
     @Args('orgId') orgId: number,
+    @Args('searchText') searchText: string,
+    @Args('queryTaskInput') queryTaskInput: QueryTaskInput,
     @Args('taskBoardId') taskBoardId: number,
     @Args('isUnassigned') isUnassigned: boolean,
     @Args('userIds') userIds: number[],
@@ -251,7 +254,6 @@ export class TaskResolver {
     @Args('taskStatus') taskStatus: string[],
     @Args('tagIds') tagIds: number[],
     @Args('createdBy') createdBy: number,
-    @Args('searchText') searchText: string,
   ) {
     return await this.taskService.findAll(
       take,
@@ -276,12 +278,12 @@ export class TaskResolver {
     );
   }
 
-  @Query('task')
+  @Query('getTask')
   findOne(@Args('id') id: number) {
     return this.taskService.findOne(id);
   }
 
-  @Query('userTasks')
+  @Query('getUserTasks')
   findUserTasks(@Args('userId') userId: number) {
     return this.taskService.findUserTasks(userId);
   }

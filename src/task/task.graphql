@@ -90,44 +90,59 @@ input CreateTaskInput {
   user_ids: [Int!]
   created_by: Int
   tag_ids: [Int]
-  created_at: DateTime
-  updated_at: DateTime
   sub_task: [CreateSubTaskInput]
 }
 
 input UpdateTaskInput {
   id: Int!
+  task_title: String
+  task_description: String
+  task_file_id: [String]
+  task_frequency: TaskFrequencyEnum
+  syear: Int
+  smonth: Int
+  sdate: Int
+  shour: Int
+  sminute: Int
+  eyear: Int
+  emonth: Int
+  edate: Int
+  ehour: Int
+  eminute: Int
+  task_coordinates: String
+  task_location: String
+  task_status: String
 }
 
-input UpdateTaskStatusInput {
-  id: Int!
-  task_status: String!
+input QueryTaskInput {
+  taskBoardId: Int
+  isUnassigned: Boolean
+  userIds: [Int]
+  userId: Int
+  dates: String
+  fromStartYear: Int
+  fromStartMonth: Int
+  fromStartDate: Int
+  toStartYear: Int
+  toStartMonth: Int
+  toStartDate: Int
+  tagIds: [Int]
+  createdBy: Int
+  taskStatus: [String]
+  user: [User!]
+  task_tag: [Tag!]
 }
 
 type Query {
-  tasks(
+  getTasks(
     take: Int!
     orgId: Int!
-    taskBoardId: Int
     cursor: Int
-    isUnassigned: Boolean
-    userIds: [Int]
-    userId: Int
-    dates: String
-    fromStartYear: Int
-    fromStartMonth: Int
-    fromStartDate: Int
-    toStartYear: Int
-    toStartMonth: Int
-    toStartDate: Int
-    tagIds: [Int]
-    createdBy: Int
-    taskStatus: [String]
     searchText: String
+    queryTaskInput: QueryTaskInput
   ): [Task]!
-  task(id: Int!): Task
-  userTasks(userId: Int!): [Task]!
-  searchTasks(searchText: String!): [Task!]
+  getTask(id: Int!): Task
+  getUserTasks(userId: Int!): [Task]!
 }
 
 type Mutation {

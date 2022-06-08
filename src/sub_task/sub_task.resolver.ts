@@ -4,7 +4,6 @@ import { CreateSubTaskInput } from './dto/create-sub_task.input';
 import { UpdateSubTaskInput } from './dto/update-sub_task.input';
 import {
   digitsToDateTime,
-  coordinatesStringToArray,
   mapIDArrayToEnum,
 } from '../common/utils/common_utils';
 
