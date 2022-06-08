@@ -36,7 +36,7 @@ export class TaskService {
     take: number,
     cursor: Prisma.taskWhereUniqueInput | null,
     orgId: number,
-    searchText: string,
+    searchText: string | null,
     queryTaskInput: QueryTaskInput | null,
   ) {
     if (searchText)
