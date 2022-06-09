@@ -1,27 +1,27 @@
 type TaskBoardCustomisation {
   id: ID!
-  task_title_mandatory: Boolean
-  description_required: Boolean
-  description_mandatory: Boolean
-  location_required: Boolean
-  location_mandatory: Boolean
+  field_name: String
+  visibility: Boolean
+  mandatory: Boolean
+}
+
+input TaskBoardCustomisationArray {
+  id: Int!
+  field_name: String!
+  visibility: Boolean!
+  mandatory: Boolean!
 }
 
 input UpdateTaskBoardCustomisationInput {
-  id: Int!
-  task_title_mandatory: Boolean
-  description_required: Boolean
-  description_mandatory: Boolean
-  location_required: Boolean
-  location_mandatory: Boolean
+  task_board_customisation_list: [TaskBoardCustomisationArray!]!
 }
 
 type Query {
-  taskBoardCustomisation(taskBoardId: Int!): TaskBoardCustomisation
+  getAllTaskBoardCustomisation(taskBoardId: Int!): TaskBoardCustomisation
 }
 
 type Mutation {
   updateTaskBoardCustomisation(
-    updateTaskBoardCustomisationInput: UpdateTaskBoardCustomisationInput!
-  ): TaskBoardCustomisation!
+    updateTaskBoardCustomisationInput: [UpdateTaskBoardCustomisationInput!]!
+  ): [TaskBoardCustomisation!]!
 }

@@ -149,13 +149,15 @@ export class UpdateTaskBoardInput {
     id: number;
 }
 
-export class UpdateTaskBoardCustomisationInput {
+export class TaskBoardCustomisationArray {
     id: number;
-    task_title_mandatory?: Nullable<boolean>;
-    description_required?: Nullable<boolean>;
-    description_mandatory?: Nullable<boolean>;
-    location_required?: Nullable<boolean>;
-    location_mandatory?: Nullable<boolean>;
+    field_name: string;
+    visibility: boolean;
+    mandatory: boolean;
+}
+
+export class UpdateTaskBoardCustomisationInput {
+    task_board_customisation_list: TaskBoardCustomisationArray[];
 }
 
 export class CreateTaskCommentInput {
@@ -167,6 +169,14 @@ export class CreateTaskCommentInput {
 export class UpdateTaskCommentInput {
     id: number;
     comment: string;
+}
+
+export class CreateTaskRepeatDetailInput {
+    exampleField?: Nullable<number>;
+}
+
+export class UpdateTaskRepeatDetailInput {
+    id: number;
 }
 
 export class CreateTimeclockInput {
@@ -227,11 +237,15 @@ export abstract class IQuery {
 
     abstract taskBoard(id: number): Nullable<TaskBoard> | Promise<Nullable<TaskBoard>>;
 
-    abstract taskBoardCustomisation(taskBoardId: number): Nullable<TaskBoardCustomisation> | Promise<Nullable<TaskBoardCustomisation>>;
+    abstract getAllTaskBoardCustomisation(taskBoardId: number): Nullable<TaskBoardCustomisation> | Promise<Nullable<TaskBoardCustomisation>>;
 
     abstract taskComments(taskId: number): Nullable<TaskComment>[] | Promise<Nullable<TaskComment>[]>;
 
     abstract taskComment(id: number): Nullable<TaskComment> | Promise<Nullable<TaskComment>>;
+
+    abstract taskRepeatDetails(): Nullable<TaskRepeatDetail>[] | Promise<Nullable<TaskRepeatDetail>[]>;
+
+    abstract taskRepeatDetail(id: number): Nullable<TaskRepeatDetail> | Promise<Nullable<TaskRepeatDetail>>;
 
     abstract timeclocks(): Nullable<Timeclock>[] | Promise<Nullable<Timeclock>[]>;
 
@@ -259,13 +273,19 @@ export abstract class IMutation {
 
     abstract removeTaskBoard(id: number): Nullable<TaskBoard> | Promise<Nullable<TaskBoard>>;
 
-    abstract updateTaskBoardCustomisation(updateTaskBoardCustomisationInput: UpdateTaskBoardCustomisationInput): TaskBoardCustomisation | Promise<TaskBoardCustomisation>;
+    abstract updateTaskBoardCustomisation(updateTaskBoardCustomisationInput: UpdateTaskBoardCustomisationInput[]): TaskBoardCustomisation[] | Promise<TaskBoardCustomisation[]>;
 
     abstract createTaskComment(createTaskCommentInput: CreateTaskCommentInput): TaskComment | Promise<TaskComment>;
 
     abstract updateTaskComment(updateTaskCommentInput: UpdateTaskCommentInput): TaskComment | Promise<TaskComment>;
 
     abstract removeTaskComment(id: number): Nullable<TaskComment> | Promise<Nullable<TaskComment>>;
+
+    abstract createTaskRepeatDetail(createTaskRepeatDetailInput: CreateTaskRepeatDetailInput): TaskRepeatDetail | Promise<TaskRepeatDetail>;
+
+    abstract updateTaskRepeatDetail(updateTaskRepeatDetailInput: UpdateTaskRepeatDetailInput): TaskRepeatDetail | Promise<TaskRepeatDetail>;
+
+    abstract removeTaskRepeatDetail(id: number): Nullable<TaskRepeatDetail> | Promise<Nullable<TaskRepeatDetail>>;
 
     abstract createTimeclock(createTimeclockInput: CreateTimeclockInput): Timeclock | Promise<Timeclock>;
 
@@ -332,11 +352,9 @@ export class TaskBoard {
 
 export class TaskBoardCustomisation {
     id: string;
-    task_title_mandatory?: Nullable<boolean>;
-    description_required?: Nullable<boolean>;
-    description_mandatory?: Nullable<boolean>;
-    location_required?: Nullable<boolean>;
-    location_mandatory?: Nullable<boolean>;
+    field_name?: Nullable<string>;
+    visibility?: Nullable<boolean>;
+    mandatory?: Nullable<boolean>;
 }
 
 export class TaskComment {
@@ -344,6 +362,10 @@ export class TaskComment {
     user_id: number;
     comment: string;
     task_id: number;
+}
+
+export class TaskRepeatDetail {
+    exampleField?: Nullable<number>;
 }
 
 export class Timeclock {

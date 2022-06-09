@@ -9,18 +9,17 @@ export class TaskBoardCustomisationResolver {
     private readonly taskBoardCustomisationService: TaskBoardCustomisationService,
   ) {}
 
-  @Query('taskBoardCustomisation')
-  findOne(@Args('taskBoardId') taskBoardId: number) {
-    return this.taskBoardCustomisationService.findOne(taskBoardId);
+  @Query('getAllTaskBoardCustomisation')
+  findAll(@Args('taskBoardId') taskBoardId: number) {
+    return this.taskBoardCustomisationService.findAll(taskBoardId);
   }
 
   @Mutation('updateTaskBoardCustomisation')
-  update(
+  updateMany(
     @Args('updateTaskBoardCustomisationInput')
     updateTaskBoardCustomisationInput: UpdateTaskBoardCustomisationInput,
   ) {
-    return this.taskBoardCustomisationService.update(
-      updateTaskBoardCustomisationInput.id,
+    return this.taskBoardCustomisationService.updateMany(
       updateTaskBoardCustomisationInput,
     );
   }

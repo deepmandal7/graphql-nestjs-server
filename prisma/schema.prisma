@@ -35,29 +35,27 @@ model organization {
 }
 
 model task_board {
-  id                       Int                       @id @default(autoincrement())
+  id                       Int                        @id @default(autoincrement())
   task_board_name          String
   // team_user_ids   Int[]
   // admin_ids       Int[]
   task                     task[]
-  org                      organization              @relation(fields: [org_id], references: [id])
+  org                      organization               @relation(fields: [org_id], references: [id])
   org_id                   Int
   can_create               can_create_enum
-  created_at               DateTime                  @default(now())
-  updated_at               DateTime                  @updatedAt
+  created_at               DateTime                   @default(now())
+  updated_at               DateTime                   @updatedAt
   created_by               Int
-  task_board_customisation task_board_customisation?
+  task_board_customisation task_board_customisation[]
 }
 
 model task_board_customisation {
-  id                    Int        @id @default(autoincrement())
-  task_title_mandatory  Boolean    @default(true)
-  description_required  Boolean    @default(true)
-  description_mandatory Boolean    @default(true)
-  location_required     Boolean    @default(true)
-  location_mandatory    Boolean    @default(true)
-  task_board            task_board @relation(fields: [task_board_id], references: [id])
-  task_board_id         Int        @unique
+  id            Int         @id @default(autoincrement())
+  field_name    String
+  visibility    Boolean     @default(true)
+  mandatory     Boolean     @default(true)
+  task_board    task_board? @relation(fields: [task_board_id], references: [id])
+  task_board_id Int?
 }
 
 enum can_create_enum {

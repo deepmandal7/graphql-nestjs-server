@@ -1,0 +1,24 @@
+type TaskRepeatDetail {
+  # Example field (placeholder)
+  exampleField: Int
+}
+
+input CreateTaskRepeatDetailInput {
+  # Example field (placeholder)
+  exampleField: Int
+}
+
+input UpdateTaskRepeatDetailInput {
+  id: Int!
+}
+
+type Query {
+  taskRepeatDetails: [TaskRepeatDetail]!
+  taskRepeatDetail(id: Int!): TaskRepeatDetail
+}
+
+type Mutation {
+  createTaskRepeatDetail(createTaskRepeatDetailInput: CreateTaskRepeatDetailInput!): TaskRepeatDetail!
+  updateTaskRepeatDetail(updateTaskRepeatDetailInput: UpdateTaskRepeatDetailInput!): TaskRepeatDetail!
+  removeTaskRepeatDetail(id: Int!): TaskRepeatDetail
+}

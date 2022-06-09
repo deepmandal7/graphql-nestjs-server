@@ -1,7 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { task, Prisma } from '@prisma/client';
-import { digitsToDateTime, digitsToDate } from '../common/utils/common_utils';
+import {
+  digitsToDateTime,
+  digitsToDate,
+  coordinatesStringToArray,
+  mapIDArrayToEnum,
+} from '../common/utils/common_utils';
 import { UpdateTaskInput } from './dto/update-task.input';
 import { QueryTaskInput } from './dto/query-task.input';
 import { Novu } from '@novu/node';
@@ -10,9 +15,111 @@ import { Novu } from '@novu/node';
 export class TaskService {
   constructor(private prisma: PrismaService) {}
 
-  async create(data: Prisma.taskCreateInput): Promise<task> {
+  async create(data): Promise<task> {
+    let insertData: Prisma.taskCreateInput = {
+      task_title: data.task_title,
+      task_description: data.task_description,
+      task_file_id: data.task_file_id,
+      task_frequency: data.task_frequency,
+      syear: data.syear || 0,
+      smonth: data.smonth || 0,
+      sdate: data.sdate || 0,
+      shour: data.shour || 0,
+      sminute: data.sminute || 0,
+      eyear: data.eyear || 0,
+      emonth: data.emonth || 0,
+      edate: data.edate || 0,
+      ehour: data.ehour || 0,
+      eminute: data.eminute || 0,
+      task_coordinates: data.task_coordinates
+        ? coordinatesStringToArray(data.task_coordinates)
+        : [],
+      task_location: data.task_location,
+      created_by: {
+        connect: { id: data.created_by },
+      },
+      task_start_date_time: data.syear
+        ? digitsToDateTime(
+            data.syear,
+            data.smonth,
+            data.sdate,
+            data.shour,
+            data.sminute,
+          )
+        : null,
+      task_end_date_time: data.eyear
+        ? digitsToDateTime(
+            data.eyear,
+            data.emonth,
+            data.edate,
+            data.ehour,
+            data.eminute,
+          )
+        : null,
+      user: {
+        connect: data.user_ids ? mapIDArrayToEnum(data.user_ids) : [],
+      },
+      task_tag: {
+        createMany: {
+          data: data.tag_ids
+            ? data.tag_ids.map((tagId) => {
+                return {
+                  tag_id: tagId,
+                };
+              })
+            : [],
+        },
+      },
+      repeat_details: {
+        create: data.repeat_details,
+      },
+      task_board: { connect: { id: data.task_board_id } },
+      sub_task: {
+        create: data.sub_task
+          ? data.sub_task.map((subTask) => {
+              return {
+                task_description: subTask.task_description,
+                syear: subTask.syear || 0,
+                smonth: subTask.smonth || 0,
+                sdate: subTask.sdate || 0,
+                shour: subTask.shour || 0,
+                sminute: subTask.sminute || 0,
+                eyear: subTask.eyear || 0,
+                emonth: subTask.emonth || 0,
+                edate: subTask.edate || 0,
+                ehour: subTask.ehour || 0,
+                eminute: subTask.eminute || 0,
+                sub_task_start_date_time: subTask.syear
+                  ? digitsToDateTime(
+                      subTask.syear,
+                      subTask.smonth,
+                      subTask.sdate,
+                      subTask.shour,
+                      subTask.sminute,
+                    )
+                  : null,
+                sub_task_end_date_time: subTask.eyear
+                  ? digitsToDateTime(
+                      subTask.eyear,
+                      subTask.emonth,
+                      subTask.edate,
+                      subTask.ehour,
+                      subTask.eminute,
+                    )
+                  : null,
+                created_by: subTask.created_by,
+                user_ids: {
+                  connect: subTask.user_ids
+                    ? mapIDArrayToEnum(subTask.user_ids)
+                    : [],
+                },
+              };
+            })
+          : [],
+      },
+    };
     return await this.prisma.task.create({
-      data,
+      data: insertData,
       include: {
         user: true,
       },
@@ -20,8 +127,74 @@ export class TaskService {
   }
 
   async createMany(data): Promise<task[]> {
+    let tasks: any = data;
+    for (let task of tasks) {
+      task.syear = task.syear || 0;
+      task.smonth = task.smonth || 0;
+      task.sdate = task.sdate || 0;
+      task.shour = task.shour || 0;
+      task.sminute = task.sminute || 0;
+      task.eyear = task.eyear || 0;
+      task.emonth = task.emonth || 0;
+      task.edate = task.edate || 0;
+      task.ehour = task.ehour || 0;
+      task.eminute = task.eminute || 0;
+
+      if (task.syear) {
+        task.task_start_date_time = task.syear
+          ? digitsToDateTime(
+              task.syear,
+              task.smonth,
+              task.sdate,
+              task.shour,
+              task.sminute,
+            )
+          : null;
+      }
+
+      if (task.eyear) {
+        task.task_end_date_time = task.eyear
+          ? digitsToDateTime(
+              task.eyear,
+              task.emonth,
+              task.edate,
+              task.ehour,
+              task.eminute,
+            )
+          : null;
+      }
+
+      if (task.task_coordinates) {
+        task.task_coordinates = coordinatesStringToArray(task.task_coordinates);
+      }
+
+      if (task.user_ids) {
+        task.user = {
+          connect: mapIDArrayToEnum(task.user_ids),
+        };
+      }
+
+      if (task.tag_ids) {
+        task.task_tag = {
+          createMany: {
+            data: task.tag_ids.map((tagId) => {
+              return { tag_id: tagId };
+            }),
+          },
+        };
+      }
+      task.task_board = {
+        connect: {
+          id: task.task_board_id,
+        },
+      };
+      task.task_frequency = 'ONEOFF';
+      delete task.task_board_id;
+      delete task.user_ids;
+      delete task.tag_ids;
+    }
     return await Promise.all(
-      data.map((task) => {
+      tasks.map((task) => {
         return this.prisma.task.create({
           data: task,
           include: {

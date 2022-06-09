@@ -21,7 +21,15 @@ export class TaskBoardResolver {
         },
       },
       task_board_customisation: {
-        create: {},
+        createMany: {
+          data: ['task_title', 'task_description', 'task_location'].map(
+            (fieldName) => {
+              return {
+                field_name: fieldName,
+              };
+            },
+          ),
+        },
       },
     });
   }
