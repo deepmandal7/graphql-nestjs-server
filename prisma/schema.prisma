@@ -139,7 +139,7 @@ model repeat_details {
   repeat_type      repeat_type_enum
   task             task             @relation(fields: [task_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   task_id          Int              @unique
-  how_often_repeat Int
+  how_often_repeat Int?
   day_of_week      Int[]
   day_of_month     Int?
   week_of_month    Int?

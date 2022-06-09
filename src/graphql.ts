@@ -172,11 +172,25 @@ export class UpdateTaskCommentInput {
 }
 
 export class CreateTaskRepeatDetailInput {
-    exampleField?: Nullable<number>;
+    task_id: number;
+    stop_repeat?: Nullable<DateTime>;
+    how_often_repeat?: Nullable<number>;
+    repeat_type?: Nullable<RepeatTypeEnum>;
+    day_of_week?: Nullable<number[]>;
+    day_of_month?: Nullable<number>;
+    week_of_month?: Nullable<number>;
+    month_of_year?: Nullable<number>;
 }
 
 export class UpdateTaskRepeatDetailInput {
     id: number;
+    stop_repeat?: Nullable<DateTime>;
+    how_often_repeat?: Nullable<number>;
+    repeat_type?: Nullable<RepeatTypeEnum>;
+    day_of_week?: Nullable<number[]>;
+    day_of_month?: Nullable<number>;
+    week_of_month?: Nullable<number>;
+    month_of_year?: Nullable<number>;
 }
 
 export class CreateTimeclockInput {
@@ -243,9 +257,7 @@ export abstract class IQuery {
 
     abstract taskComment(id: number): Nullable<TaskComment> | Promise<Nullable<TaskComment>>;
 
-    abstract taskRepeatDetails(): Nullable<TaskRepeatDetail>[] | Promise<Nullable<TaskRepeatDetail>[]>;
-
-    abstract taskRepeatDetail(id: number): Nullable<TaskRepeatDetail> | Promise<Nullable<TaskRepeatDetail>>;
+    abstract getTaskRepeatDetail(taskId: number): Nullable<TaskRepeatDetail> | Promise<Nullable<TaskRepeatDetail>>;
 
     abstract timeclocks(): Nullable<Timeclock>[] | Promise<Nullable<Timeclock>[]>;
 
@@ -365,7 +377,15 @@ export class TaskComment {
 }
 
 export class TaskRepeatDetail {
-    exampleField?: Nullable<number>;
+    id: string;
+    task_id: number;
+    stop_repeat?: Nullable<DateTime>;
+    how_often_repeat?: Nullable<number>;
+    repeat_type?: Nullable<RepeatTypeEnum>;
+    day_of_week?: Nullable<number[]>;
+    day_of_month?: Nullable<number>;
+    week_of_month?: Nullable<number>;
+    month_of_year?: Nullable<number>;
 }
 
 export class Timeclock {

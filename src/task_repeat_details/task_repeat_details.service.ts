@@ -1,23 +1,36 @@
 import { Injectable } from '@nestjs/common';
 import { CreateTaskRepeatDetailInput } from './dto/create-task_repeat_detail.input';
 import { UpdateTaskRepeatDetailInput } from './dto/update-task_repeat_detail.input';
+import { PrismaService } from 'src/prisma.service';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class TaskRepeatDetailsService {
-  create(createTaskRepeatDetailInput: CreateTaskRepeatDetailInput) {
-    return 'This action adds a new taskRepeatDetail';
+  constructor(private prisma: PrismaService) {}
+  async create(createTaskRepeatDetailInput) {
+    return await this.prisma.repeat_details.create({
+      data: createTaskRepeatDetailInput,
+    });
   }
 
-  findAll() {
-    return `This action returns all taskRepeatDetails`;
+  async findOne(taskId: number) {
+    return await this.prisma.repeat_details.findUnique({
+      where: {
+        task_id: taskId,
+      },
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} taskRepeatDetail`;
-  }
-
-  update(id: number, updateTaskRepeatDetailInput: UpdateTaskRepeatDetailInput) {
-    return `This action updates a #${id} taskRepeatDetail`;
+  async update(
+    id: number,
+    updateTaskRepeatDetailInput: UpdateTaskRepeatDetailInput,
+  ) {
+    return await this.prisma.repeat_details.update({
+      where: {
+        id,
+      },
+      data: updateTaskRepeatDetailInput,
+    });
   }
 
   remove(id: number) {

@@ -8,10 +8,6 @@ import { UpdateTaskBoardCustomisationInput } from './dto/update-task_board_custo
 export class TaskBoardCustomisationService {
   constructor(private prisma: PrismaService) {}
 
-  async create(data) {
-    return await this.prisma.task_board_customisation.create({ data });
-  }
-
   async findAll(taskBoardId: number) {
     return await this.prisma.task_board_customisation.findMany({
       where: {

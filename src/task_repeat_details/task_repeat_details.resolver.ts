@@ -5,26 +5,34 @@ import { UpdateTaskRepeatDetailInput } from './dto/update-task_repeat_detail.inp
 
 @Resolver('TaskRepeatDetail')
 export class TaskRepeatDetailsResolver {
-  constructor(private readonly taskRepeatDetailsService: TaskRepeatDetailsService) {}
+  constructor(
+    private readonly taskRepeatDetailsService: TaskRepeatDetailsService,
+  ) {}
 
   @Mutation('createTaskRepeatDetail')
-  create(@Args('createTaskRepeatDetailInput') createTaskRepeatDetailInput: CreateTaskRepeatDetailInput) {
-    return this.taskRepeatDetailsService.create(createTaskRepeatDetailInput);
+  async create(
+    @Args('createTaskRepeatDetailInput')
+    createTaskRepeatDetailInput: CreateTaskRepeatDetailInput,
+  ) {
+    return await this.taskRepeatDetailsService.create(
+      createTaskRepeatDetailInput,
+    );
   }
 
-  @Query('taskRepeatDetails')
-  findAll() {
-    return this.taskRepeatDetailsService.findAll();
-  }
-
-  @Query('taskRepeatDetail')
-  findOne(@Args('id') id: number) {
-    return this.taskRepeatDetailsService.findOne(id);
+  @Query('getTaskRepeatDetail')
+  async findOne(@Args('taskId') taskId: number) {
+    return await this.taskRepeatDetailsService.findOne(taskId);
   }
 
   @Mutation('updateTaskRepeatDetail')
-  update(@Args('updateTaskRepeatDetailInput') updateTaskRepeatDetailInput: UpdateTaskRepeatDetailInput) {
-    return this.taskRepeatDetailsService.update(updateTaskRepeatDetailInput.id, updateTaskRepeatDetailInput);
+  async update(
+    @Args('updateTaskRepeatDetailInput')
+    updateTaskRepeatDetailInput: UpdateTaskRepeatDetailInput,
+  ) {
+    return await this.taskRepeatDetailsService.update(
+      updateTaskRepeatDetailInput.id,
+      updateTaskRepeatDetailInput,
+    );
   }
 
   @Mutation('removeTaskRepeatDetail')

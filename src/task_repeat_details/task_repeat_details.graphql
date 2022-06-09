@@ -1,24 +1,56 @@
+scalar DateTime
+
+enum RepeatTypeEnum {
+  DAILY
+  WEEKLY
+  MONTHLY
+  YEARLY
+}
+
 type TaskRepeatDetail {
-  # Example field (placeholder)
-  exampleField: Int
+  id: ID!
+  task_id: Int!
+  stop_repeat: DateTime
+  how_often_repeat: Int
+  repeat_type: RepeatTypeEnum
+  day_of_week: [Int!]
+  day_of_month: Int
+  week_of_month: Int
+  month_of_year: Int
 }
 
 input CreateTaskRepeatDetailInput {
-  # Example field (placeholder)
-  exampleField: Int
+  task_id: Int!
+  stop_repeat: DateTime
+  how_often_repeat: Int
+  repeat_type: RepeatTypeEnum
+  day_of_week: [Int!]
+  day_of_month: Int
+  week_of_month: Int
+  month_of_year: Int
 }
 
 input UpdateTaskRepeatDetailInput {
   id: Int!
+  stop_repeat: DateTime
+  how_often_repeat: Int
+  repeat_type: RepeatTypeEnum
+  day_of_week: [Int!]
+  day_of_month: Int
+  week_of_month: Int
+  month_of_year: Int
 }
 
 type Query {
-  taskRepeatDetails: [TaskRepeatDetail]!
-  taskRepeatDetail(id: Int!): TaskRepeatDetail
+  getTaskRepeatDetail(taskId: Int!): TaskRepeatDetail
 }
 
 type Mutation {
-  createTaskRepeatDetail(createTaskRepeatDetailInput: CreateTaskRepeatDetailInput!): TaskRepeatDetail!
-  updateTaskRepeatDetail(updateTaskRepeatDetailInput: UpdateTaskRepeatDetailInput!): TaskRepeatDetail!
+  createTaskRepeatDetail(
+    createTaskRepeatDetailInput: CreateTaskRepeatDetailInput!
+  ): TaskRepeatDetail!
+  updateTaskRepeatDetail(
+    updateTaskRepeatDetailInput: UpdateTaskRepeatDetailInput!
+  ): TaskRepeatDetail!
   removeTaskRepeatDetail(id: Int!): TaskRepeatDetail
 }

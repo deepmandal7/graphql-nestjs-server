@@ -10,6 +10,7 @@ import { TaskCommentsModule } from './task_comments/task_comments.module';
 import { SubTaskModule } from './sub_task/sub_task.module';
 import { TimeclockModule } from './timeclock/timeclock.module';
 import { TaskBoardCustomisationModule } from './task_board_customisation/task_board_customisation.module';
+import { TaskRepeatDetailsModule } from './task_repeat_details/task_repeat_details.module';
 
 @Module({
   imports: [
@@ -22,11 +23,12 @@ import { TaskBoardCustomisationModule } from './task_board_customisation/task_bo
       },
     }),
     TaskBoardModule,
+    TaskBoardCustomisationModule,
     TaskModule,
     TaskCommentsModule,
     SubTaskModule,
     TimeclockModule,
-    TaskBoardCustomisationModule,
+    TaskRepeatDetailsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

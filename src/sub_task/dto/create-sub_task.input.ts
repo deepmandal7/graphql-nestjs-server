@@ -71,5 +71,6 @@ export class CreateSubTaskInput {
   @IsInt()
   created_by: number;
 
+  @Field((type) => [Int])
   user_ids: number[];
 }

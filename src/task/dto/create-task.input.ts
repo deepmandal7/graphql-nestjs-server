@@ -17,17 +17,11 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
+import { CreateTaskRepeatDetailInput } from '../../task_repeat_details/dto/create-task_repeat_detail.input';
 
 enum TaskFrequencyEnum {
   ONEOFF = 'ONEOFF',
   RECURRING = 'RECURRING',
-}
-
-enum RepeatTypeEnum {
-  DAILY = 'DAILY',
-  WEEKLY = 'WEEKLY',
-  MONTHLY = 'MONTHLY',
-  YEARLY = 'YEARLY',
 }
 
 export class SubTask {
@@ -69,41 +63,6 @@ export class SubTask {
 
   @IsOptional()
   user_ids: number[];
-}
-
-export class RepeatDetails {
-  @IsInt()
-  @IsOptional()
-  task_id?: number;
-
-  @IsDateString()
-  @IsOptional()
-  stop_repeat?: Date;
-
-  @IsInt()
-  @IsOptional()
-  how_often_repeat: number;
-
-  @IsAlpha()
-  @IsOptional()
-  repeat_type: RepeatTypeEnum;
-
-  @ArrayMinSize(1)
-  @ArrayMaxSize(7)
-  @IsOptional()
-  day_of_week?: number[];
-
-  @IsInt()
-  @IsOptional()
-  day_of_month?: number;
-
-  @IsInt()
-  @IsOptional()
-  week_of_month?: number;
-
-  @IsInt()
-  @IsOptional()
-  month_of_year?: number;
 }
 
 @InputType()
@@ -200,9 +159,9 @@ export class CreateTaskInput {
   @IsOptional()
   tag_ids?: number[];
 
-  @Field((type) => RepeatDetails)
+  @Field((type) => CreateTaskRepeatDetailInput)
   @IsOptional()
-  repeat_details?: RepeatDetails;
+  repeat_details?: CreateTaskRepeatDetailInput;
 
   @Field((type) => [SubTask])
   @IsOptional()
