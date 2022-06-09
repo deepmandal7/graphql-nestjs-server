@@ -247,9 +247,7 @@ export abstract class IQuery {
 
     abstract getUserTasks(userId: number): Nullable<Task>[] | Promise<Nullable<Task>[]>;
 
-    abstract taskBoards(): Nullable<TaskBoard>[] | Promise<Nullable<TaskBoard>[]>;
-
-    abstract taskBoard(id: number): Nullable<TaskBoard> | Promise<Nullable<TaskBoard>>;
+    abstract getTaskBoards(): Nullable<TaskBoard>[] | Promise<Nullable<TaskBoard>[]>;
 
     abstract getAllTaskBoardCustomisation(taskBoardId: number): Nullable<TaskBoardCustomisation> | Promise<Nullable<TaskBoardCustomisation>>;
 

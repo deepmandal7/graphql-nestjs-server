@@ -40,8 +40,7 @@ input UpdateTaskBoardInput {
 }
 
 type Query {
-  taskBoards: [TaskBoard]!
-  taskBoard(id: Int!): TaskBoard
+  getTaskBoards: [TaskBoard]!
 }
 
 type Mutation {

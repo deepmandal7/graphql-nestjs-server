@@ -233,6 +233,9 @@ export class TaskService {
             org_id: orgId,
           },
         },
+        task_status: {
+          not: 'DELETED',
+        },
       },
       // orderBy: {
       //   created_at: 'asc',
@@ -526,7 +529,14 @@ export class TaskService {
   }
 
   remove(id: number) {
-    return `This action removes a #${id} task`;
+    return this.prisma.task.update({
+      where: {
+        id,
+      },
+      data: {
+        task_status: 'DELETED',
+      },
+    });
   }
 }
 

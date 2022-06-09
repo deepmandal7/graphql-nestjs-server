@@ -43,9 +43,12 @@ export class TaskCommentsService {
   }
 
   async remove(id: number): Promise<task_comments> {
-    return await this.prisma.task_comments.delete({
+    return await this.prisma.task_comments.update({
       where: {
         id,
+      },
+      data: {
+        task_comments_status: 'DELETED',
       },
     });
   }

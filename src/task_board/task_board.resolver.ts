@@ -8,10 +8,10 @@ export class TaskBoardResolver {
   constructor(private readonly taskBoardService: TaskBoardService) {}
 
   @Mutation('createTaskBoard')
-  create(
+  async create(
     @Args('createTaskBoardInput') createTaskBoardInput: CreateTaskBoardInput,
   ) {
-    return this.taskBoardService.create({
+    return await this.taskBoardService.create({
       task_board_name: createTaskBoardInput.task_board_name,
       created_by: createTaskBoardInput.created_by,
       can_create: createTaskBoardInput.can_create,
@@ -34,28 +34,23 @@ export class TaskBoardResolver {
     });
   }
 
-  @Query('taskBoard')
-  findAll() {
-    return this.taskBoardService.findAll();
-  }
-
-  @Query('taskBoard')
-  findOne(@Args('id') id: number) {
-    return this.taskBoardService.findOne(id);
+  @Query('getTaskBoards')
+  async findAll(@Args('orgId') orgId: number) {
+    return await this.taskBoardService.findAll(orgId);
   }
 
   @Mutation('updateTaskBoard')
-  update(
+  async update(
     @Args('updateTaskBoardInput') updateTaskBoardInput: UpdateTaskBoardInput,
   ) {
-    return this.taskBoardService.update(
+    return await this.taskBoardService.update(
       updateTaskBoardInput.id,
       updateTaskBoardInput,
     );
   }
 
   @Mutation('removeTaskBoard')
-  remove(@Args('id') id: number) {
-    return this.taskBoardService.remove(id);
+  async remove(@Args('id') id: number) {
+    return await this.taskBoardService.remove(id);
   }
 }

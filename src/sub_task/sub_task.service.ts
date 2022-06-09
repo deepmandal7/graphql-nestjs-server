@@ -10,12 +10,26 @@ export class SubTaskService {
   create(data: Prisma.sub_taskCreateInput) {
     return this.prisma.sub_task.create({ data });
   }
-  findAll() {
-    return `This action returns all subTask`;
+  findAll(taskId: number) {
+    return this.prisma.sub_task.findMany({
+      where: {
+        task_id: taskId,
+      },
+      include: {
+        user_ids: true,
+      },
+    });
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} subTask`;
+    return this.prisma.sub_task.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        user_ids: true,
+      },
+    });
   }
 
   async findUserSubTasks(userId: number) {
@@ -42,6 +56,13 @@ export class SubTaskService {
   }
 
   remove(id: number) {
-    return `This action removes a #${id} subTask`;
+    return this.prisma.sub_task.update({
+      where: {
+        id,
+      },
+      data: {
+        task_status: 'DELETED',
+      },
+    });
   }
 }

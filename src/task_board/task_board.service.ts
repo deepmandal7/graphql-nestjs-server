@@ -8,23 +8,42 @@ import { UpdateTaskBoardInput } from './dto/update-task_board.input';
 export class TaskBoardService {
   constructor(private prisma: PrismaService) {}
 
-  create(data: Prisma.task_boardCreateInput) {
-    return this.prisma.task_board.create({ data });
+  async create(data: Prisma.task_boardCreateInput) {
+    return await this.prisma.task_board.create({ data });
   }
 
-  findAll() {
-    return this.prisma.task_board.findMany({});
+  async findAll(orgId: number) {
+    return await this.prisma.task_board.findMany({
+      where: {
+        org_id: orgId,
+        task_board_status: {
+          not: 'DELETED',
+        },
+      },
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} taskBoard`;
+  async findOne(id: number) {
+    return await `This action returns a #${id} taskBoard`;
   }
 
-  update(id: number, updateTaskBoardInput: UpdateTaskBoardInput) {
-    return `This action updates a #${id} taskBoard`;
+  async update(id: number, updateTaskBoardInput: UpdateTaskBoardInput) {
+    return await this.prisma.task_board.update({
+      where: {
+        id,
+      },
+      data: updateTaskBoardInput,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} taskBoard`;
+  async remove(id: number) {
+    return await this.prisma.task_board.update({
+      where: {
+        id,
+      },
+      data: {
+        task_board_status: 'DELETED',
+      },
+    });
   }
 }

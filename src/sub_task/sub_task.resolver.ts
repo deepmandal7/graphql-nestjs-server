@@ -58,8 +58,8 @@ export class SubTaskResolver {
   }
 
   @Query('subTasks')
-  findAll() {
-    return this.subTaskService.findAll();
+  findAll(@Args('taskId') taskId: number) {
+    return this.subTaskService.findAll(taskId);
   }
 
   @Query('subTask')

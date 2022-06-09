@@ -47,6 +47,7 @@ model task_board {
   updated_at               DateTime                   @updatedAt
   created_by               Int
   task_board_customisation task_board_customisation[]
+  task_board_status        String?
 }
 
 model task_board_customisation {
@@ -147,10 +148,11 @@ model repeat_details {
 }
 
 model tag {
-  id        Int        @id @default(autoincrement())
-  tag_name  String
-  tag_color String
-  task_tag  task_tag[]
+  id         Int        @id @default(autoincrement())
+  tag_name   String
+  tag_color  String
+  task_tag   task_tag[]
+  tag_status String?
 }
 
 model task_tag {
@@ -163,13 +165,14 @@ model task_tag {
 }
 
 model task_comments {
-  id         Int      @id @default(autoincrement())
-  user_id    Int
-  comment    String
-  task       task     @relation(fields: [task_id], references: [id])
-  task_id    Int
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  id                   Int      @id @default(autoincrement())
+  user_id              Int
+  comment              String
+  task                 task     @relation(fields: [task_id], references: [id])
+  task_id              Int
+  created_at           DateTime @default(now())
+  updated_at           DateTime @updatedAt
+  task_comments_status String?
 }
 
 model timeclock {
