@@ -1,0 +1,39 @@
+type EmployeeBreak {
+  id: ID!
+  break_type: String
+  start_time: DateTime
+  end_time: DateTime
+  duration: Int
+  paid: Boolean
+  time_entry_id: Int
+}
+
+input CreateEmployeeBreakInput {
+  break_type: String
+  start_time: DateTime
+  end_time: DateTime
+  paid: Boolean
+  user_id: Int
+  time_entry_id: Int
+}
+
+input UpdateEmployeeBreakInput {
+  id: Int!
+  break_type: String
+  paid: Boolean
+}
+
+type Query {
+  employeeBreaks: [EmployeeBreak]!
+  employeeBreak(id: Int!): EmployeeBreak
+}
+
+type Mutation {
+  createEmployeeBreak(
+    createEmployeeBreakInput: CreateEmployeeBreakInput!
+  ): EmployeeBreak!
+  updateEmployeeBreak(
+    updateEmployeeBreakInput: UpdateEmployeeBreakInput!
+  ): EmployeeBreak!
+  removeEmployeeBreak(id: Int!): EmployeeBreak
+}

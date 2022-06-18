@@ -1,0 +1,35 @@
+type WorkDuration {
+  id: ID!
+  user_id: Int
+  time_entry_id: Int
+  check_in_time: DateTime
+  check_out_time: DateTime
+}
+
+input CreateWorkDurationInput {
+  user_id: Int
+  time_entry_id: Int
+  check_in_time: DateTime
+  check_out_time: DateTime
+}
+
+input UpdateWorkDurationInput {
+  id: Int!
+  check_in_time: DateTime
+  check_out_time: DateTime
+}
+
+type Query {
+  getWorkDurations: [WorkDuration]!
+  getWorkDuration(id: Int!): WorkDuration
+}
+
+type Mutation {
+  createWorkDuration(
+    createWorkDurationInput: CreateWorkDurationInput!
+  ): WorkDuration!
+  updateWorkDuration(
+    updateWorkDurationInput: UpdateWorkDurationInput!
+  ): WorkDuration!
+  removeWorkDuration(id: Int!): WorkDuration
+}

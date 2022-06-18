@@ -27,45 +27,15 @@ export class CreateSubTaskInput {
   @Field()
   task_description: string;
 
-  @IsInt()
-  @Field((type) => Int)
-  syear: number;
+  @Field((type) => Date)
+  @IsDateString()
+  @IsOptional()
+  sub_task_start_date_time: Date;
 
-  @IsInt()
-  @Field((type) => Int)
-  smonth: number;
-
-  @IsInt()
-  @Field((type) => Int)
-  sdate: number;
-
-  @Field((type) => Int)
-  @IsInt()
-  shour: number;
-
-  @Field((type) => Int)
-  @IsInt()
-  sminute: number;
-
-  @Field((type) => Int)
-  @IsInt()
-  eyear: number;
-
-  @Field((type) => Int)
-  @IsInt()
-  emonth: number;
-
-  @Field((type) => Int)
-  @IsInt()
-  edate: number;
-
-  @Field((type) => Int)
-  @IsInt()
-  ehour: number;
-
-  @Field((type) => Int)
-  @IsInt()
-  eminute: number;
+  @Field((type) => Date)
+  @IsDateString()
+  @IsOptional()
+  sub_task_end_date_time: Date;
 
   @Field((type) => Int)
   @IsInt()

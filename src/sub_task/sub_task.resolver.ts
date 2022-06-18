@@ -20,34 +20,8 @@ export class SubTaskResolver {
         },
       },
       task_description: createSubTaskInput.task_description,
-      syear: createSubTaskInput.syear || 0,
-      smonth: createSubTaskInput.smonth || 0,
-      sdate: createSubTaskInput.sdate || 0,
-      shour: createSubTaskInput.shour || 0,
-      sminute: createSubTaskInput.sminute || 0,
-      eyear: createSubTaskInput.eyear || 0,
-      emonth: createSubTaskInput.emonth || 0,
-      edate: createSubTaskInput.edate || 0,
-      ehour: createSubTaskInput.ehour || 0,
-      eminute: createSubTaskInput.eminute || 0,
-      sub_task_start_date_time: createSubTaskInput.syear
-        ? digitsToDateTime(
-            createSubTaskInput.syear,
-            createSubTaskInput.smonth,
-            createSubTaskInput.sdate,
-            createSubTaskInput.shour,
-            createSubTaskInput.sminute,
-          )
-        : null,
-      sub_task_end_date_time: createSubTaskInput.eyear
-        ? digitsToDateTime(
-            createSubTaskInput.eyear,
-            createSubTaskInput.emonth,
-            createSubTaskInput.edate,
-            createSubTaskInput.ehour,
-            createSubTaskInput.eminute,
-          )
-        : null,
+      sub_task_start_date_time: createSubTaskInput.sub_task_start_date_time,
+      sub_task_end_date_time: createSubTaskInput.sub_task_end_date_time,
       created_by: createSubTaskInput.created_by,
       user_ids: {
         connect: createSubTaskInput.user_ids
@@ -75,22 +49,6 @@ export class SubTaskResolver {
   @Mutation('updateSubTask')
   update(@Args('updateSubTaskInput') updateSubTaskInput: UpdateSubTaskInput) {
     let updateData: any = updateSubTaskInput;
-
-    updateData.sub_task_start_date_time = digitsToDateTime(
-      updateData.syear,
-      updateData.smonth,
-      updateData.sdate,
-      updateData.shour,
-      updateData.sminute,
-    );
-
-    updateData.sub_task_end_date_time = digitsToDateTime(
-      updateData.eyear,
-      updateData.emonth,
-      updateData.edate,
-      updateData.ehour,
-      updateData.eminute,
-    );
 
     updateData.user_ids.set = mapIDArrayToEnum(updateData.user_ids);
 

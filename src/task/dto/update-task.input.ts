@@ -25,6 +25,7 @@ enum TaskFrequencyEnum {
   RECURRING = 'RECURRING',
 }
 
+@InputType()
 export class UpdateTaskInput {
   id: number;
 
@@ -48,55 +49,15 @@ export class UpdateTaskInput {
   @Field((type) => [Int])
   user_ids: number[];
 
-  @Field((type) => Int)
-  @IsInt()
+  @Field((type) => Date)
+  @IsDateString()
   @IsOptional()
-  syear: number;
+  task_start_date_time: Date;
 
-  @Field((type) => Int)
-  @IsInt()
+  @Field((type) => Date)
+  @IsDateString()
   @IsOptional()
-  smonth: number;
-
-  @IsInt()
-  @IsOptional()
-  @Field((type) => Int)
-  sdate: number;
-
-  @IsInt()
-  @IsOptional()
-  @Field((type) => Int)
-  shour: number;
-
-  @IsInt()
-  @IsOptional()
-  @Field((type) => Int)
-  sminute: number;
-
-  @IsInt()
-  @IsOptional()
-  @Field((type) => Int)
-  eyear: number;
-
-  @IsInt()
-  @IsOptional()
-  @Field((type) => Int)
-  emonth: number;
-
-  @IsInt()
-  @IsOptional()
-  @Field((type) => Int)
-  edate: number;
-
-  @IsInt()
-  @IsOptional()
-  @Field((type) => Int)
-  ehour: number;
-
-  @IsInt()
-  @IsOptional()
-  @Field((type) => Int)
-  eminute: number;
+  task_end_date_time: Date;
 
   @Field()
   @IsLatLong()

@@ -2,8 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { task, Prisma } from '@prisma/client';
 import {
-  digitsToDateTime,
-  digitsToDate,
   coordinatesStringToArray,
   mapIDArrayToEnum,
 } from '../common/utils/common_utils';
@@ -21,16 +19,6 @@ export class TaskService {
       task_description: data.task_description,
       task_file_id: data.task_file_id,
       task_frequency: data.task_frequency,
-      syear: data.syear || 0,
-      smonth: data.smonth || 0,
-      sdate: data.sdate || 0,
-      shour: data.shour || 0,
-      sminute: data.sminute || 0,
-      eyear: data.eyear || 0,
-      emonth: data.emonth || 0,
-      edate: data.edate || 0,
-      ehour: data.ehour || 0,
-      eminute: data.eminute || 0,
       task_coordinates: data.task_coordinates
         ? coordinatesStringToArray(data.task_coordinates)
         : [],
@@ -38,23 +26,11 @@ export class TaskService {
       created_by: {
         connect: { id: data.created_by },
       },
-      task_start_date_time: data.syear
-        ? digitsToDateTime(
-            data.syear,
-            data.smonth,
-            data.sdate,
-            data.shour,
-            data.sminute,
-          )
+      task_start_date_time: data.task_start_date_time
+        ? data.task_start_date_time
         : null,
-      task_end_date_time: data.eyear
-        ? digitsToDateTime(
-            data.eyear,
-            data.emonth,
-            data.edate,
-            data.ehour,
-            data.eminute,
-          )
+      task_end_date_time: data.task_end_date_time
+        ? data.task_end_date_time
         : null,
       user: {
         connect: data.user_ids ? mapIDArrayToEnum(data.user_ids) : [],
@@ -79,33 +55,11 @@ export class TaskService {
           ? data.sub_task.map((subTask) => {
               return {
                 task_description: subTask.task_description,
-                syear: subTask.syear || 0,
-                smonth: subTask.smonth || 0,
-                sdate: subTask.sdate || 0,
-                shour: subTask.shour || 0,
-                sminute: subTask.sminute || 0,
-                eyear: subTask.eyear || 0,
-                emonth: subTask.emonth || 0,
-                edate: subTask.edate || 0,
-                ehour: subTask.ehour || 0,
-                eminute: subTask.eminute || 0,
-                sub_task_start_date_time: subTask.syear
-                  ? digitsToDateTime(
-                      subTask.syear,
-                      subTask.smonth,
-                      subTask.sdate,
-                      subTask.shour,
-                      subTask.sminute,
-                    )
+                sub_task_start_date_time: subTask.sub_task_start_date_time
+                  ? subTask.sub_task_start_date_time
                   : null,
-                sub_task_end_date_time: subTask.eyear
-                  ? digitsToDateTime(
-                      subTask.eyear,
-                      subTask.emonth,
-                      subTask.edate,
-                      subTask.ehour,
-                      subTask.eminute,
-                    )
+                sub_task_end_date_time: subTask.sub_task_end_date_time
+                  ? subTask.sub_task_end_date_time
                   : null,
                 created_by: subTask.created_by,
                 user_ids: {
@@ -129,40 +83,13 @@ export class TaskService {
   async createMany(data): Promise<task[]> {
     let tasks: any = data;
     for (let task of tasks) {
-      task.syear = task.syear || 0;
-      task.smonth = task.smonth || 0;
-      task.sdate = task.sdate || 0;
-      task.shour = task.shour || 0;
-      task.sminute = task.sminute || 0;
-      task.eyear = task.eyear || 0;
-      task.emonth = task.emonth || 0;
-      task.edate = task.edate || 0;
-      task.ehour = task.ehour || 0;
-      task.eminute = task.eminute || 0;
+      task.task_start_date_time = task.task_start_date_time
+        ? task.task_start_date_time
+        : null;
 
-      if (task.syear) {
-        task.task_start_date_time = task.syear
-          ? digitsToDateTime(
-              task.syear,
-              task.smonth,
-              task.sdate,
-              task.shour,
-              task.sminute,
-            )
-          : null;
-      }
-
-      if (task.eyear) {
-        task.task_end_date_time = task.eyear
-          ? digitsToDateTime(
-              task.eyear,
-              task.emonth,
-              task.edate,
-              task.ehour,
-              task.eminute,
-            )
-          : null;
-      }
+      task.task_end_date_time = task.task_end_date_time
+        ? task.task_end_date_time
+        : null;
 
       if (task.task_coordinates) {
         task.task_coordinates = coordinatesStringToArray(task.task_coordinates);
@@ -283,117 +210,47 @@ export class TaskService {
         },
       };
     }
-    let timezone: any;
-    let orgLocalTime: any;
-    let orgYear: number;
-    let orgMonth: number;
-    let orgDate: number;
-    let orgHours: number;
-    let orgMinutes: number;
-    if (queryTaskInput.dates || queryTaskInput.startDate) {
-      timezone = await this.prisma.organization.findUnique({
-        select: {
-          timezone: true,
-        },
-        where: {
-          id: orgId,
-        },
-      });
-      orgLocalTime = new Date(
-        new Date().toLocaleString('en-US', { timeZone: timezone.timezone }),
-      );
-      orgYear = orgLocalTime.getFullYear();
-      orgMonth = orgLocalTime.getMonth();
-      orgDate = orgLocalTime.getDate();
-      orgHours = orgLocalTime.getHours();
-      orgMinutes = orgLocalTime.getMinutes();
-      if (queryTaskInput.dates) {
-        switch (queryTaskInput.dates) {
-          case 'overdue':
-            filter.where.task_end_date_time = {
-              lt: orgLocalTime,
-            };
-            break;
-          case 'today':
-            filter.where.task_end_date_time = {
-              startsWith: digitsToDate(orgYear, orgMonth, orgDate),
-            };
-            break;
-          case 'tomorrow':
-            orgLocalTime.setDate(orgLocalTime.getDate() + 1);
-            filter.where.task_end_date_time = {
-              startsWith: digitsToDate(
-                orgLocalTime.getFullYear(),
-                orgLocalTime.getMonth(),
-                orgLocalTime.getDate(),
-              ),
-            };
-            break;
-          case 'nodue':
-            filter.where.task_end_date_time = {
-              equals: null,
+    if (queryTaskInput.endDate) {
+      switch (queryTaskInput.endDate) {
+        case 'overdue':
+          filter.where.task_end_date_time = {
+            lt: queryTaskInput.filter_date_time,
+          };
+          break;
+        case 'next':
+          filter.where.task_end_date_time = {
+            gte: queryTaskInput.filter_date_time,
+            lt: queryTaskInput.next_date_time,
+          };
+          break;
+        case 'nodue':
+          filter.where.task_end_date_time = {
+            equals: null,
+          };
+          break;
+      }
+      if (queryTaskInput.startDate) {
+        switch (queryTaskInput.endDate) {
+          case 'started':
+            filter.where.task_start_date_time = {
+              lt: queryTaskInput.filter_date_time,
             };
             break;
           case 'next':
-            filter.where.task_end_date_time = {
-              gte: digitsToDate(
-                queryTaskInput.fromStartYear,
-                queryTaskInput.fromStartMonth,
-                queryTaskInput.fromStartDate,
-              ),
-              lte: digitsToDate(
-                queryTaskInput.toStartYear,
-                queryTaskInput.toStartMonth,
-                queryTaskInput.toStartDate,
-              ),
+            filter.where.task_start_date_time = {
+              gte: queryTaskInput.filter_date_time,
+              lt: queryTaskInput.next_date_time,
+            };
+            break;
+          case 'nodate':
+            filter.where.task_start_date_time = {
+              equals: null,
             };
             break;
         }
-        if (queryTaskInput.startDate) {
-          switch (queryTaskInput.startDate) {
-            case 'started':
-              filter.where.task_start_date_time = {
-                lt: orgLocalTime,
-              };
-              break;
-            case 'today':
-              filter.where.task_start_date_time = {
-                startsWith: digitsToDate(orgYear, orgMonth, orgDate),
-              };
-              break;
-            case 'tomorrow':
-              orgLocalTime.setDate(orgLocalTime.getDate() + 1);
-              filter.where.task_start_date_time = {
-                startsWith: digitsToDate(
-                  orgLocalTime.getFullYear(),
-                  orgLocalTime.getMonth(),
-                  orgLocalTime.getDate(),
-                ),
-              };
-              break;
-            case 'nodate':
-              filter.where.task_start_date_time = {
-                equals: null,
-              };
-              break;
-            case 'next':
-              filter.where.task_end_date_time = {
-                gte: digitsToDate(
-                  queryTaskInput.fromStartYear,
-                  queryTaskInput.fromStartMonth,
-                  queryTaskInput.fromStartDate,
-                ),
-                lte: digitsToDate(
-                  queryTaskInput.toStartYear,
-                  queryTaskInput.toStartMonth,
-                  queryTaskInput.toStartDate,
-                ),
-              };
-              break;
-          }
-        }
       }
     }
+
     if (queryTaskInput.taskStatus) {
       filter.where.task_status = {
         in: queryTaskInput.taskStatus,
@@ -465,18 +322,6 @@ export class TaskService {
               task_description: task.task_description,
               task_file_id: task.task_file_id,
               task_frequency: task.task_frequency,
-              syear: task.syear,
-              smonth: task.smonth,
-              sdate: task.sdate,
-              shour: task.shour,
-              sminute: task.sminute,
-              eyear: task.eyear,
-              emonth: task.emonth,
-              edate: task.edate,
-              ehour: task.ehour,
-              eminute: task.eminute,
-              task_start_date_time: task.task_start_date_time,
-              task_end_date_time: task.task_end_date_time,
               task_coordinates: task.task_coordinates,
               task_location: task.task_location,
               task_board: {

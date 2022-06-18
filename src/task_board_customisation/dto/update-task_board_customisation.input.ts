@@ -3,6 +3,7 @@ import { PartialType } from '@nestjs/mapped-types';
 import { Field, InputType, ID, Int } from '@nestjs/graphql';
 import { IsArray, IsBoolean, IsInt } from 'class-validator';
 
+@InputType()
 class TaskBoardCustomisationArray {
   @Field((type) => Int)
   @IsInt()

@@ -1,6 +1,18 @@
+type Organization {
+  id: ID!
+  org_name: String
+  timezone: String
+}
+
+type Position {
+  id: ID!
+  positine_title: String
+}
+
 type User {
   id: ID!
   first_name: String
+  email_id: String
 }
 
 type Tag {

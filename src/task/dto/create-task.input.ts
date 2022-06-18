@@ -28,35 +28,15 @@ export class SubTask {
   @IsString()
   task_description: string;
 
-  @IsInt()
+  @Field((type) => Date)
+  @IsDateString()
   @IsOptional()
-  syear: number;
-  @IsInt()
+  sub_task_start_date_time: Date;
+
+  @Field((type) => Date)
+  @IsDateString()
   @IsOptional()
-  smonth: number;
-  @IsInt()
-  @IsOptional()
-  sdate: number;
-  @IsInt()
-  @IsOptional()
-  shour: number;
-  @IsInt()
-  @IsOptional()
-  sminute: number;
-  @IsInt()
-  @IsOptional()
-  eyear: number;
-  @IsInt()
-  @IsOptional()
-  emonth: number;
-  @IsInt()
-  edate: number;
-  @IsInt()
-  @IsOptional()
-  ehour: number;
-  @IsInt()
-  @IsOptional()
-  eminute: number;
+  sub_task_end_date_time: Date;
   @IsInt()
   @IsOptional()
   created_by: number;
@@ -87,55 +67,15 @@ export class CreateTaskInput {
   @Field((type) => [Int])
   user_ids: number[];
 
-  @Field((type) => Int)
-  @IsInt()
+  @Field((type) => Date)
+  @IsDateString()
   @IsOptional()
-  syear: number;
+  task_start_date_time: Date;
 
-  @Field((type) => Int)
-  @IsInt()
+  @Field((type) => Date)
+  @IsDateString()
   @IsOptional()
-  smonth: number;
-
-  @IsInt()
-  @IsOptional()
-  @Field((type) => Int)
-  sdate: number;
-
-  @IsInt()
-  @IsOptional()
-  @Field((type) => Int)
-  shour: number;
-
-  @IsInt()
-  @IsOptional()
-  @Field((type) => Int)
-  sminute: number;
-
-  @IsInt()
-  @IsOptional()
-  @Field((type) => Int)
-  eyear: number;
-
-  @IsInt()
-  @IsOptional()
-  @Field((type) => Int)
-  emonth: number;
-
-  @IsInt()
-  @IsOptional()
-  @Field((type) => Int)
-  edate: number;
-
-  @IsInt()
-  @IsOptional()
-  @Field((type) => Int)
-  ehour: number;
-
-  @IsInt()
-  @IsOptional()
-  @Field((type) => Int)
-  eminute: number;
+  task_end_date_time: Date;
 
   @Field()
   @IsLatLong()

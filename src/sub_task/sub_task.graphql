@@ -1,19 +1,13 @@
 #import User from schema.graphql
 
+scalar DateTime
+
 type SubTask {
   id: ID!
   task_id: Int!
   task_description: String
-  syear: Int
-  smonth: Int
-  sdate: Int
-  shour: Int
-  sminute: Int
-  eyear: Int
-  emonth: Int
-  edate: Int
-  ehour: Int
-  eminute: Int
+  sub_task_start_date_time: DateTime
+  sub_task_end_date_time: DateTime
   created_by: User
   user: [User!]
 }
@@ -21,16 +15,8 @@ type SubTask {
 input CreateSubTaskInput {
   task_id: Int
   task_description: String
-  syear: Int
-  smonth: Int
-  sdate: Int
-  shour: Int
-  sminute: Int
-  eyear: Int
-  emonth: Int
-  edate: Int
-  ehour: Int
-  eminute: Int
+  sub_task_start_date_time: DateTime
+  sub_task_end_date_time: DateTime
   created_by: Int
   user_ids: [Int]
 }
@@ -39,16 +25,8 @@ input UpdateSubTaskInput {
   id: Int!
   task_id: Int!
   task_description: String
-  syear: Int
-  smonth: Int
-  sdate: Int
-  shour: Int
-  sminute: Int
-  eyear: Int
-  emonth: Int
-  edate: Int
-  ehour: Int
-  eminute: Int
+  sub_task_start_date_time: DateTime
+  sub_task_end_date_time: DateTime
   created_by: Int
   user_ids: [Int]
 }

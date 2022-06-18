@@ -12,17 +12,20 @@ datasource db {
 }
 
 model user {
-  id              Int          @id @default(autoincrement())
-  first_name      String
-  last_name       String
-  tasks           task[]
-  clock_ins       clock_ins[]
-  sub_tasks       sub_task[]
-  organization    organization @relation(fields: [org_id], references: [id])
-  org_id          Int
-  user_timeclock  timeclock[]  @relation("user_ids")
-  admin_timeclock timeclock[]  @relation("admin_ids")
-  tasks_created   task[]       @relation("tasks_created")
+  id                 Int                     @id @default(autoincrement())
+  first_name         String
+  last_name          String
+  tasks              task[]
+  time_entries       time_entry[]
+  sub_tasks          sub_task[]
+  email_id           String?
+  organization       organization            @relation(fields: [org_id], references: [id])
+  org_id             Int
+  admin_timesheets   timesheets[]            @relation("admins")
+  tasks_created      task[]                  @relation("tasks_created")
+  timesheets_created timesheets[]
+  work_durations     work_durations[]
+  employee_break     employee_manual_break[]
 }
 
 model organization {
@@ -32,6 +35,9 @@ model organization {
   task_board task_board[]
   shift      shift[]
   user       user[]
+  timesheets timesheets[]
+  time_entry time_entry[]
+
 }
 
 model task_board {
@@ -70,18 +76,8 @@ model task {
   task_description     String?
   task_file_id         String[]
   task_frequency       task_frequency_enum
-  syear                Int?
-  smonth               Int?
-  sdate                Int?
-  shour                Int?
-  sminute              Int?
-  eyear                Int?
-  emonth               Int?
-  edate                Int?
-  ehour                Int?
-  eminute              Int?
-  task_start_date_time String?
-  task_end_date_time   String?
+  task_start_date_time DateTime?
+  task_end_date_time   DateTime?
   task_coordinates     Float[]
   task_location        String?
   task_board           task_board          @relation(fields: [task_board_id], references: [id])
@@ -104,26 +100,16 @@ enum task_frequency_enum {
 }
 
 model sub_task {
-  id                       Int      @id @default(autoincrement())
-  task                     task     @relation(fields: [task_id], references: [id])
+  id                       Int       @id @default(autoincrement())
+  task                     task      @relation(fields: [task_id], references: [id])
   task_description         String
   task_id                  Int
-  syear                    Int
-  smonth                   Int
-  sdate                    Int
-  shour                    Int
-  sminute                  Int
-  eyear                    Int
-  emonth                   Int
-  edate                    Int
-  ehour                    Int
-  eminute                  Int
-  task_status              String   @default("Scheduled")
-  sub_task_start_date_time String?
-  sub_task_end_date_time   String?
+  task_status              String    @default("Scheduled")
+  sub_task_start_date_time DateTime?
+  sub_task_end_date_time   DateTime?
   user_ids                 user[]
-  created_at               DateTime @default(now())
-  updated_at               DateTime @updatedAt
+  created_at               DateTime  @default(now())
+  updated_at               DateTime  @updatedAt
   created_by               Int
 }
 
@@ -175,40 +161,172 @@ model task_comments {
   task_comments_status String?
 }
 
-model timeclock {
-  id            Int         @id @default(autoincrement())
-  title         String
-  assign_to_all Boolean?
-  group_ids     Int[]
-  locale        String
-  timezone      String
-  user_ids      user[]      @relation("user_ids")
-  admin_ids     user[]      @relation("admin_ids")
-  org_id        Int
-  created_by    Int
-  clock_ins     clock_ins[]
+model timesheets {
+  id                  Int              @id @default(autoincrement())
+  timeclock_name      String
+  assign_to_all       Boolean?
+  group_ids           Int[]
+  admins              user[]           @relation("admins")
+  org                 organization     @relation(fields: [org_id], references: [id])
+  org_id              Int
+  created_by          user             @relation(fields: [created_by_id], references: [id])
+  created_by_id       Int
+  time_entries        time_entry[]
+  general_settings    general_settings @relation(fields: [general_settings_id], references: [id])
+  general_settings_id Int              @unique
+  break_settings      break_settings   @relation(fields: [break_settings_id], references: [id])
+  break_settings_id   Int              @unique
+  created_at          DateTime         @default(now())
+  updated_at          DateTime         @updatedAt
 }
 
-model clock_ins {
-  id           Int       @id @default(autoincrement())
-  timeclock    timeclock @relation(fields: [timeclock_id], references: [id])
-  timeclock_id Int
-  user         user[]
+enum punch_type_enum {
+  IN
+  OUT
+}
+
+model time_entry {
+  id                    Int                     @id @default(autoincrement())
+  timesheet             timesheets              @relation(fields: [timesheet_id], references: [id])
+  timesheet_id          Int
+  shift                 shift                   @relation(fields: [shift_id], references: [id])
+  shift_id              Int
+  employee_manual_break employee_manual_break[]
+  org                   organization            @relation(fields: [org_id], references: [id])
+  org_id                Int
+  status                String                  @default("Pending")
+  notes                 String
+  user                  user                    @relation(fields: [user_id], references: [id])
+  user_id               Int
+  created_at            DateTime                @default(now())
+  updated_at            DateTime                @updatedAt
+  work_durations        work_durations[]
+}
+
+model work_durations {
+  id             Int        @id @default(autoincrement())
+  user           user       @relation(fields: [user_id], references: [id])
+  user_id        Int
+  time_entry     time_entry @relation(fields: [time_entry_id], references: [id])
+  time_entry_id  Int
+  check_in_time  DateTime
+  check_out_time DateTime
+}
+
+model employee_manual_break {
+  id            Int         @id @default(autoincrement())
+  break_type    String
+  duration      Int
+  start_time    DateTime
+  end_time      DateTime
+  time_entry    time_entry? @relation(fields: [time_entry_id], references: [id])
+  time_entry_id Int?
+  paid          Boolean
+  user          user        @relation(fields: [user_id], references: [id])
+  user_id       Int
 }
 
 model shift {
-  id      Int          @id @default(autoincrement())
-  user_id Int
-  org     organization @relation(fields: [org_id], references: [id])
-  org_id  Int
-  syear   Int?
-  smonth  Int?
-  sdate   Int?
-  shour   Int?
-  sminute Int?
-  eyear   Int?
-  emonth  Int?
-  edate   Int?
-  ehour   Int?
-  eminute Int?
+  id         Int          @id @default(autoincrement())
+  org        organization @relation(fields: [org_id], references: [id])
+  org_id     Int
+  start_time DateTime
+  end_time   DateTime
+  time_entry time_entry[]
+}
+
+model positions {
+  id             Int    @id @default(autoincrement())
+  position_title String
+}
+
+enum working_hours_calculation_enum {
+  FIRSTLAST
+  EVERY
+}
+
+enum minimum_hours_enum {
+  STRICT
+  LENIENT
+}
+
+enum manual_or_shift_minimum_hours_enum {
+  MANUAL
+  SHIFT
+}
+
+model workweeks {
+  id                  Int               @id @default(autoincrement())
+  general_settings    general_settings? @relation(fields: [general_settings_id], references: [id])
+  general_settings_id Int?              @unique
+  first               Boolean
+  first_start_time    Int
+  first_end_time      Int
+  second              Boolean
+  second_start_time   Int
+  second_end_time     Int
+  third               Boolean
+  third_start_time    Int
+  third_end_time      Int
+  fourth              Boolean
+  fourth_start_time   Int
+  fourth_end_time     Int
+  fifth               Boolean
+  fifth_start_time    Int
+  fifth_end_time      Int
+  saturday            Boolean
+  saturday_start_time Int
+  saturday_end_time   Int
+  seventh             Boolean
+  seventh_start_time  Int
+  seventh_end_time    Int
+
+}
+
+model general_settings {
+  id                            Int                                @id @default(autoincrement())
+  timesheets                    timesheets?
+  workweek_starts_on            Int
+  workweeks                     workweeks?
+  working_hours_calculation     working_hours_calculation_enum
+  minimum_hours                 minimum_hours_enum
+  manual_or_shift_minimum_hours manual_or_shift_minimum_hours_enum
+  minimum_hours_manual_full_day Int
+  minimum_hours_manual_half_day Int
+  restrict_clock_in             Boolean
+  restrict_clock_in_to          Int
+  restrict_clock_out            Boolean
+  restrict_clock_out_to         Int
+}
+
+enum break_settings_toggle_enum {
+  MANUAL
+  AUTOMATIC
+}
+
+model employee_manual_break_definitions {
+  id                Int             @id @default(autoincrement())
+  break_settings    break_settings? @relation(fields: [break_settings_id], references: [id])
+  break_settings_id Int?
+  break_type        String
+  duration          Int
+  paid              Boolean
+}
+
+model employee_automatic_break_definitions {
+  id                Int             @id @default(autoincrement())
+  break_settings    break_settings? @relation(fields: [break_settings_id], references: [id])
+  break_settings_id Int?
+  duration          Int
+  after_hours       Int
+  order             Int
+}
+
+model break_settings {
+  id                                   Int                                    @id @default(autoincrement())
+  timesheets                           timesheets?
+  break_settings_toggle                break_settings_toggle_enum
+  is_enabled                           Boolean
+  employee_manual_break_definitions    employee_manual_break_definitions[]
+  employee_automatic_break_definitions employee_automatic_break_definitions[]
 }

@@ -20,7 +20,7 @@ type TaskRepeatDetail {
 }
 
 input CreateTaskRepeatDetailInput {
-  task_id: Int!
+  task_id: Int
   stop_repeat: DateTime
   how_often_repeat: Int
   repeat_type: RepeatTypeEnum

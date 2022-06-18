@@ -1,0 +1,38 @@
+#import User from schema.graphql
+
+type Timesheet {
+  id: ID!
+  timeclock_name: String!
+  assign_to_all: Boolean
+  group_ids: [Int!]
+  admins: [User!]
+  org: Int!
+  created_by: Int!
+}
+
+input CreateTimesheetInput {
+  timeclock_name: String!
+  assign_to_all: Boolean
+  group_ids: [Int!]
+  org: Int!
+  created_by: Int!
+}
+
+input UpdateTimesheetInput {
+  id: Int!
+  timeclock_name: String
+  assign_to_all: Boolean
+  group_ids: [Int!]
+  admins_ids: [Int!]
+}
+
+type Query {
+  getAllTimesheets(orgId: Int!): [Timesheet]!
+  getTimesheet(id: Int!): Timesheet
+}
+
+type Mutation {
+  createTimesheet(createTimesheetInput: CreateTimesheetInput!): Timesheet!
+  updateTimesheet(updateTimesheetInput: UpdateTimesheetInput!): Timesheet!
+  removeTimesheet(id: Int!): Timesheet
+}

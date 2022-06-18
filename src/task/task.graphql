@@ -1,41 +1,12 @@
-#import SubTask, CreateSubTaskInput from sub_task.graphql
 #import User, Tag from schema.graphql
+#import SubTask, CreateSubTaskInput from sub_task.graphql
+#import TaskRepeatDetail, CreateTaskRepeatDetailInput from task_repeat_details.graphql
 
 scalar DateTime
 
 enum TaskFrequencyEnum {
   ONEOFF
   RECURRING
-}
-
-enum RepeatTypeEnum {
-  DAILY
-  WEEKLY
-  MONTHLY
-  YEARLY
-}
-
-# Repeat Details Type
-type RepeatDetailsType {
-  id: Int!
-  how_often_repeat: Int!
-  stop_repeat: DateTime
-  repeat_type: RepeatTypeEnum
-  day_of_week: [Int!]
-  day_of_month: Int
-  week_of_month: Int
-  month_of_year: Int
-}
-
-# Repeat Details Input
-input RepeatDetailsInput {
-  how_often_repeat: Int!
-  stop_repeat: DateTime
-  repeat_type: RepeatTypeEnum
-  day_of_week: [Int!]
-  day_of_month: Int
-  week_of_month: Int
-  month_of_year: Int
 }
 
 # Task type
@@ -45,23 +16,15 @@ type Task {
   task_description: String
   task_file_id: [String]
   task_frequency: TaskFrequencyEnum
-  syear: Int
-  smonth: Int
-  sdate: Int
-  shour: Int
-  sminute: Int
-  eyear: Int
-  emonth: Int
-  edate: Int
-  ehour: Int
-  eminute: Int
+  task_start_date_time: DateTime
+  task_end_date_time: DateTime
   task_coordinates: String
   task_location: String
   task_board_id: Int
-  repeat_details: RepeatDetailsType
+  repeat_details: TaskRepeatDetail
   task_status: String
   user: [User!]
-  created_by: Int
+  created_by: Int!
   task_tag: [Tag!]
   created_at: DateTime
   updated_at: DateTime
@@ -73,23 +36,15 @@ input CreateTaskInput {
   task_description: String
   task_file_id: [String]
   task_frequency: TaskFrequencyEnum
-  syear: Int
-  smonth: Int
-  sdate: Int
-  shour: Int
-  sminute: Int
-  eyear: Int
-  emonth: Int
-  edate: Int
-  ehour: Int
-  eminute: Int
+  task_start_date_time: DateTime
+  task_end_date_time: DateTime
   task_coordinates: String
   task_location: String
   task_board_id: Int
-  repeat_details: RepeatDetailsInput
+  repeat_details: CreateTaskRepeatDetailInput
   user_ids: [Int!]
-  created_by: Int
-  tag_ids: [Int]
+  created_by: Int!
+  tag_ids: [Int!]
   sub_task: [CreateSubTaskInput]
 }
 
@@ -99,16 +54,8 @@ input UpdateTaskInput {
   task_description: String
   task_file_id: [String]
   task_frequency: TaskFrequencyEnum
-  syear: Int
-  smonth: Int
-  sdate: Int
-  shour: Int
-  sminute: Int
-  eyear: Int
-  emonth: Int
-  edate: Int
-  ehour: Int
-  eminute: Int
+  task_start_date_time: DateTime
+  task_end_date_time: DateTime
   task_coordinates: String
   task_location: String
   task_status: String
@@ -119,14 +66,10 @@ input QueryTaskInput {
   isUnassigned: Boolean
   userIds: [Int]
   userId: Int
-  dates: String
   startDate: String
-  fromStartYear: Int
-  fromStartMonth: Int
-  fromStartDate: Int
-  toStartYear: Int
-  toStartMonth: Int
-  toStartDate: Int
+  endDate: String
+  filter_date_time: DateTime
+  next_date_time: DateTime
   tagIds: [Int]
   createdBy: Int
   taskStatus: [String]

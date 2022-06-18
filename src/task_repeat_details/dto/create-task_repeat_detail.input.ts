@@ -25,6 +25,7 @@ enum RepeatTypeEnum {
   YEARLY = 'YEARLY',
 }
 
+@InputType()
 export class CreateTaskRepeatDetailInput {
   @Field((type) => Int)
   @IsInt()

@@ -18,6 +18,7 @@ import {
   MinLength,
 } from 'class-validator';
 
+@InputType()
 export class QueryTaskInput {
   @Field((type) => Int)
   @IsInt()
@@ -42,42 +43,20 @@ export class QueryTaskInput {
   @Field()
   @IsString()
   @IsOptional()
-  startDate: string;
+  startDate: Date;
 
   @Field()
-  @IsString()
   @IsOptional()
-  dates: string;
+  endDate: string;
 
-  @Field((type) => Int)
-  @IsInt()
+  @Field((type) => Date)
+  @IsDateString()
   @IsOptional()
-  fromStartYear: number;
+  filter_date_time: Date;
 
-  @Field((type) => Int)
-  @IsInt()
+  @IsDateString()
   @IsOptional()
-  fromStartMonth: number;
-
-  @Field((type) => Int)
-  @IsInt()
-  @IsOptional()
-  fromStartDate: number;
-
-  @Field((type) => Int)
-  @IsInt()
-  @IsOptional()
-  toStartYear: number;
-
-  @Field((type) => Int)
-  @IsInt()
-  @IsOptional()
-  toStartMonth: number;
-
-  @Field((type) => Int)
-  @IsInt()
-  @IsOptional()
-  toStartDate: number;
+  next_date_time: Date;
 
   @IsArray()
   @Field((type) => [Int])

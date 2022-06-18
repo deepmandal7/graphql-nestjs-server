@@ -1,0 +1,29 @@
+type Shift {
+  id: Int
+  org_id: Int
+  start_time: DateTime
+  end_time: DateTime
+}
+
+input CreateShiftInput {
+  org_id: Int
+  start_time: DateTime
+  end_time: DateTime
+}
+
+input UpdateShiftInput {
+  id: Int!
+  start_time: DateTime
+  end_time: DateTime
+}
+
+type Query {
+  getAllShifts: [Shift]!
+  getShift(id: Int!): Shift
+}
+
+type Mutation {
+  createShift(createShiftInput: CreateShiftInput!): Shift!
+  updateShift(updateShiftInput: UpdateShiftInput!): Shift!
+  removeShift(id: Int!): Shift
+}

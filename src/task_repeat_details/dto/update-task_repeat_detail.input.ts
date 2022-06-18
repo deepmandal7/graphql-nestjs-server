@@ -1,6 +1,10 @@
 import { CreateTaskRepeatDetailInput } from './create-task_repeat_detail.input';
 import { PartialType } from '@nestjs/mapped-types';
+import { Field, InputType, ID, Int } from '@nestjs/graphql';
 
-export class UpdateTaskRepeatDetailInput extends PartialType(CreateTaskRepeatDetailInput) {
+@InputType()
+export class UpdateTaskRepeatDetailInput extends PartialType(
+  CreateTaskRepeatDetailInput,
+) {
   id: number;
 }

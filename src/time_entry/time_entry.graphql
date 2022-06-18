@@ -1,0 +1,50 @@
+#import User, Organization, Position from schema.graphql
+#import EmployeeBreak from employee_break.graphql
+#import WorkDuration from work_durations.graphql
+#import Shift from shifts.graphql
+
+type TimeEntry {
+  id: ID!
+  timesheet_id: Int!
+  shift: Shift
+  employee_break: [EmployeeBreak!]
+  check_in_time: DateTime!
+  check_out_time: DateTime!
+  org: Organization!
+  status: String
+  notes: String
+  user: User!
+  position: Position
+}
+
+input CreateTimeEntryInput {
+  timesheet_id: Int
+  shift_id: Int
+  employee_break: [Int]
+  check_in_time: DateTime!
+  check_out_time: DateTime!
+  org_id: Int!
+  user_id: Int
+  position_id: Int
+}
+
+input UpdateTimeEntryInput {
+  id: Int!
+  employee_break: [Int]
+  check_in_time: DateTime
+  check_out_time: DateTime
+  org_id: Int!
+  shift_id: Int
+  user_id: Int
+}
+
+type Query {
+  getAllTimeEntries: [TimeEntry]!
+  getTimeEntry(id: Int!): TimeEntry
+}
+
+type Mutation {
+  createTimeEntry(createTimeEntryInput: CreateTimeEntryInput!): TimeEntry!
+  updateTimeEntry(updateTimeEntryInput: UpdateTimeEntryInput!): TimeEntry!
+  removeTimeEntry(id: Int!): TimeEntry
+}
