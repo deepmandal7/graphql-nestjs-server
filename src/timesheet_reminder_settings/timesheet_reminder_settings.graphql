@@ -1,0 +1,42 @@
+type TimesheetReminderSetting {
+  id: ID!
+  before_start_enabled: Boolean!
+  before_start: Int!
+  after_start_enabled: Boolean!
+  after_start: Int!
+  before_end_enabled: Boolean!
+  before_end: Int!
+  after_end_enabled: Boolean!
+  after_end: Int!
+  no_check_in_enabled: Boolean!
+  no_check_in_after: Int!
+  no_check_out_enabled: Boolean!
+  no_check_out_after: Int!
+}
+
+input UpdateTimesheetReminderSettingInput {
+  id: Int!
+  before_start_enabled: Boolean!
+  before_start: Int!
+  after_start_enabled: Boolean!
+  after_start: Int!
+  before_end_enabled: Boolean!
+  before_end: Int!
+  after_end_enabled: Boolean!
+  after_end: Int!
+  no_check_in_enabled: Boolean!
+  no_check_in_after: Int!
+  no_check_out_enabled: Boolean!
+  no_check_out_after: Int!
+}
+
+type Query {
+  getTimesheetReminderSetting(timesheetId: Int!): TimesheetReminderSetting!
+}
+
+type Mutation {
+  updateTimesheetReminderSetting(
+    input: UpdateTimesheetReminderSettingInput!
+  ): TimesheetReminderSetting!
+  removeTimesheetReminderSetting(id: Int!): TimesheetReminderSetting
+}

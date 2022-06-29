@@ -1,0 +1,38 @@
+#import User from schema.graphql
+
+type TimesheetSubJobSetting {
+  id: ID
+  sub_job_title: String
+  all_user: Boolean
+  user: [User]
+}
+
+input CreateTimesheetSubJobSettingInput {
+  sub_job_title: String!
+  all_user: Boolean
+  user: [Int!]
+  job_id: Int
+  created_by: Int!
+}
+
+input UpdateTimesheetSubJobSettingInput {
+  id: Int!
+  sub_job_title: String
+  all_user: Boolean
+  user: [Int!]
+}
+
+type Query {
+  getAllTimesheetSubJobSettings(jobId: Int!): [TimesheetSubJobSetting]!
+  getTimesheetSubJobSetting(id: Int!): TimesheetSubJobSetting
+}
+
+type Mutation {
+  createTimesheetSubJobSetting(
+    input: CreateTimesheetSubJobSettingInput!
+  ): TimesheetSubJobSetting
+  updateTimesheetSubJobSetting(
+    input: UpdateTimesheetSubJobSettingInput!
+  ): TimesheetSubJobSetting!
+  removeTimesheetSubJobSetting(id: Int!): TimesheetSubJobSetting
+}

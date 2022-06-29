@@ -24,7 +24,7 @@ type Task {
   repeat_details: TaskRepeatDetail
   task_status: String
   user: [User!]
-  created_by: Int!
+  created_by: User!
   task_tag: [Tag!]
   created_at: DateTime
   updated_at: DateTime
@@ -81,15 +81,15 @@ type Query {
     orgId: Int!
     cursor: Int
     searchText: String
-    queryTaskInput: QueryTaskInput
+    where: QueryTaskInput
   ): [Task]!
   getTask(id: Int!): Task
   getUserTasks(userId: Int!): [Task]!
 }
 
 type Mutation {
-  createTask(createTaskInput: CreateTaskInput!): Task!
-  createTasks(createTaskInput: [CreateTaskInput]!): [Task!]!
-  updateTask(updateTaskInput: UpdateTaskInput!): Task!
+  createTask(input: CreateTaskInput!): Task!
+  createTasks(input: [CreateTaskInput]!): [Task!]!
+  updateTask(input: UpdateTaskInput!): Task!
   removeTask(id: Int!): Task
 }

@@ -1,0 +1,41 @@
+type TimesheetCustomizationSetting {
+  id: ID!
+  allow_clock_in_out_web_browser: Boolean!
+  allow_clock_in_out_mobile_app: Boolean!
+  allow_clock_in_out_no_shecduled_shift: Boolean!
+  allow_clock_in_out_mobile_app_timeclock: Boolean!
+  direct_clock_in_out_schedule: Boolean!
+  allow_clock_in_out_computer_timeclock: Boolean!
+  allow_manual_shift_records_addition: Boolean!
+  approval_manual_shift_records_addition: Boolean!
+  approval_manual_shift_records_deletion: Boolean!
+  approval_absence_addition: Boolean!
+  approval_cloking_out_outside_geofence: Boolean!
+}
+
+input UpdateTimesheetCustomizationSettingInput {
+  id: Int!
+  allow_clock_in_out_web_browser: Boolean!
+  allow_clock_in_out_mobile_app: Boolean!
+  allow_clock_in_out_no_shecduled_shift: Boolean!
+  allow_clock_in_out_mobile_app_timeclock: Boolean!
+  direct_clock_in_out_schedule: Boolean!
+  allow_clock_in_out_computer_timeclock: Boolean!
+  allow_manual_shift_records_addition: Boolean!
+  approval_manual_shift_records_addition: Boolean!
+  approval_manual_shift_records_deletion: Boolean!
+  approval_absence_addition: Boolean!
+  approval_cloking_out_outside_geofence: Boolean!
+}
+
+type Query {
+  getTimesheetCustomizationSetting(
+    timesheetId: Int!
+  ): TimesheetCustomizationSetting!
+}
+
+type Mutation {
+  updateTimesheetCustomizationSetting(
+    input: UpdateTimesheetCustomizationSettingInput!
+  ): TimesheetCustomizationSetting!
+}

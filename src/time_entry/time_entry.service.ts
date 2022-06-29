@@ -3,6 +3,8 @@ import { CreateTimeEntryInput } from './dto/create-time_entry.input';
 import { UpdateTimeEntryInput } from './dto/update-time_entry.input';
 import { PrismaService } from 'src/prisma.service';
 import { mapIDArrayToEnum } from 'src/common/utils/common_utils';
+import { Prisma } from '@prisma/client';
+import { QueryTimeEntryInput } from './dto/query-time_entry.input';
 
 @Injectable()
 export class TimeEntryService {
@@ -18,9 +20,25 @@ export class TimeEntryService {
       },
     };
 
-    insData.org = {
+    delete insData.check_in_time && delete insData.check_out_time;
+
+    // insData.timesheet = {
+    //   connect: {
+    //     id: createTimeEntryInput.timesheet_id,
+    //   },
+    // };
+    delete insData.timesheet_id;
+
+    // insData.org = {
+    //   // connect: {
+    //   //   id: createTimeEntryInput.org_id,
+    //   // },
+    // };
+    delete insData.org_id;
+
+    insData.created_by = {
       connect: {
-        id: createTimeEntryInput.org_id,
+        id: createTimeEntryInput.created_by,
       },
     };
 
@@ -29,24 +47,53 @@ export class TimeEntryService {
         id: createTimeEntryInput.user_id,
       },
     };
+    delete insData.user_id;
 
-    if (createTimeEntryInput.shift_id) {
-      insData.shift = {
-        connect: createTimeEntryInput.shift_id,
-      };
-    }
-
-    if (createTimeEntryInput.employee_break.length) {
-      insData.employee_break = {
-        connect: mapIDArrayToEnum(createTimeEntryInput.employee_break),
-      };
-    }
+    // if (createTimeEntryInput.shift_id) {
+    //   insData.shift = {
+    //     connect: {
+    //       id: createTimeEntryInput.shift_id,
+    //     },
+    //   };
+    //   delete insData.shift_id;
+    // }
 
     return this.prisma.time_entry.create({ data: insData });
   }
 
-  findAll() {
-    return `This action returns all timeEntry`;
+  findAll(
+    take: number,
+    cursor: Prisma.taskWhereUniqueInput | null,
+    orgId: number,
+    searchText: string | null,
+    queryTaskInput: QueryTimeEntryInput | null,
+  ) {
+    // let filter: any = {
+    //   where: {
+    //     timesheet_id: queryTaskInput.timesheet_id,
+    //     status: {
+    //       not: { equals: 'DELETED' },
+    //     },
+    //   },
+    //   // orderBy: {
+    //   //   created_at: 'asc',
+    //   // },
+    //   take,
+    //   include: {
+    //     user: {
+    //       select: {
+    //         id: true,
+    //         first_name: true,
+    //         last_name: true,
+    //       },
+    //     },
+    //   },
+    // };
+    // if (cursor) {
+    //   filter.cursor = cursor;
+    //   filter.skip = 1;
+    // }
+    // return this.prisma.time_entry.findMany(filter);
   }
 
   findOne(id: number) {

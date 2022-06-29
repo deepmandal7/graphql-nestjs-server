@@ -8,9 +8,7 @@ export class TaskBoardResolver {
   constructor(private readonly taskBoardService: TaskBoardService) {}
 
   @Mutation('createTaskBoard')
-  async create(
-    @Args('createTaskBoardInput') createTaskBoardInput: CreateTaskBoardInput,
-  ) {
+  async create(@Args('input') createTaskBoardInput: CreateTaskBoardInput) {
     return await this.taskBoardService.create({
       task_board_name: createTaskBoardInput.task_board_name,
       created_by: createTaskBoardInput.created_by,
@@ -40,9 +38,7 @@ export class TaskBoardResolver {
   }
 
   @Mutation('updateTaskBoard')
-  async update(
-    @Args('updateTaskBoardInput') updateTaskBoardInput: UpdateTaskBoardInput,
-  ) {
+  async update(@Args('input') updateTaskBoardInput: UpdateTaskBoardInput) {
     return await this.taskBoardService.update(
       updateTaskBoardInput.id,
       updateTaskBoardInput,

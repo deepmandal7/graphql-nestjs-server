@@ -3,12 +3,6 @@ import { CreateTimesheetInput } from './dto/create-timesheet.input';
 import { UpdateTimesheetInput } from './dto/update-timesheet.input';
 import { PrismaService } from 'src/prisma.service';
 import { Prisma } from '@prisma/client';
-import {
-  digitsToDateTime,
-  digitsToDate,
-  coordinatesStringToArray,
-  mapIDArrayToEnum,
-} from '../common/utils/common_utils';
 
 @Injectable()
 export class TimesheetsService {
@@ -22,6 +16,34 @@ export class TimesheetsService {
     };
     insertData.created_by = {
       connect: { id: insertData.created_by },
+    };
+
+    insertData.general_settings = {
+      create: {
+        workweeks: {
+          create: {},
+        },
+      },
+    };
+
+    insertData.customization_settings = {
+      create: {},
+    };
+
+    insertData.payroll_settings = {
+      create: {},
+    };
+
+    insertData.geo_location_settings = {
+      create: {},
+    };
+
+    insertData.reminder_settings = {
+      create: {},
+    };
+
+    insertData.notification_settings = {
+      create: {},
     };
     return await this.prisma.timesheets.create({
       data: insertData,
@@ -43,8 +65,70 @@ export class TimesheetsService {
     });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} timesheet`;
+  async findOne(id: number) {
+    return await this.prisma.timesheets.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        admins: {
+          select: {
+            email_id: true,
+          },
+        },
+        // general_settings: {
+        //   select: {
+        //     id: true,
+        //   },
+        // },
+        // customization_settings: {
+        //   select: {
+        //     id: true,
+        //   },
+        // },
+        // payroll_settings: {
+        //   select: {
+        //     id: true,
+        //   },
+        // },
+        // reminder_settings: {
+        //   select: {
+        //     id: true,
+        //   },
+        // },
+        // notification_settings: {
+        //   select: {
+        //     id: true,
+        //   },
+        // },
+        // job_settings: {
+        //   select: {
+        //     id: true,
+        //   },
+        //   include: {
+        //     timesheet_sub_job_settings: {
+        //       select: {
+        //         id: true,
+        //       },
+        //     },
+        //   },
+        // },
+        // geo_location_settings: {
+        //   include: {
+        //     timesheet_geo_location_job_settings: {
+        //       include: {
+        //         job_settings: true,
+        //       },
+        //     },
+        //     timesheet_geo_location_sub_job_settings: {
+        //       include: {
+        //         sub_job_settings: true,
+        //       },
+        //     },
+        //   },
+        // },
+      },
+    });
   }
 
   update(id: number, updateTimesheetInput: UpdateTimesheetInput) {

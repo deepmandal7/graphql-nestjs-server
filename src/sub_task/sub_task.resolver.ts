@@ -2,17 +2,14 @@ import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { SubTaskService } from './sub_task.service';
 import { CreateSubTaskInput } from './dto/create-sub_task.input';
 import { UpdateSubTaskInput } from './dto/update-sub_task.input';
-import {
-  digitsToDateTime,
-  mapIDArrayToEnum,
-} from '../common/utils/common_utils';
+import { mapIDArrayToEnum } from '../common/utils/common_utils';
 
 @Resolver('SubTask')
 export class SubTaskResolver {
   constructor(private readonly subTaskService: SubTaskService) {}
 
   @Mutation('createSubTask')
-  create(@Args('createSubTaskInput') createSubTaskInput: CreateSubTaskInput) {
+  create(@Args('input') createSubTaskInput: CreateSubTaskInput) {
     return this.subTaskService.create({
       task: {
         connect: {
@@ -47,7 +44,7 @@ export class SubTaskResolver {
   }
 
   @Mutation('updateSubTask')
-  update(@Args('updateSubTaskInput') updateSubTaskInput: UpdateSubTaskInput) {
+  update(@Args('input') updateSubTaskInput: UpdateSubTaskInput) {
     let updateData: any = updateSubTaskInput;
 
     updateData.user_ids.set = mapIDArrayToEnum(updateData.user_ids);

@@ -9,7 +9,7 @@ type SubTask {
   sub_task_start_date_time: DateTime
   sub_task_end_date_time: DateTime
   created_by: User
-  user: [User!]
+  user_ids: [User!]
 }
 
 input CreateSubTaskInput {
@@ -38,7 +38,7 @@ type Query {
 }
 
 type Mutation {
-  createSubTask(createSubTaskInput: CreateSubTaskInput!): SubTask!
-  updateSubTask(updateSubTaskInput: UpdateSubTaskInput!): SubTask!
+  createSubTask(input: CreateSubTaskInput!): SubTask!
+  updateSubTask(input: UpdateSubTaskInput!): SubTask!
   removeSubTask(id: Int!): SubTask
 }

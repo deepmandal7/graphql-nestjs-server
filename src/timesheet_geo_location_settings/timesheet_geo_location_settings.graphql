@@ -1,0 +1,32 @@
+#import TimesheetJobSetting from timesheet_job_settings.graphql
+
+enum GeoLocationSettingsEnum {
+  REQUIRED
+  OPTIONAL
+  OFF
+}
+
+type TimesheetGeoLocationSetting {
+  id: ID!
+  settings: GeoLocationSettingsEnum!
+  breadcrumbs_enabled: Boolean!
+}
+
+input UpdateTimesheetGeoLocationSettingInput {
+  id: Int!
+  settings: GeoLocationSettingsEnum!
+  breadcrumbs_enabled: Boolean!
+}
+
+type Query {
+  getTimesheetGeoLocationSetting(
+    timesheetId: Int!
+  ): TimesheetGeoLocationSetting!
+}
+
+type Mutation {
+  updateTimesheetGeoLocationSetting(
+    input: UpdateTimesheetGeoLocationSettingInput!
+  ): TimesheetGeoLocationSetting!
+  removeTimesheetGeoLocationSetting(id: Int!): TimesheetGeoLocationSetting
+}

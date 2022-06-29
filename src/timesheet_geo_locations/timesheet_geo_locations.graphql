@@ -1,0 +1,48 @@
+#import TimesheetJobSetting from timesheet_job_settings.graphql
+
+type TimesheetGeoLocation {
+  id: ID!
+  site_name: String
+  site_address: String
+  jobs: [TimesheetJobSetting!]
+}
+
+input CreateTimesheetGeoLocationInput {
+  timesheets: Int!
+  site_name: String
+  site_address: String
+  jobs: [Int!]
+  created_by: Int!
+}
+
+input UpdateTimesheetGeoLocationInput {
+  id: Int!
+  site_name: String
+  site_address: String
+  jobs: [Int!]
+}
+
+input QueryTimesheetGeoLocationInput {
+  timesheet_id: Int!
+}
+
+type Query {
+  getAllTimesheetGeoLocations(
+    take: Int!
+    orgId: Int!
+    where: QueryTimesheetGeoLocationInput!
+    cursor: Int
+    searchText: String
+  ): [TimesheetGeoLocation]!
+  getTimesheetGeoLocation(id: Int!): TimesheetGeoLocation
+}
+
+type Mutation {
+  createTimesheetGeoLocation(
+    input: CreateTimesheetGeoLocationInput!
+  ): TimesheetGeoLocation!
+  updateTimesheetGeoLocation(
+    input: UpdateTimesheetGeoLocationInput!
+  ): TimesheetGeoLocation!
+  removeTimesheetGeoLocation(id: Int!): TimesheetGeoLocation
+}

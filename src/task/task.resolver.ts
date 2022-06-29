@@ -5,11 +5,7 @@ import { CreateTaskInput, SubTask } from './dto/create-task.input';
 import { UpdateTaskInput } from './dto/update-task.input';
 import { QueryTaskInput } from './dto/query-task.input';
 import { task } from '@prisma/client';
-import {
-  digitsToDateTime,
-  coordinatesStringToArray,
-  mapIDArrayToEnum,
-} from '../common/utils/common_utils';
+import { mapIDArrayToEnum } from '../common/utils/common_utils';
 import { TaskBoardCustomisationService } from 'src/task_board_customisation/task_board_customisation.service';
 
 @Resolver('Task')
@@ -20,16 +16,12 @@ export class TaskResolver {
   ) {}
 
   @Mutation('createTasks')
-  async createMany(
-    @Args('createTaskInput') createTaskInput: CreateTaskInput[],
-  ) {
+  async createMany(@Args('input') createTaskInput: CreateTaskInput[]) {
     return await this.taskService.createMany(createTaskInput);
   }
 
   @Mutation('createTask')
-  async create(
-    @Args('createTaskInput') createTaskInput: CreateTaskInput,
-  ): Promise<task> {
+  async create(@Args('input') createTaskInput: CreateTaskInput): Promise<task> {
     await this.taskboardCustomisationService.customisationValidate(
       await this.taskboardCustomisationService.findAll(
         createTaskInput.task_board_id,
@@ -46,7 +38,7 @@ export class TaskResolver {
     @Args('cursor') cursor: number,
     @Args('orgId') orgId: number,
     @Args('searchText') searchText: string,
-    @Args('queryTaskInput') queryTaskInput: QueryTaskInput,
+    @Args('where') queryTaskInput: QueryTaskInput,
   ) {
     return await this.taskService.findAll(
       take,
@@ -68,9 +60,8 @@ export class TaskResolver {
   }
 
   @Mutation('updateTask')
-  update(@Args('updateTaskInput') updateTaskInput: UpdateTaskInput) {
+  update(@Args('input') updateTaskInput: UpdateTaskInput) {
     let updateData: any = updateTaskInput;
-    delete updateData.id;
     if (updateTaskInput.user_ids) {
       updateData.user = {
         set: mapIDArrayToEnum(updateTaskInput.user_ids),

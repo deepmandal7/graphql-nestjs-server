@@ -17,7 +17,7 @@ export class TaskBoardService {
       where: {
         org_id: orgId,
         task_board_status: {
-          not: 'DELETED',
+          not: { equals: 'DELETED' },
         },
       },
     });

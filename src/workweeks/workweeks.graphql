@@ -1,0 +1,58 @@
+type Workweek {
+  id: ID!
+  monday: Boolean!
+  monday_start_time: String!
+  monday_end_time: String!
+  tuesday: Boolean!
+  tuesday_start_time: String!
+  tuesday_end_time: String!
+  wednesday: Boolean!
+  wednesday_start_time: String!
+  wednesday_end_time: String!
+  thursday: Boolean!
+  thursday_start_time: String!
+  thursday_end_time: String!
+  friday: Boolean!
+  friday_start_time: String!
+  friday_end_time: String!
+  saturday: Boolean!
+  saturday_start_time: String!
+  saturday_end_time: String!
+  sunday: Boolean!
+  sunday_start_time: String!
+  sunday_end_time: String!
+}
+
+input UpdateWorkweekInput {
+  id: Int!
+  monday: Boolean!
+  monday_start_time: String!
+  monday_end_time: String!
+  tuesday: Boolean!
+  tuesday_start_time: String!
+  tuesday_end_time: String!
+  wednesday: Boolean!
+  wednesday_start_time: String!
+  wednesday_end_time: String!
+  thursday: Boolean!
+  thursday_start_time: String!
+  thursday_end_time: String!
+  friday: Boolean!
+  friday_start_time: String!
+  friday_end_time: String!
+  saturday: Boolean!
+  saturday_start_time: String!
+  saturday_end_time: String!
+  sunday: Boolean!
+  sunday_start_time: String!
+  sunday_end_time: String!
+}
+
+type Query {
+  getWorkweek(timesheetId: Int!): Workweek!
+}
+
+type Mutation {
+  updateWorkweek(input: UpdateWorkweekInput!): Workweek!
+  removeWorkweek(id: Int!): Workweek
+}

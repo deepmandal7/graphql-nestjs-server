@@ -1,0 +1,64 @@
+#import User from schema.graphql
+#import TimesheetSubJobSetting, CreateTimesheetSubJobSettingInput from timesheet_sub_job_settings.graphql
+#import TimesheetGeoLocation from timesheet_geo_locations.graphql
+
+type TimesheetJobSetting {
+  id: ID!
+  job_title: String
+  color: String
+  job_description: String
+  all_user: Boolean
+  user: [User]
+  sub_jobs_enabled: Boolean
+  timesheet_sub_jobs: [TimesheetSubJobSetting]
+  geo_locations: [TimesheetGeoLocation]
+}
+
+input CreateTimesheetJobSettingInput {
+  job_title: String
+  color: String
+  job_description: String
+  all_user: Boolean
+  user: [Int!]
+  sub_jobs_enabled: Boolean
+  geo_locations: [Int!]
+  timesheets: Int!
+  timesheet_sub_jobs: [CreateTimesheetSubJobSettingInput!]
+  created_by: Int!
+}
+
+input UpdateTimesheetJobSettingInput {
+  id: Int!
+  job_title: String
+  color: String
+  job_description: String
+  all_user: Boolean
+  user: [Int!]
+  sub_jobs_enabled: Boolean
+  geo_locations: [Int!]
+}
+
+input QueryTimesheetJobSettingsInput {
+  timesheet_id: Int!
+}
+
+type Query {
+  getAllTimesheetJobSettings(
+    take: Int!
+    orgId: Int!
+    where: QueryTimesheetJobSettingsInput!
+    cursor: Int
+    searchText: String
+  ): [TimesheetJobSetting]!
+  getTimesheetJobSetting(id: Int!): TimesheetJobSetting
+}
+
+type Mutation {
+  createTimesheetJobSetting(
+    input: CreateTimesheetJobSettingInput!
+  ): TimesheetJobSetting!
+  updateTimesheetJobSetting(
+    input: UpdateTimesheetJobSettingInput!
+  ): TimesheetJobSetting!
+  removeTimesheetJobSetting(id: Int!): TimesheetJobSetting
+}

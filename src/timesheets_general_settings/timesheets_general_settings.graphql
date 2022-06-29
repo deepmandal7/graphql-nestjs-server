@@ -1,0 +1,59 @@
+enum WorkingHoursCalculationEnum {
+  FIRSTLAST
+  EVERY
+}
+
+enum ManualOrShiftMinimumHoursEnum {
+  MANUAL
+  SHIFT
+}
+
+enum PayrollExportTimeFormatEnum {
+  DECIMAL
+  MINUTES
+}
+
+type TimesheetsGeneralSetting {
+  id: ID!
+  workweek_starts_on: Int!
+  daily_limit: String
+  auto_clock_out: String
+  working_hours_calculation: WorkingHoursCalculationEnum!
+  manual_or_shift_minimum_hours: ManualOrShiftMinimumHoursEnum!
+  minimum_hours_manual_full_day: String!
+  minimum_hours_manual_half_day: String!
+  payroll_export_time_format: PayrollExportTimeFormatEnum!
+  timezone: String!
+  restrict_clock_in: Boolean!
+  restrict_clock_in_to: Int!
+  restrict_clock_out: Boolean!
+  restrict_clock_out_to: Int!
+}
+
+input UpdateTimesheetsGeneralSettingInput {
+  id: Int!
+  workweek_starts_on: Int!
+  daily_limit: String!
+  auto_clock_out: String!
+  working_hours_calculation: WorkingHoursCalculationEnum!
+  manual_or_shift_minimum_hours: ManualOrShiftMinimumHoursEnum!
+  minimum_hours_manual_full_day: String!
+  minimum_hours_manual_half_day: String!
+  payroll_export_time_format: PayrollExportTimeFormatEnum!
+  timezone: String!
+  restrict_clock_in: Boolean!
+  restrict_clock_in_to: Int!
+  restrict_clock_out: Boolean!
+  restrict_clock_out_to: Int!
+}
+
+type Query {
+  getTimesheetsGeneralSetting(timesheetId: Int!): TimesheetsGeneralSetting!
+}
+
+type Mutation {
+  updateTimesheetsGeneralSetting(
+    input: UpdateTimesheetsGeneralSettingInput!
+  ): TimesheetsGeneralSetting!
+  removeTimesheetsGeneralSetting(id: Int!): TimesheetsGeneralSetting
+}

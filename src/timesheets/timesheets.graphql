@@ -32,7 +32,7 @@ type Query {
 }
 
 type Mutation {
-  createTimesheet(createTimesheetInput: CreateTimesheetInput!): Timesheet!
-  updateTimesheet(updateTimesheetInput: UpdateTimesheetInput!): Timesheet!
+  createTimesheet(input: CreateTimesheetInput!): Timesheet!
+  updateTimesheet(input: UpdateTimesheetInput!): Timesheet!
   removeTimesheet(id: Int!): Timesheet
 }

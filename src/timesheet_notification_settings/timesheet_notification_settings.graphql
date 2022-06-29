@@ -1,0 +1,70 @@
+type TimesheetNotificationSetting {
+  id: ID!
+  user_request_absence_mobile: Boolean!
+  user_request_absence_webpush: Boolean!
+  user_request_absence_email: Boolean!
+  user_new_shift_added_mobile: Boolean!
+  user_new_shift_added_webpush: Boolean!
+  user_new_shift_added_email: Boolean!
+  user_edit_shift_mobile: Boolean!
+  user_edit_shift_webpush: Boolean!
+  user_edit_shift_email: Boolean!
+  user_exceeds_mobile: Boolean!
+  user_exceeds_webpush: Boolean!
+  user_exceeds_email: Boolean!
+  user_auto_clock_out_mobile: Boolean!
+  user_auto_clock_out_webpush: Boolean!
+  user_auto_clock_out_email: Boolean!
+  user_pending: Int!
+  user_pending_mobile: Boolean!
+  user_pending_webpush: Boolean!
+  user_pending_email: Boolean!
+  admin_absence_approval_mobile: Boolean!
+  admin_absence_approval_webpush: Boolean!
+  admin_absence_approval_email: Boolean!
+  admin_shift_approval_mobile: Boolean!
+  admin_shift_approval_webpush: Boolean!
+  admin_shift_approval_email: Boolean!
+}
+
+input UpdateTimesheetNotificationSettingInput {
+  id: Int!
+  user_request_absence_mobile: Boolean!
+  user_request_absence_webpush: Boolean!
+  user_request_absence_email: Boolean!
+  user_new_shift_added_mobile: Boolean!
+  user_new_shift_added_webpush: Boolean!
+  user_new_shift_added_email: Boolean!
+  user_edit_shift_mobile: Boolean!
+  user_edit_shift_webpush: Boolean!
+  user_edit_shift_email: Boolean!
+  user_exceeds_mobile: Boolean!
+  user_exceeds_webpush: Boolean!
+  user_exceeds_email: Boolean!
+  user_auto_clock_out_mobile: Boolean!
+  user_auto_clock_out_webpush: Boolean!
+  user_auto_clock_out_email: Boolean!
+  user_pending: Int!
+  user_pending_mobile: Boolean!
+  user_pending_webpush: Boolean!
+  user_pending_email: Boolean!
+  admin_absence_approval_mobile: Boolean!
+  admin_absence_approval_webpush: Boolean!
+  admin_absence_approval_email: Boolean!
+  admin_shift_approval_mobile: Boolean!
+  admin_shift_approval_webpush: Boolean!
+  admin_shift_approval_email: Boolean!
+}
+
+type Query {
+  getTimesheetNotificationSetting(
+    timesheetId: Int!
+  ): TimesheetNotificationSetting!
+}
+
+type Mutation {
+  updateTimesheetNotificationSetting(
+    input: UpdateTimesheetNotificationSettingInput!
+  ): TimesheetNotificationSetting!
+  removeTimesheetNotificationSetting(id: Int!): TimesheetNotificationSetting
+}

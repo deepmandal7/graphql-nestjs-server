@@ -4,11 +4,6 @@ type Organization {
   timezone: String
 }
 
-type Position {
-  id: ID!
-  positine_title: String
-}
-
 type User {
   id: ID!
   first_name: String

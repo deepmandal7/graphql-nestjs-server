@@ -10,7 +10,7 @@ export class TaskCommentsResolver {
 
   @Mutation('createTaskComment')
   create(
-    @Args('createTaskCommentInput')
+    @Args('input')
     createTaskCommentInput: CreateTaskCommentInput,
   ): Promise<task_comments> {
     return this.taskCommentsService.create({
@@ -42,7 +42,7 @@ export class TaskCommentsResolver {
 
   @Mutation('updateTaskComment')
   update(
-    @Args('updateTaskCommentInput')
+    @Args('input')
     updateTaskCommentInput: UpdateTaskCommentInput,
   ): Promise<task_comments> {
     return this.taskCommentsService.update(

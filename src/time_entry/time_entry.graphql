@@ -1,50 +1,67 @@
-#import User, Organization, Position from schema.graphql
-#import EmployeeBreak from employee_break.graphql
+#import User, Organization from schema.graphql
 #import WorkDuration from work_durations.graphql
 #import Shift from shifts.graphql
 
+enum DayTypeEnum {
+  NEXT
+  PREVIOUS
+  CURRENT
+}
+
 type TimeEntry {
   id: ID!
-  timesheet_id: Int!
+  timesheet_entry_id: Int!
   shift: Shift
-  employee_break: [EmployeeBreak!]
   check_in_time: DateTime!
+  check_in_date_type: DayTypeEnum!
   check_out_time: DateTime!
+  check_out_date_type: DayTypeEnum
   org: Organization!
   status: String
   notes: String
   user: User!
-  position: Position
+  created_by: User!
 }
 
 input CreateTimeEntryInput {
-  timesheet_id: Int
-  shift_id: Int
-  employee_break: [Int]
-  check_in_time: DateTime!
-  check_out_time: DateTime!
-  org_id: Int!
-  user_id: Int
-  position_id: Int
+  timesheet_entry_id: Int
+  check_in_time: String!
+  check_in_date_type: DayTypeEnum!
+  check_out_time: String
+  check_out_date_type: DayTypeEnum
+  timesheet_jobs_id: Int
+  timesheet_sub_jobs_id: Int
+  user_id: Int!
+  created_by: Int!
 }
 
 input UpdateTimeEntryInput {
   id: Int!
-  employee_break: [Int]
-  check_in_time: DateTime
-  check_out_time: DateTime
-  org_id: Int!
-  shift_id: Int
-  user_id: Int
+  check_in_time: String!
+  check_in_date_type: String!
+  check_out_time: String
+  check_out_date_type: String
+  timesheet_jobs_id: Int
+  timesheet_sub_jobs_id: Int
+}
+
+input QueryTimeEntryInput {
+  timesheet_entry_id: Int!
 }
 
 type Query {
-  getAllTimeEntries: [TimeEntry]!
+  getAllTimeEntries(
+    take: Int!
+    orgId: Int!
+    cursor: Int
+    searchText: String
+    where: QueryTimeEntryInput
+  ): [TimeEntry]!
   getTimeEntry(id: Int!): TimeEntry
 }
 
 type Mutation {
-  createTimeEntry(createTimeEntryInput: CreateTimeEntryInput!): TimeEntry!
-  updateTimeEntry(updateTimeEntryInput: UpdateTimeEntryInput!): TimeEntry!
+  createTimeEntry(input: CreateTimeEntryInput!): TimeEntry!
+  updateTimeEntry(input: UpdateTimeEntryInput!): TimeEntry!
   removeTimeEntry(id: Int!): TimeEntry
 }

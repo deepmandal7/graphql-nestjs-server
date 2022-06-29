@@ -2,21 +2,32 @@ import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { TimeEntryService } from './time_entry.service';
 import { CreateTimeEntryInput } from './dto/create-time_entry.input';
 import { UpdateTimeEntryInput } from './dto/update-time_entry.input';
+import { QueryTimeEntryInput } from './dto/query-time_entry.input';
 
 @Resolver('TimeEntry')
 export class TimeEntryResolver {
   constructor(private readonly timeEntryService: TimeEntryService) {}
 
   @Mutation('createTimeEntry')
-  create(
-    @Args('createTimeEntryInput') createTimeEntryInput: CreateTimeEntryInput,
-  ) {
+  create(@Args('input') createTimeEntryInput: CreateTimeEntryInput) {
     return this.timeEntryService.create(createTimeEntryInput);
   }
 
   @Query('getAllTimeEntries')
-  findAll() {
-    return this.timeEntryService.findAll();
+  findAll(
+    @Args('take') take: number,
+    @Args('cursor') cursor: number,
+    @Args('orgId') orgId: number,
+    @Args('searchText') searchText: string,
+    @Args('where') queryTimeEntryInput: QueryTimeEntryInput,
+  ) {
+    return this.timeEntryService.findAll(
+      take,
+      cursor ? { id: cursor } : null,
+      orgId,
+      searchText,
+      queryTimeEntryInput,
+    );
   }
 
   @Query('getTimeEntry')

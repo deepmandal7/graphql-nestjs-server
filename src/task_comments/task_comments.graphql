@@ -22,11 +22,7 @@ type Query {
 }
 
 type Mutation {
-  createTaskComment(
-    createTaskCommentInput: CreateTaskCommentInput!
-  ): TaskComment!
-  updateTaskComment(
-    updateTaskCommentInput: UpdateTaskCommentInput!
-  ): TaskComment!
+  createTaskComment(input: CreateTaskCommentInput!): TaskComment!
+  updateTaskComment(input: UpdateTaskCommentInput!): TaskComment!
   removeTaskComment(id: Int!): TaskComment
 }

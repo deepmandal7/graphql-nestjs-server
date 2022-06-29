@@ -12,11 +12,19 @@ export class SubTaskService {
   }
   findAll(taskId: number) {
     return this.prisma.sub_task.findMany({
+      select: {
+        id: true,
+        task_description: true,
+        task_status: true,
+        sub_task_start_date_time: true,
+        sub_task_end_date_time: true,
+        user_ids: { select: { id: true, first_name: true, last_name: true } },
+        created_at: true,
+        updated_at: true,
+        created_by: true,
+      },
       where: {
         task_id: taskId,
-      },
-      include: {
-        user_ids: true,
       },
     });
   }
@@ -26,8 +34,16 @@ export class SubTaskService {
       where: {
         id,
       },
-      include: {
-        user_ids: true,
+      select: {
+        id: true,
+        task_description: true,
+        task_status: true,
+        sub_task_start_date_time: true,
+        sub_task_end_date_time: true,
+        user_ids: { select: { id: true, first_name: true, last_name: true } },
+        created_at: true,
+        updated_at: true,
+        created_by: true,
       },
     });
   }
@@ -42,6 +58,16 @@ export class SubTaskService {
             },
           },
         },
+      },
+      select: {
+        id: true,
+        task_description: true,
+        task_status: true,
+        sub_task_start_date_time: true,
+        sub_task_end_date_time: true,
+        created_at: true,
+        updated_at: true,
+        created_by: true,
       },
     });
   }

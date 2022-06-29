@@ -1,0 +1,51 @@
+#import User from schema.graphql
+#import TimeEntry, CreateTimeEntryInput from time_entry.graphql
+
+type TimesheetEntry {
+  id: ID!
+  timesheet_id: Int!
+  entry_date: String!
+  timesheet_clockin_time: String!
+  timesheet_clockout_time: String
+  # shift: Shift
+  status: String
+  user: User!
+  time_entry: [TimeEntry!]!
+  created_by: User!
+}
+
+input CreateTimesheetEntryInput {
+  timesheet_id: Int!
+  entry_date: String!
+  # shift: Int
+  user_id: Int!
+  tz_offset: String!
+  tz_name: String!
+  time_entry: [CreateTimeEntryInput!]!
+  created_by_id: Int!
+}
+
+input UpdateTimesheetEntryInput {
+  id: Int!
+}
+
+input QueryTimesheetInput {
+  timesheetId: Int!
+}
+
+type Query {
+  getAllTimesheetEntry(
+    take: Int!
+    orgId: Int!
+    where: QueryTimesheetInput!
+    cursor: Int
+    searchText: String
+  ): [TimesheetEntry]!
+  timesheetEntry(id: Int!): TimesheetEntry
+}
+
+type Mutation {
+  createTimesheetEntry(input: CreateTimesheetEntryInput!): TimesheetEntry!
+  updateTimesheetEntry(input: UpdateTimesheetEntryInput!): TimesheetEntry!
+  removeTimesheetEntry(id: Int!): TimesheetEntry
+}

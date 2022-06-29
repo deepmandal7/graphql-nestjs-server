@@ -11,7 +11,7 @@ export class TaskRepeatDetailsResolver {
 
   @Mutation('createTaskRepeatDetail')
   async create(
-    @Args('createTaskRepeatDetailInput')
+    @Args('input')
     createTaskRepeatDetailInput: CreateTaskRepeatDetailInput,
   ) {
     return await this.taskRepeatDetailsService.create(
@@ -26,7 +26,7 @@ export class TaskRepeatDetailsResolver {
 
   @Mutation('updateTaskRepeatDetail')
   async update(
-    @Args('updateTaskRepeatDetailInput')
+    @Args('input')
     updateTaskRepeatDetailInput: UpdateTaskRepeatDetailInput,
   ) {
     return await this.taskRepeatDetailsService.update(

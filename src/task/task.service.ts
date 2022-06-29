@@ -74,14 +74,11 @@ export class TaskService {
     };
     return await this.prisma.task.create({
       data: insertData,
-      include: {
-        user: true,
-      },
     });
   }
 
   async createMany(data): Promise<task[]> {
-    let tasks: any = data;
+    let tasks: any[] = data;
     for (let task of tasks) {
       task.task_start_date_time = task.task_start_date_time
         ? task.task_start_date_time
@@ -144,6 +141,18 @@ export class TaskService {
         select: {
           id: true,
           task_title: true,
+          task_description: true,
+          task_frequency: true,
+          task_tag: { select: { tag: true } },
+          task_start_date_time: true,
+          task_end_date_time: true,
+          task_coordinates: true,
+          task_location: true,
+          task_status: true,
+          repeat_details: true,
+          created_at: true,
+          updated_at: true,
+          created_by: true,
         },
         where: {
           task_board: { is: { org_id: orgId } },
@@ -161,7 +170,7 @@ export class TaskService {
           },
         },
         task_status: {
-          not: 'DELETED',
+          not: { equals: 'DELETED' },
         },
       },
       // orderBy: {
@@ -300,8 +309,33 @@ export class TaskService {
     return data;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} task`;
+  async findOne(id: number) {
+    return await this.prisma.task.findUnique({
+      where: {
+        id,
+      },
+      select: {
+        id: true,
+        task_title: true,
+        task_description: true,
+        task_file_id: true,
+        task_frequency: true,
+        task_start_date_time: true,
+        task_end_date_time: true,
+        task_coordinates: true,
+        task_location: true,
+        sub_task: true,
+        task_status: true,
+        repeat_details: true,
+        created_at: true,
+        updated_at: true,
+        task_tag: { select: { tag: true } },
+        task_comments: true,
+        user: true,
+        created_by: true,
+      },
+    });
+    // console.log(data);;
   }
 
   async update(id: number, updateTaskInput: Prisma.taskUpdateInput) {
@@ -369,6 +403,24 @@ export class TaskService {
             },
           },
         },
+      },
+      select: {
+        id: true,
+        task_title: true,
+        task_description: true,
+        task_file_id: true,
+        task_frequency: true,
+        task_start_date_time: true,
+        task_end_date_time: true,
+        task_coordinates: true,
+        task_location: true,
+        task_status: true,
+        repeat_details: true,
+        created_at: true,
+        updated_at: true,
+        task_tag: { select: { tag: true } },
+        task_comments: true,
+        created_by: true,
       },
     });
   }

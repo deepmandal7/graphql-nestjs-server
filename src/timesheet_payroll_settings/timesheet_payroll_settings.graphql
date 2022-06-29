@@ -1,0 +1,39 @@
+enum PayPeriodCycleEnum {
+  MONTHLY
+  WEEKLY
+  BIWEEKLY
+  HALFMONTHLY
+}
+
+type TimesheetPayrollSetting {
+  id: ID!
+  pay_period_cycle: PayPeriodCycleEnum!
+  start_day: Int!
+  end_day: Int!
+  payroll_processing_day: Int!
+  payroll_report_generation_day: Int!
+  process_leave_encashment: Boolean!
+  lock: Boolean!
+}
+
+input UpdateTimesheetPayrollSettingInput {
+  id: Int!
+  pay_period_cycle: PayPeriodCycleEnum!
+  start_day: Int!
+  end_day: Int!
+  payroll_processing_day: Int!
+  payroll_report_generation_day: Int!
+  process_leave_encashment: Boolean!
+  lock: Boolean!
+}
+
+type Query {
+  getTimesheetPayrollSetting(timesheetId: Int!): TimesheetPayrollSetting!
+}
+
+type Mutation {
+  updateTimesheetPayrollSetting(
+    input: UpdateTimesheetPayrollSettingInput!
+  ): TimesheetPayrollSetting!
+  removeTimesheetPayrollSetting(id: Int!): TimesheetPayrollSetting
+}

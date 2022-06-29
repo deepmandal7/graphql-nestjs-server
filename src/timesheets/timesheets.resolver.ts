@@ -8,9 +8,7 @@ export class TimesheetsResolver {
   constructor(private readonly timesheetsService: TimesheetsService) {}
 
   @Mutation('createTimesheet')
-  async create(
-    @Args('createTimesheetInput') createTimesheetInput: CreateTimesheetInput,
-  ) {
+  async create(@Args('input') createTimesheetInput: CreateTimesheetInput) {
     return await this.timesheetsService.create(createTimesheetInput);
   }
 
@@ -25,9 +23,7 @@ export class TimesheetsResolver {
   }
 
   @Mutation('updateTimesheet')
-  update(
-    @Args('updateTimesheetInput') updateTimesheetInput: UpdateTimesheetInput,
-  ) {
+  update(@Args('input') updateTimesheetInput: UpdateTimesheetInput) {
     return this.timesheetsService.update(
       updateTimesheetInput.id,
       updateTimesheetInput,

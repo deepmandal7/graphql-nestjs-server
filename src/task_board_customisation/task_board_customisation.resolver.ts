@@ -16,7 +16,7 @@ export class TaskBoardCustomisationResolver {
 
   @Mutation('updateTaskBoardCustomisation')
   updateMany(
-    @Args('updateTaskBoardCustomisationInput')
+    @Args('input')
     updateTaskBoardCustomisationInput: UpdateTaskBoardCustomisationInput,
   ) {
     return this.taskBoardCustomisationService.updateMany(

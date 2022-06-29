@@ -17,29 +17,43 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
-import { CreateWorkDurationInput } from '../../work_durations/dto/create-work_duration.input';
+
+enum DayTypeEnum {
+  CURRENT = 'CURRENT',
+  NEXT = 'NEXT',
+  PREVIOUS = 'PREVIOUS',
+}
 
 export class CreateTimeEntryInput {
   @Field((type) => Int)
   @IsInt()
-  timesheet_id: number;
+  timesheet_entry_id: number;
+
+  @Field()
+  check_in_time: string;
+
+  @Field((type) => DayTypeEnum)
+  @IsEnum(DayTypeEnum)
+  check_in_date_type: DayTypeEnum;
+
+  @Field()
+  @IsOptional()
+  check_out_time: string;
+
+  @Field((type) => DayTypeEnum)
+  @IsEnum(DayTypeEnum)
+  @IsOptional()
+  check_out_date_type: DayTypeEnum;
 
   @Field((type) => Int)
   @IsInt()
   @IsOptional()
-  shift_id: number;
+  timesheet_jobs_id: number;
 
-  @Field((type) => [Int])
+  @Field((type) => Int)
+  @IsInt()
   @IsOptional()
-  employee_break: number[];
-
-  @Field((type) => Date)
-  @IsDateString()
-  check_in_time: Date;
-
-  @Field((type) => Date)
-  @IsDateString()
-  check_out_time: Date;
+  timesheet_sub_jobs_id: number;
 
   @Field((type) => Int)
   @IsInt()
@@ -47,5 +61,5 @@ export class CreateTimeEntryInput {
 
   @Field((type) => Int)
   @IsInt()
-  org_id: number;
+  created_by: number;
 }

@@ -46,11 +46,7 @@ type Query {
 }
 
 type Mutation {
-  createTaskRepeatDetail(
-    createTaskRepeatDetailInput: CreateTaskRepeatDetailInput!
-  ): TaskRepeatDetail!
-  updateTaskRepeatDetail(
-    updateTaskRepeatDetailInput: UpdateTaskRepeatDetailInput!
-  ): TaskRepeatDetail!
+  createTaskRepeatDetail(input: CreateTaskRepeatDetailInput!): TaskRepeatDetail!
+  updateTaskRepeatDetail(input: UpdateTaskRepeatDetailInput!): TaskRepeatDetail!
   removeTaskRepeatDetail(id: Int!): TaskRepeatDetail
 }

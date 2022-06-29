@@ -37,14 +37,21 @@ input CreateTaskBoardInput {
 
 input UpdateTaskBoardInput {
   id: Int!
+  task_board_name: String!
+  can_create: CanCreateEnum!
+}
+
+input QueryTaskBoardInput {
+  org_id: Int!
+  status: String
 }
 
 type Query {
-  getTaskBoards: [TaskBoard]!
+  getTaskBoards(where: QueryTaskBoardInput!): [TaskBoard]!
 }
 
 type Mutation {
-  createTaskBoard(createTaskBoardInput: CreateTaskBoardInput!): TaskBoard!
-  updateTaskBoard(updateTaskBoardInput: UpdateTaskBoardInput!): TaskBoard!
+  createTaskBoard(input: CreateTaskBoardInput!): TaskBoard!
+  updateTaskBoard(input: UpdateTaskBoardInput!): TaskBoard!
   removeTaskBoard(id: Int!): TaskBoard
 }
