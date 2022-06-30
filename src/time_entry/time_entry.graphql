@@ -32,7 +32,7 @@ input CreateTimeEntryInput {
   timesheet_jobs_id: Int
   timesheet_sub_jobs_id: Int
   user_id: Int!
-  created_by: Int!
+  created_by_id: Int!
 }
 
 input UpdateTimeEntryInput {

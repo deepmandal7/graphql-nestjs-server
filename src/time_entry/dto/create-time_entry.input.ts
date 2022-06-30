@@ -61,5 +61,5 @@ export class CreateTimeEntryInput {
 
   @Field((type) => Int)
   @IsInt()
-  created_by: number;
+  created_by_id: number;
 }

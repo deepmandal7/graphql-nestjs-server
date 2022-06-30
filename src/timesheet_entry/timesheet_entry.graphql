@@ -19,8 +19,7 @@ input CreateTimesheetEntryInput {
   entry_date: String!
   # shift: Int
   user_id: Int!
-  tz_offset: String!
-  tz_name: String!
+  timezone: String!
   time_entry: [CreateTimeEntryInput!]!
   created_by_id: Int!
 }

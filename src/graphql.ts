@@ -209,7 +209,7 @@ export class CreateTimeEntryInput {
     timesheet_jobs_id?: Nullable<number>;
     timesheet_sub_jobs_id?: Nullable<number>;
     user_id: number;
-    created_by: number;
+    created_by_id: number;
 }
 
 export class UpdateTimeEntryInput {
@@ -245,8 +245,7 @@ export class CreateTimesheetEntryInput {
     timesheet_id: number;
     entry_date: string;
     user_id: number;
-    tz_offset: string;
-    tz_name: string;
+    timezone: string;
     time_entry: CreateTimeEntryInput[];
     created_by_id: number;
 }

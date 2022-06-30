@@ -33,6 +33,7 @@
     "apollo-server-express": "^3.6.7",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
+    "dayjs": "^1.11.3",
     "g": "^2.0.1",
     "graphql": "^16.3.0",
     "pg": "^8.7.3",

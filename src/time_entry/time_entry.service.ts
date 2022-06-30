@@ -38,7 +38,7 @@ export class TimeEntryService {
 
     insData.created_by = {
       connect: {
-        id: createTimeEntryInput.created_by,
+        id: createTimeEntryInput.created_by_id,
       },
     };
 

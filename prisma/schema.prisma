@@ -26,13 +26,14 @@ model user {
   timesheets_created timesheets[]
 
   // employee_break       employee_manual_break[]
-  time_entries_created            timesheet_entry[]         @relation("time_entries_created")
+  timesheet_entry                 timesheet_entry[]
+  timesheet_entries_created       timesheet_entry[]         @relation("timesheet_entries_created")
   timesheet_jobs                  timesheet_jobs[]
   timesheet_sub_jobs              timesheet_sub_jobs[]
   timesheet_jobs_created          timesheet_jobs[]          @relation("timesheet_jobs_created")
   timesheet_sub_jobs_created      timesheet_sub_jobs[]      @relation("timesheet_sub_jobs_created")
   timesheet_geo_locations_created timesheet_geo_locations[] @relation("timesheet_geo_locations_created")
-  timesheet_entry                 timesheet_entry[]
+  time_entries_created            time_entry[]              @relation("time_entries_created")
 }
 
 model organization {
@@ -198,19 +199,24 @@ model timesheets {
   timesheet_entry           timesheet_entry[]
 }
 
+enum timesheet_entry_status_enum {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 model timesheet_entry {
-  id                      Int          @id @default(autoincrement())
-  timesheet               timesheets   @relation(fields: [timesheet_id], references: [id])
+  id                      Int                         @id @default(autoincrement())
+  timesheet               timesheets                  @relation(fields: [timesheet_id], references: [id])
   timesheet_id            Int
-  status                  String       @default("Pending")
-  user                    user         @relation(fields: [user_id], references: [id])
+  status                  timesheet_entry_status_enum @default(PENDING)
+  user                    user                        @relation(fields: [user_id], references: [id])
   user_id                 Int
-  entry_date              DateTime
-  timesheet_clockin_time  DateTime?
+  timesheet_clockin_time  DateTime
   timesheet_clockout_time DateTime?
-  created_at              DateTime     @default(now())
-  updated_at              DateTime     @updatedAt
-  created_by              user         @relation("time_entries_created", fields: [created_by_id], references: [id])
+  created_at              DateTime                    @default(now())
+  updated_at              DateTime                    @updatedAt
+  created_by              user                        @relation("timesheet_entries_created", fields: [created_by_id], references: [id])
   created_by_id           Int
   time_entry              time_entry[]
   // shift                   shift?        @relation(fields: [shiftId], references: [id])
@@ -239,6 +245,8 @@ model time_entry {
   timesheet_jobs_id     Int?
   timesheet_sub_jobs    timesheet_sub_jobs? @relation(fields: [timesheet_sub_jobs_id], references: [id])
   timesheet_sub_jobs_id Int?
+  created_by            user                @relation("time_entries_created", fields: [created_by_id], references: [id])
+  created_by_id         Int
 }
 
 // model employee_manual_break {
@@ -328,7 +336,7 @@ model timesheet_general_settings {
   restrict_clock_in               Boolean                            @default(false)
   restrict_clock_in_to            Int                                @default(5)
   restrict_clock_out              Boolean                            @default(false)
-  enable_daily_timesheet_aprroval Boolean                            @default(true)
+  enable_daily_timesheet_approval Boolean                            @default(true)
   restrict_clock_out_to           Int                                @default(5)
   timesheets                      timesheets?
   created_at                      DateTime                           @default(now())

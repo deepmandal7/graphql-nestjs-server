@@ -34,10 +34,7 @@ export class CreateTimesheetEntryInput {
   entry_date: string;
 
   @Field()
-  tz_offset: string;
-
-  @Field()
-  tz_name: string;
+  timezone: string;
 
   @Field((type) => [CreateTimeEntryInput])
   @Type(() => Array)
