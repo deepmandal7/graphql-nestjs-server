@@ -45,6 +45,27 @@ export class TimesheetsService {
     insertData.notification_settings = {
       create: {},
     };
+
+    insertData.timesheet_break_settings = {
+      create: {
+        timesheet_manual_breaks: {
+          createMany: {
+            data: [
+              {
+                break_type: 'Lunch Break',
+                paid_type: 'PAID',
+                duration: 30,
+              },
+              {
+                break_type: 'Rest Break',
+                paid_type: 'PAID',
+                duration: 30,
+              },
+            ],
+          },
+        },
+      },
+    };
     return await this.prisma.timesheets.create({
       data: insertData,
     });

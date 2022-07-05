@@ -9,44 +9,20 @@ export class TimeEntryResolver {
   constructor(private readonly timeEntryService: TimeEntryService) {}
 
   @Mutation('createTimeEntry')
-  create(@Args('input') createTimeEntryInput: CreateTimeEntryInput) {
-    return this.timeEntryService.create(createTimeEntryInput);
-  }
-
-  @Query('getAllTimeEntries')
-  findAll(
-    @Args('take') take: number,
-    @Args('cursor') cursor: number,
-    @Args('orgId') orgId: number,
-    @Args('searchText') searchText: string,
-    @Args('where') queryTimeEntryInput: QueryTimeEntryInput,
-  ) {
-    return this.timeEntryService.findAll(
-      take,
-      cursor ? { id: cursor } : null,
-      orgId,
-      searchText,
-      queryTimeEntryInput,
-    );
-  }
-
-  @Query('getTimeEntry')
-  findOne(@Args('id') id: number) {
-    return this.timeEntryService.findOne(id);
+  async create(@Args('input') createTimeEntryInput: CreateTimeEntryInput) {
+    return await this.timeEntryService.create(createTimeEntryInput);
   }
 
   @Mutation('updateTimeEntry')
-  update(
-    @Args('updateTimeEntryInput') updateTimeEntryInput: UpdateTimeEntryInput,
-  ) {
-    return this.timeEntryService.update(
+  async update(@Args('input') updateTimeEntryInput: UpdateTimeEntryInput) {
+    return await this.timeEntryService.update(
       updateTimeEntryInput.id,
       updateTimeEntryInput,
     );
   }
 
   @Mutation('removeTimeEntry')
-  remove(@Args('id') id: number) {
-    return this.timeEntryService.remove(id);
+  async remove(@Args('id') id: number) {
+    return await this.timeEntryService.remove(id);
   }
 }

@@ -2,6 +2,7 @@ import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { TimesheetEntryService } from './timesheet_entry.service';
 import { CreateTimesheetEntryInput } from './dto/create-timesheet_entry.input';
 import { UpdateTimesheetEntryInput } from './dto/update-timesheet_entry.input';
+import { QueryTimesheetEntryInput } from './dto/query-timesheet_entry.input';
 
 @Resolver('TimesheetEntry')
 export class TimesheetEntryResolver {
@@ -15,19 +16,31 @@ export class TimesheetEntryResolver {
     return await this.timesheetEntryService.create(createTimesheetEntryInput);
   }
 
-  @Query('timesheetEntry')
-  findAll() {
-    return this.timesheetEntryService.findAll();
+  @Query('getAllTimesheetEntry')
+  async findAll(
+    @Args('take') take: number,
+    @Args('cursor') cursor: number,
+    @Args('orgId') orgId: number,
+    @Args('searchText') searchText: string,
+    @Args('where') queryTimesheetEntryInput: QueryTimesheetEntryInput,
+  ) {
+    return await this.timesheetEntryService.findAll(
+      take,
+      cursor ? { id: cursor } : null,
+      orgId,
+      searchText,
+      queryTimesheetEntryInput,
+    );
   }
 
-  @Query('timesheetEntry')
-  findOne(@Args('id') id: number) {
-    return this.timesheetEntryService.findOne(id);
+  @Query('getTimesheetEntry')
+  async findOne(@Args('id') id: number) {
+    return await this.timesheetEntryService.findOne(id);
   }
 
   @Mutation('updateTimesheetEntry')
-  update(
-    @Args('updateTimesheetEntryInput')
+  async update(
+    @Args('input')
     updateTimesheetEntryInput: UpdateTimesheetEntryInput,
   ) {
     return this.timesheetEntryService.update(
@@ -37,7 +50,7 @@ export class TimesheetEntryResolver {
   }
 
   @Mutation('removeTimesheetEntry')
-  remove(@Args('id') id: number) {
-    return this.timesheetEntryService.remove(id);
+  async remove(@Args('id') id: number) {
+    return await this.timesheetEntryService.remove(id);
   }
 }

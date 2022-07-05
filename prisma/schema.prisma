@@ -12,19 +12,17 @@ datasource db {
 }
 
 model user {
-  id                 Int          @id @default(autoincrement())
-  first_name         String
-  last_name          String
-  tasks              task[]
-  time_entry         time_entry[]
-  sub_tasks          sub_task[]
-  email_id           String?
-  organization       organization @relation(fields: [org_id], references: [id])
-  org_id             Int
-  admin_timesheets   timesheets[] @relation("admins")
-  tasks_created      task[]       @relation("tasks_created")
-  timesheets_created timesheets[]
-
+  id                              Int                       @id @default(autoincrement())
+  first_name                      String
+  last_name                       String
+  tasks                           task[]
+  sub_tasks                       sub_task[]
+  email_id                        String?
+  organization                    organization              @relation(fields: [org_id], references: [id])
+  org_id                          Int
+  admin_timesheets                timesheets[]              @relation("admins")
+  tasks_created                   task[]                    @relation("tasks_created")
+  timesheets_created              timesheets[]
   // employee_break       employee_manual_break[]
   timesheet_entry                 timesheet_entry[]
   timesheet_entries_created       timesheet_entry[]         @relation("timesheet_entries_created")
@@ -168,41 +166,44 @@ model task_comments {
 }
 
 model timesheets {
-  id                        Int                              @id @default(autoincrement())
-  timeclock_name            String
-  assign_to_all             Boolean?
-  group_ids                 Int[]
-  admins                    user[]                           @relation("admins")
-  org                       organization                     @relation(fields: [org_id], references: [id])
-  org_id                    Int
-  created_by                user                             @relation(fields: [created_by_id], references: [id])
-  created_by_id             Int
-  created_at                DateTime                         @default(now())
-  updated_at                DateTime                         @updatedAt
-  time_entries              time_entry[]
-  general_settings          timesheet_general_settings       @relation(fields: [general_settings_id], references: [id])
-  general_settings_id       Int                              @unique
-  customization_settings    timesheet_customization_settings @relation(fields: [customization_settings_id], references: [id])
-  customization_settings_id Int                              @unique
-  payroll_settings          timesheet_payroll_settings       @relation(fields: [payroll_settings_id], references: [id])
-  payroll_settings_id       Int                              @unique
-  job_settings              timesheet_jobs[]
-  geo_location_settings     timesheet_geo_location_settings  @relation(fields: [geo_location_settings_id], references: [id])
-  geo_location_settings_id  Int                              @unique
-  reminder_settings         timesheet_reminder_settings      @relation(fields: [reminder_settings_id], references: [id])
-  reminder_settings_id      Int                              @unique
-  notification_settings     timesheet_notification_settings  @relation(fields: [notification_settings_id], references: [id])
-  notification_settings_id  Int                              @unique
+  id                          Int                              @id @default(autoincrement())
+  timeclock_name              String
+  assign_to_all               Boolean?
+  group_ids                   Int[]
+  admins                      user[]                           @relation("admins")
+  org                         organization                     @relation(fields: [org_id], references: [id])
+  org_id                      Int
+  created_by                  user                             @relation(fields: [created_by_id], references: [id])
+  created_by_id               Int
+  created_at                  DateTime                         @default(now())
+  updated_at                  DateTime                         @updatedAt
+  time_entries                time_entry[]
+  general_settings            timesheet_general_settings       @relation(fields: [general_settings_id], references: [id])
+  general_settings_id         Int                              @unique
+  customization_settings      timesheet_customization_settings @relation(fields: [customization_settings_id], references: [id])
+  customization_settings_id   Int                              @unique
+  payroll_settings            timesheet_payroll_settings       @relation(fields: [payroll_settings_id], references: [id])
+  payroll_settings_id         Int                              @unique
+  job_settings                timesheet_jobs[]
+  geo_location_settings       timesheet_geo_location_settings  @relation(fields: [geo_location_settings_id], references: [id])
+  geo_location_settings_id    Int                              @unique
+  reminder_settings           timesheet_reminder_settings      @relation(fields: [reminder_settings_id], references: [id])
+  reminder_settings_id        Int                              @unique
+  notification_settings       timesheet_notification_settings  @relation(fields: [notification_settings_id], references: [id])
+  notification_settings_id    Int                              @unique
   // break_settings      break_settings   @relation(fields: [break_settings_id], references: [id])
   // break_settings_id   Int              @unique
-  timesheet_geo_locations   timesheet_geo_locations[]
-  timesheet_entry           timesheet_entry[]
+  timesheet_geo_locations     timesheet_geo_locations[]
+  timesheet_entry             timesheet_entry[]
+  timesheet_break_settings    timesheet_break_settings         @relation(fields: [timesheet_break_settings_id], references: [id])
+  timesheet_break_settings_id Int                              @unique
 }
 
 enum timesheet_entry_status_enum {
   PENDING
   APPROVED
   REJECTED
+  DELETED
 }
 
 model timesheet_entry {
@@ -212,13 +213,17 @@ model timesheet_entry {
   status                  timesheet_entry_status_enum @default(PENDING)
   user                    user                        @relation(fields: [user_id], references: [id])
   user_id                 Int
+  entry_date              DateTime                    @db.Date
   timesheet_clockin_time  DateTime
   timesheet_clockout_time DateTime?
+  total_work_in_ms        Int
+  total_break_in_ms       Int?
   created_at              DateTime                    @default(now())
   updated_at              DateTime                    @updatedAt
   created_by              user                        @relation("timesheet_entries_created", fields: [created_by_id], references: [id])
   created_by_id           Int
   time_entry              time_entry[]
+  employee_break          employee_break[]
   // shift                   shift?        @relation(fields: [shiftId], references: [id])
   // shiftId                 Int?
 }
@@ -229,38 +234,47 @@ enum DayTypeEnum {
   CURRENT
 }
 
+enum time_entry_status_enum {
+  DELETED
+}
+
 model time_entry {
-  id                    Int                 @id @default(autoincrement())
-  user                  user                @relation(fields: [user_id], references: [id])
-  user_id               Int
-  timesheet_entry       timesheet_entry     @relation(fields: [timesheet_entry_id], references: [id])
+  id                    Int                     @id @default(autoincrement())
+  timesheet_entry       timesheet_entry         @relation(fields: [timesheet_entry_id], references: [id])
   timesheet_entry_id    Int
   check_in_time         DateTime
   check_in_day_type     DayTypeEnum
   check_out_time        DateTime?
-  check_out_date_type   DayTypeEnum?
-  timesheets            timesheets?         @relation(fields: [timesheets_id], references: [id])
+  check_out_day_type    DayTypeEnum?
+  comments              String?
+  timesheets            timesheets?             @relation(fields: [timesheets_id], references: [id])
   timesheets_id         Int?
-  timesheet_jobs        timesheet_jobs?     @relation(fields: [timesheet_jobs_id], references: [id])
+  timesheet_jobs        timesheet_jobs?         @relation(fields: [timesheet_jobs_id], references: [id])
   timesheet_jobs_id     Int?
-  timesheet_sub_jobs    timesheet_sub_jobs? @relation(fields: [timesheet_sub_jobs_id], references: [id])
+  timesheet_sub_jobs    timesheet_sub_jobs?     @relation(fields: [timesheet_sub_jobs_id], references: [id])
   timesheet_sub_jobs_id Int?
-  created_by            user                @relation("time_entries_created", fields: [created_by_id], references: [id])
+  created_by            user                    @relation("time_entries_created", fields: [created_by_id], references: [id])
   created_by_id         Int
+  status                time_entry_status_enum?
 }
 
-// model employee_manual_break {
-//   id            Int         @id @default(autoincrement())
-//   break_type    String
-//   duration      Int
-//   start_time    DateTime
-//   end_time      DateTime
-//   time_entry    time_entry? @relation(fields: [time_entry_id], references: [id])
-//   time_entry_id Int?
-//   paid          Boolean
-//   user          user        @relation(fields: [user_id], references: [id])
-//   user_id       Int
-// }
+enum employee_break_enum {
+  DELETED
+}
+
+model employee_break {
+  id                         Int                      @id @default(autoincrement())
+  timesheet_manual_breaks    timesheet_manual_breaks? @relation(fields: [timesheet_manual_breaks_id], references: [id])
+  timesheet_manual_breaks_id Int?
+  duration                   Int
+  start_time                 DateTime
+  start_day_type             DayTypeEnum
+  end_time                   DateTime
+  end_day_type               DayTypeEnum
+  status                     employee_break_enum?
+  timesheet_entry            timesheet_entry          @relation(fields: [timesheet_entry_id], references: [id])
+  timesheet_entry_id         Int
+}
 
 // model shift {
 //   id              Int               @id @default(autoincrement())
@@ -380,6 +394,34 @@ model timesheet_payroll_settings {
   timesheets                    timesheets?
   created_at                    DateTime              @default(now())
   updated_at                    DateTime              @updatedAt
+}
+
+enum break_configuration {
+  MANUAL
+  AUTOMATIC
+}
+
+model timesheet_break_settings {
+  id                      Int                       @id @default(autoincrement())
+  is_enabled              Boolean                   @default(true)
+  break_configuration     break_configuration       @default(MANUAL)
+  timesheets              timesheets?
+  timesheet_manual_breaks timesheet_manual_breaks[]
+}
+
+enum paid_type_enum {
+  PAID
+  UNPAID
+}
+
+model timesheet_manual_breaks {
+  id                          Int                      @id @default(autoincrement())
+  break_type                  String
+  paid_type                   paid_type_enum
+  duration                    Int
+  timesheet_break_settings    timesheet_break_settings @relation(fields: [timesheet_break_settings_id], references: [id])
+  timesheet_break_settings_id Int
+  employee_break              employee_break[]
 }
 
 model timesheet_jobs {

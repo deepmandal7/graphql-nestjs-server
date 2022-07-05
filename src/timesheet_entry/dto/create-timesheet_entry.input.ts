@@ -19,6 +19,7 @@ import {
   MinLength,
 } from 'class-validator';
 import { CreateTimeEntryInput } from 'src/time_entry/dto/create-time_entry.input';
+import { CreateEmployeeBreakInput } from 'src/employee_breaks/dto/create-employee_break.input';
 
 @InputType()
 export class CreateTimesheetEntryInput {
@@ -39,6 +40,11 @@ export class CreateTimesheetEntryInput {
   @Field((type) => [CreateTimeEntryInput])
   @Type(() => Array)
   time_entry: CreateTimeEntryInput[];
+
+  @Field((type) => [CreateEmployeeBreakInput])
+  @Type(() => Array)
+  @IsOptional()
+  employee_break: CreateEmployeeBreakInput[];
 
   @Field((type) => Int)
   @Type(() => Number)

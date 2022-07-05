@@ -25,6 +25,7 @@ import { TimesheetReminderSettingsModule } from './timesheet_reminder_settings/t
 import { WorkweeksModule } from './workweeks/workweeks.module';
 import { TimesheetGeoLocationsModule } from './timesheet_geo_locations/timesheet_geo_locations.module';
 import { TimesheetEntryModule } from './timesheet_entry/timesheet_entry.module';
+import { EmployeeBreaksModule } from './employee_breaks/employee_breaks.module';
 
 @Module({
   imports: [
@@ -77,6 +78,7 @@ import { TimesheetEntryModule } from './timesheet_entry/timesheet_entry.module';
       path: '/timesheetJobSettings',
     }),
     TimesheetEntryModule,
+    EmployeeBreaksModule,
   ],
   controllers: [AppController],
   providers: [AppService],

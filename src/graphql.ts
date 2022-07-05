@@ -7,6 +7,12 @@
 
 /* tslint:disable */
 /* eslint-disable */
+export enum DayTypeEnum {
+    NEXT = "NEXT",
+    PREVIOUS = "PREVIOUS",
+    CURRENT = "CURRENT"
+}
+
 export enum TaskFrequencyEnum {
     ONEOFF = "ONEOFF",
     RECURRING = "RECURRING"
@@ -24,10 +30,10 @@ export enum RepeatTypeEnum {
     YEARLY = "YEARLY"
 }
 
-export enum DayTypeEnum {
-    NEXT = "NEXT",
-    PREVIOUS = "PREVIOUS",
-    CURRENT = "CURRENT"
+export enum timesheet_entry_status_enum {
+    PENDING = "PENDING",
+    APPROVED = "APPROVED",
+    REJECTED = "REJECTED"
 }
 
 export enum GeoLocationSettingsEnum {
@@ -56,6 +62,28 @@ export enum ManualOrShiftMinimumHoursEnum {
 export enum PayrollExportTimeFormatEnum {
     DECIMAL = "DECIMAL",
     MINUTES = "MINUTES"
+}
+
+export class CreateEmployeeBreakInput {
+    timesheet_manual_breaks_id: number;
+    timesheet_entry_id?: Nullable<number>;
+    duration: number;
+    start_time: string;
+    start_day_type: DayTypeEnum;
+    end_time?: Nullable<string>;
+    timezone?: Nullable<string>;
+    end_day_type?: Nullable<DayTypeEnum>;
+}
+
+export class UpdateEmployeeBreakInput {
+    id: number;
+    timesheet_manual_breaks_id: number;
+    duration: number;
+    start_time: string;
+    start_day_type: DayTypeEnum;
+    end_time?: Nullable<string>;
+    timezone: string;
+    end_day_type?: Nullable<DayTypeEnum>;
 }
 
 export class CreateShiftInput {
@@ -203,27 +231,26 @@ export class UpdateTaskRepeatDetailInput {
 export class CreateTimeEntryInput {
     timesheet_entry_id?: Nullable<number>;
     check_in_time: string;
-    check_in_date_type: DayTypeEnum;
+    check_in_day_type: DayTypeEnum;
     check_out_time?: Nullable<string>;
-    check_out_date_type?: Nullable<DayTypeEnum>;
+    check_out_day_type?: Nullable<DayTypeEnum>;
     timesheet_jobs_id?: Nullable<number>;
     timesheet_sub_jobs_id?: Nullable<number>;
-    user_id: number;
+    comments?: Nullable<string>;
+    timezone?: Nullable<string>;
     created_by_id: number;
 }
 
 export class UpdateTimeEntryInput {
     id: number;
     check_in_time: string;
-    check_in_date_type: string;
+    check_in_day_type: DayTypeEnum;
     check_out_time?: Nullable<string>;
-    check_out_date_type?: Nullable<string>;
+    check_out_day_type?: Nullable<DayTypeEnum>;
+    comments?: Nullable<string>;
+    timezone?: Nullable<string>;
     timesheet_jobs_id?: Nullable<number>;
     timesheet_sub_jobs_id?: Nullable<number>;
-}
-
-export class QueryTimeEntryInput {
-    timesheet_entry_id: number;
 }
 
 export class UpdateTimesheetCustomizationSettingInput {
@@ -247,15 +274,22 @@ export class CreateTimesheetEntryInput {
     user_id: number;
     timezone: string;
     time_entry: CreateTimeEntryInput[];
+    employee_break?: Nullable<Nullable<CreateEmployeeBreakInput>[]>;
     created_by_id: number;
 }
 
 export class UpdateTimesheetEntryInput {
     id: number;
+    entry_date?: Nullable<string>;
+    status?: Nullable<timesheet_entry_status_enum>;
 }
 
-export class QueryTimesheetInput {
+export class QueryTimesheetEntryInput {
     timesheetId: number;
+    userId?: Nullable<number>;
+    status?: Nullable<timesheet_entry_status_enum>;
+    date1?: Nullable<string>;
+    date2?: Nullable<string>;
 }
 
 export class UpdateTimesheetGeoLocationSettingInput {
@@ -453,106 +487,23 @@ export class UpdateWorkweekInput {
     sunday_end_time: string;
 }
 
-export class Organization {
+export class EmployeeBreak {
     id: string;
-    org_name?: Nullable<string>;
-    timezone?: Nullable<string>;
-}
-
-export class User {
-    id: string;
-    first_name?: Nullable<string>;
-    email_id?: Nullable<string>;
-}
-
-export class Tag {
-    tag?: Nullable<TagItem>;
-}
-
-export class TagItem {
-    id: string;
-    tag_name?: Nullable<string>;
-    tag_color?: Nullable<string>;
-}
-
-export class Shift {
-    id?: Nullable<number>;
-    org_id?: Nullable<number>;
-    start_time?: Nullable<DateTime>;
-    end_time?: Nullable<DateTime>;
-}
-
-export abstract class IQuery {
-    abstract getAllShifts(): Nullable<Shift>[] | Promise<Nullable<Shift>[]>;
-
-    abstract getShift(id: number): Nullable<Shift> | Promise<Nullable<Shift>>;
-
-    abstract subTasks(): Nullable<SubTask>[] | Promise<Nullable<SubTask>[]>;
-
-    abstract subTask(id: number): Nullable<SubTask> | Promise<Nullable<SubTask>>;
-
-    abstract userSubTasks(userId: number): Nullable<SubTask>[] | Promise<Nullable<SubTask>[]>;
-
-    abstract getTasks(take: number, orgId: number, cursor?: Nullable<number>, searchText?: Nullable<string>, where?: Nullable<QueryTaskInput>): Nullable<Task>[] | Promise<Nullable<Task>[]>;
-
-    abstract getTask(id: number): Nullable<Task> | Promise<Nullable<Task>>;
-
-    abstract getUserTasks(userId: number): Nullable<Task>[] | Promise<Nullable<Task>[]>;
-
-    abstract getTaskBoards(where: QueryTaskBoardInput): Nullable<TaskBoard>[] | Promise<Nullable<TaskBoard>[]>;
-
-    abstract getAllTaskBoardCustomisation(taskBoardId: number): Nullable<TaskBoardCustomisation> | Promise<Nullable<TaskBoardCustomisation>>;
-
-    abstract taskComments(taskId: number): Nullable<TaskComment>[] | Promise<Nullable<TaskComment>[]>;
-
-    abstract taskComment(id: number): Nullable<TaskComment> | Promise<Nullable<TaskComment>>;
-
-    abstract getTaskRepeatDetail(taskId: number): Nullable<TaskRepeatDetail> | Promise<Nullable<TaskRepeatDetail>>;
-
-    abstract getAllTimeEntries(take: number, orgId: number, cursor?: Nullable<number>, searchText?: Nullable<string>, where?: Nullable<QueryTimeEntryInput>): Nullable<TimeEntry>[] | Promise<Nullable<TimeEntry>[]>;
-
-    abstract getTimeEntry(id: number): Nullable<TimeEntry> | Promise<Nullable<TimeEntry>>;
-
-    abstract getTimesheetCustomizationSetting(timesheetId: number): TimesheetCustomizationSetting | Promise<TimesheetCustomizationSetting>;
-
-    abstract getAllTimesheetEntry(take: number, orgId: number, where: QueryTimesheetInput, cursor?: Nullable<number>, searchText?: Nullable<string>): Nullable<TimesheetEntry>[] | Promise<Nullable<TimesheetEntry>[]>;
-
-    abstract timesheetEntry(id: number): Nullable<TimesheetEntry> | Promise<Nullable<TimesheetEntry>>;
-
-    abstract getTimesheetGeoLocationSetting(timesheetId: number): TimesheetGeoLocationSetting | Promise<TimesheetGeoLocationSetting>;
-
-    abstract getAllTimesheetGeoLocations(take: number, orgId: number, where: QueryTimesheetGeoLocationInput, cursor?: Nullable<number>, searchText?: Nullable<string>): Nullable<TimesheetGeoLocation>[] | Promise<Nullable<TimesheetGeoLocation>[]>;
-
-    abstract getTimesheetGeoLocation(id: number): Nullable<TimesheetGeoLocation> | Promise<Nullable<TimesheetGeoLocation>>;
-
-    abstract getAllTimesheetJobSettings(take: number, orgId: number, where: QueryTimesheetJobSettingsInput, cursor?: Nullable<number>, searchText?: Nullable<string>): Nullable<TimesheetJobSetting>[] | Promise<Nullable<TimesheetJobSetting>[]>;
-
-    abstract getTimesheetJobSetting(id: number): Nullable<TimesheetJobSetting> | Promise<Nullable<TimesheetJobSetting>>;
-
-    abstract getTimesheetNotificationSetting(timesheetId: number): TimesheetNotificationSetting | Promise<TimesheetNotificationSetting>;
-
-    abstract getTimesheetPayrollSetting(timesheetId: number): TimesheetPayrollSetting | Promise<TimesheetPayrollSetting>;
-
-    abstract getTimesheetReminderSetting(timesheetId: number): TimesheetReminderSetting | Promise<TimesheetReminderSetting>;
-
-    abstract getAllTimesheetSubJobSettings(jobId: number): Nullable<TimesheetSubJobSetting>[] | Promise<Nullable<TimesheetSubJobSetting>[]>;
-
-    abstract getTimesheetSubJobSetting(id: number): Nullable<TimesheetSubJobSetting> | Promise<Nullable<TimesheetSubJobSetting>>;
-
-    abstract getAllTimesheets(orgId: number): Nullable<Timesheet>[] | Promise<Nullable<Timesheet>[]>;
-
-    abstract getTimesheet(id: number): Nullable<Timesheet> | Promise<Nullable<Timesheet>>;
-
-    abstract getTimesheetsGeneralSetting(timesheetId: number): TimesheetsGeneralSetting | Promise<TimesheetsGeneralSetting>;
-
-    abstract getWorkDurations(): Nullable<WorkDuration>[] | Promise<Nullable<WorkDuration>[]>;
-
-    abstract getWorkDuration(id: number): Nullable<WorkDuration> | Promise<Nullable<WorkDuration>>;
-
-    abstract getWorkweek(timesheetId: number): Workweek | Promise<Workweek>;
+    break_type: string;
+    duration: number;
+    start_time: string;
+    start_day_type: DayTypeEnum;
+    end_time?: Nullable<string>;
+    end_day_type?: Nullable<DayTypeEnum>;
 }
 
 export abstract class IMutation {
+    abstract createEmployeeBreak(input: CreateEmployeeBreakInput): EmployeeBreak | Promise<EmployeeBreak>;
+
+    abstract updateEmployeeBreak(input: UpdateEmployeeBreakInput): EmployeeBreak | Promise<EmployeeBreak>;
+
+    abstract removeEmployeeBreak(id: number): Nullable<EmployeeBreak> | Promise<Nullable<EmployeeBreak>>;
+
     abstract createShift(createShiftInput: CreateShiftInput): Shift | Promise<Shift>;
 
     abstract updateShift(updateShiftInput: UpdateShiftInput): Shift | Promise<Shift>;
@@ -662,6 +613,101 @@ export abstract class IMutation {
     abstract removeWorkweek(id: number): Nullable<Workweek> | Promise<Nullable<Workweek>>;
 }
 
+export class Organization {
+    id: string;
+    org_name?: Nullable<string>;
+    timezone?: Nullable<string>;
+}
+
+export class User {
+    id: string;
+    first_name?: Nullable<string>;
+    email_id?: Nullable<string>;
+}
+
+export class Tag {
+    tag?: Nullable<TagItem>;
+}
+
+export class TagItem {
+    id: string;
+    tag_name?: Nullable<string>;
+    tag_color?: Nullable<string>;
+}
+
+export class Shift {
+    id?: Nullable<number>;
+    org_id?: Nullable<number>;
+    start_time?: Nullable<DateTime>;
+    end_time?: Nullable<DateTime>;
+}
+
+export abstract class IQuery {
+    abstract getAllShifts(): Nullable<Shift>[] | Promise<Nullable<Shift>[]>;
+
+    abstract getShift(id: number): Nullable<Shift> | Promise<Nullable<Shift>>;
+
+    abstract subTasks(): Nullable<SubTask>[] | Promise<Nullable<SubTask>[]>;
+
+    abstract subTask(id: number): Nullable<SubTask> | Promise<Nullable<SubTask>>;
+
+    abstract userSubTasks(userId: number): Nullable<SubTask>[] | Promise<Nullable<SubTask>[]>;
+
+    abstract getTasks(take: number, orgId: number, cursor?: Nullable<number>, searchText?: Nullable<string>, where?: Nullable<QueryTaskInput>): Nullable<Task>[] | Promise<Nullable<Task>[]>;
+
+    abstract getTask(id: number): Nullable<Task> | Promise<Nullable<Task>>;
+
+    abstract getUserTasks(userId: number): Nullable<Task>[] | Promise<Nullable<Task>[]>;
+
+    abstract getTaskBoards(where: QueryTaskBoardInput): Nullable<TaskBoard>[] | Promise<Nullable<TaskBoard>[]>;
+
+    abstract getAllTaskBoardCustomisation(taskBoardId: number): Nullable<TaskBoardCustomisation> | Promise<Nullable<TaskBoardCustomisation>>;
+
+    abstract taskComments(taskId: number): Nullable<TaskComment>[] | Promise<Nullable<TaskComment>[]>;
+
+    abstract taskComment(id: number): Nullable<TaskComment> | Promise<Nullable<TaskComment>>;
+
+    abstract getTaskRepeatDetail(taskId: number): Nullable<TaskRepeatDetail> | Promise<Nullable<TaskRepeatDetail>>;
+
+    abstract getTimesheetCustomizationSetting(timesheetId: number): TimesheetCustomizationSetting | Promise<TimesheetCustomizationSetting>;
+
+    abstract getAllTimesheetEntry(take: number, orgId: number, where: QueryTimesheetEntryInput, cursor?: Nullable<number>, searchText?: Nullable<string>): Nullable<TimesheetEntry>[] | Promise<Nullable<TimesheetEntry>[]>;
+
+    abstract getTimesheetEntry(id: number): Nullable<TimesheetEntry> | Promise<Nullable<TimesheetEntry>>;
+
+    abstract getTimesheetGeoLocationSetting(timesheetId: number): TimesheetGeoLocationSetting | Promise<TimesheetGeoLocationSetting>;
+
+    abstract getAllTimesheetGeoLocations(take: number, orgId: number, where: QueryTimesheetGeoLocationInput, cursor?: Nullable<number>, searchText?: Nullable<string>): Nullable<TimesheetGeoLocation>[] | Promise<Nullable<TimesheetGeoLocation>[]>;
+
+    abstract getTimesheetGeoLocation(id: number): Nullable<TimesheetGeoLocation> | Promise<Nullable<TimesheetGeoLocation>>;
+
+    abstract getAllTimesheetJobSettings(take: number, orgId: number, where: QueryTimesheetJobSettingsInput, cursor?: Nullable<number>, searchText?: Nullable<string>): Nullable<TimesheetJobSetting>[] | Promise<Nullable<TimesheetJobSetting>[]>;
+
+    abstract getTimesheetJobSetting(id: number): Nullable<TimesheetJobSetting> | Promise<Nullable<TimesheetJobSetting>>;
+
+    abstract getTimesheetNotificationSetting(timesheetId: number): TimesheetNotificationSetting | Promise<TimesheetNotificationSetting>;
+
+    abstract getTimesheetPayrollSetting(timesheetId: number): TimesheetPayrollSetting | Promise<TimesheetPayrollSetting>;
+
+    abstract getTimesheetReminderSetting(timesheetId: number): TimesheetReminderSetting | Promise<TimesheetReminderSetting>;
+
+    abstract getAllTimesheetSubJobSettings(jobId: number): Nullable<TimesheetSubJobSetting>[] | Promise<Nullable<TimesheetSubJobSetting>[]>;
+
+    abstract getTimesheetSubJobSetting(id: number): Nullable<TimesheetSubJobSetting> | Promise<Nullable<TimesheetSubJobSetting>>;
+
+    abstract getAllTimesheets(orgId: number): Nullable<Timesheet>[] | Promise<Nullable<Timesheet>[]>;
+
+    abstract getTimesheet(id: number): Nullable<Timesheet> | Promise<Nullable<Timesheet>>;
+
+    abstract getTimesheetsGeneralSetting(timesheetId: number): TimesheetsGeneralSetting | Promise<TimesheetsGeneralSetting>;
+
+    abstract getWorkDurations(): Nullable<WorkDuration>[] | Promise<Nullable<WorkDuration>[]>;
+
+    abstract getWorkDuration(id: number): Nullable<WorkDuration> | Promise<Nullable<WorkDuration>>;
+
+    abstract getWorkweek(timesheetId: number): Workweek | Promise<Workweek>;
+}
+
 export class SubTask {
     id: string;
     task_id: number;
@@ -740,13 +786,10 @@ export class TimeEntry {
     timesheet_entry_id: number;
     shift?: Nullable<Shift>;
     check_in_time: DateTime;
-    check_in_date_type: DayTypeEnum;
+    check_in_day_type: DayTypeEnum;
     check_out_time: DateTime;
-    check_out_date_type?: Nullable<DayTypeEnum>;
-    org: Organization;
-    status?: Nullable<string>;
-    notes?: Nullable<string>;
-    user: User;
+    check_out_day_type?: Nullable<DayTypeEnum>;
+    comments?: Nullable<string>;
     created_by: User;
 }
 
@@ -767,13 +810,13 @@ export class TimesheetCustomizationSetting {
 
 export class TimesheetEntry {
     id: string;
-    timesheet_id: number;
-    entry_date: string;
+    entry_date: DateTime;
     timesheet_clockin_time: string;
     timesheet_clockout_time?: Nullable<string>;
-    status?: Nullable<string>;
+    status?: Nullable<timesheet_entry_status_enum>;
     user: User;
     time_entry: TimeEntry[];
+    employee_break: Nullable<EmployeeBreak>[];
     created_by: User;
 }
 

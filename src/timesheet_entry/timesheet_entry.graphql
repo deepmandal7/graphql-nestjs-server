@@ -1,16 +1,23 @@
 #import User from schema.graphql
 #import TimeEntry, CreateTimeEntryInput from time_entry.graphql
+#import EmployeeBreak, CreateEmployeeBreakInput from employee_breaks.graphql
+
+enum timesheet_entry_status_enum {
+  PENDING
+  APPROVED
+  REJECTED
+}
 
 type TimesheetEntry {
   id: ID!
-  timesheet_id: Int!
-  entry_date: String!
+  entry_date: DateTime!
   timesheet_clockin_time: String!
   timesheet_clockout_time: String
   # shift: Shift
-  status: String
+  status: timesheet_entry_status_enum
   user: User!
   time_entry: [TimeEntry!]!
+  employee_break: [EmployeeBreak]!
   created_by: User!
 }
 
@@ -21,26 +28,33 @@ input CreateTimesheetEntryInput {
   user_id: Int!
   timezone: String!
   time_entry: [CreateTimeEntryInput!]!
+  employee_break: [CreateEmployeeBreakInput]
   created_by_id: Int!
 }
 
 input UpdateTimesheetEntryInput {
   id: Int!
+  entry_date: String
+  status: timesheet_entry_status_enum
 }
 
-input QueryTimesheetInput {
+input QueryTimesheetEntryInput {
   timesheetId: Int!
+  userId: Int
+  status: timesheet_entry_status_enum
+  date1: String
+  date2: String
 }
 
 type Query {
   getAllTimesheetEntry(
     take: Int!
     orgId: Int!
-    where: QueryTimesheetInput!
+    where: QueryTimesheetEntryInput!
     cursor: Int
     searchText: String
   ): [TimesheetEntry]!
-  timesheetEntry(id: Int!): TimesheetEntry
+  getTimesheetEntry(id: Int!): TimesheetEntry
 }
 
 type Mutation {

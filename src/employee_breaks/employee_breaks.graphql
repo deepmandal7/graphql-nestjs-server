@@ -1,0 +1,43 @@
+enum DayTypeEnum {
+  NEXT
+  PREVIOUS
+  CURRENT
+}
+
+type EmployeeBreak {
+  id: ID!
+  break_type: String!
+  duration: Int!
+  start_time: String!
+  start_day_type: DayTypeEnum!
+  end_time: String
+  end_day_type: DayTypeEnum
+}
+
+input CreateEmployeeBreakInput {
+  timesheet_manual_breaks_id: Int!
+  timesheet_entry_id: Int
+  duration: Int!
+  start_time: String!
+  start_day_type: DayTypeEnum!
+  end_time: String
+  timezone: String
+  end_day_type: DayTypeEnum
+}
+
+input UpdateEmployeeBreakInput {
+  id: Int!
+  timesheet_manual_breaks_id: Int!
+  duration: Int!
+  start_time: String!
+  start_day_type: DayTypeEnum!
+  end_time: String
+  timezone: String!
+  end_day_type: DayTypeEnum
+}
+
+type Mutation {
+  createEmployeeBreak(input: CreateEmployeeBreakInput!): EmployeeBreak!
+  updateEmployeeBreak(input: UpdateEmployeeBreakInput!): EmployeeBreak!
+  removeEmployeeBreak(id: Int!): EmployeeBreak
+}

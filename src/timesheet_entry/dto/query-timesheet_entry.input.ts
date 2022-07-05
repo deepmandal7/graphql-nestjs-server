@@ -1,5 +1,3 @@
-import { CreateTimesheetEntryInput } from './create-timesheet_entry.input';
-import { PartialType } from '@nestjs/mapped-types';
 import { Field, InputType, ID, Int } from '@nestjs/graphql';
 import { Type } from 'class-transformer';
 import {
@@ -22,23 +20,27 @@ import {
 } from 'class-validator';
 
 enum TimesheetEntryStatusEnum {
+  PENDING = 'PENDING',
   APPROVED = 'APPROVED',
   REJECTED = 'REJECTED',
 }
 
-export class UpdateTimesheetEntryInput extends PartialType(
-  CreateTimesheetEntryInput,
-) {
-  @Field((type) => Int)
-  @IsInt()
-  id: number;
+@InputType()
+export class QueryTimesheetEntryInput {
+  @Type((type) => Number)
+  @Field()
+  timesheetId: number;
 
-  @Field((type) => TimesheetEntryStatusEnum)
-  @IsEnum(TimesheetEntryStatusEnum)
-  @IsOptional()
+  @Type((type) => Number)
+  @Field()
+  userId: number;
+
+  @Field()
   status: TimesheetEntryStatusEnum;
 
   @Field()
-  @IsOptional()
-  entry_date: string;
+  date1: string;
+
+  @Field()
+  date2: string;
 }
