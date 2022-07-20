@@ -1,0 +1,52 @@
+#import User from schema.graphql
+
+enum TimeOffTypeUnitsEnum {
+  DAYS
+}
+
+type TimeOffType {
+  id: ID!
+  name: String!
+  unit: TimeOffTypeUnitsEnum!
+  paid: Boolean!
+  is_enabled: Boolean!
+  all_user: Boolean!
+  user: [User]
+}
+
+input CreateTimeOffTypeInput {
+  org_id: Int!
+  name: String!
+  paid: Boolean
+  user: [Int!]
+}
+
+input UpdateTimeOffTypeInput {
+  id: Int!
+  name: String!
+  unit: TimeOffTypeUnitsEnum!
+  paid: Boolean!
+  is_enabled: Boolean!
+  all_user: Boolean!
+  user: [Int!]
+}
+
+input QueryTimeOffTypeInput {
+  user_id: Int
+}
+
+type Query {
+  getAllTimeOffTypes(
+    take: Int!
+    orgId: Int!
+    where: QueryTimeOffTypeInput
+    cursor: Int
+    searchText: String
+  ): [TimeOffType]!
+}
+
+type Mutation {
+  createTimeOffType(input: CreateTimeOffTypeInput!): TimeOffType!
+  updateTimeOffType(input: UpdateTimeOffTypeInput!): TimeOffType!
+  removeTimeOffType(id: Int!): TimeOffType
+}

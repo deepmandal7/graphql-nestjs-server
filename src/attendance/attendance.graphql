@@ -1,0 +1,24 @@
+#import TimesheetEntry from timesheet_entry.raphql
+#import TimeOff from time_offs.graphql
+
+type Attendance {
+  timesheet_entry: [TimesheetEntry]
+  time_off: [TimeOff]
+}
+
+input QueryAttendanceInput {
+  timesheet_id: Int!
+  user_id: Int
+  from_date: String
+  to_date: String
+}
+
+type Query {
+  getAllAttendance(
+    where: QueryAttendanceInput!
+    orgId: Int!
+    take: Int
+    cursor: Int
+    searchText: String
+  ): [Attendance]!
+}

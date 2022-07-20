@@ -1,0 +1,66 @@
+enum DayTypeEnum {
+  NEXT
+  PREVIOUS
+  CURRENT
+}
+
+type TimeEntryPending {
+  id: ID!
+  check_in_time: String!
+  check_in_day_type: DayTypeEnum!
+  check_out_time: String
+  check_out_day_type: DayTypeEnum
+  comments: String
+  timesheet_jobs_id: Int
+  timesheet_sub_jobs_id: Int
+  created_by_id: Int!
+  time_entry_id: Int!
+  timesheet_id: Int!
+}
+
+input CreateTimeEntryPendingInput {
+  check_in_time: String!
+  check_in_day_type: DayTypeEnum!
+  check_out_time: String
+  check_out_day_type: DayTypeEnum
+  comments: String
+  timesheet_jobs_id: Int
+  timesheet_sub_jobs_id: Int
+  created_by_id: Int!
+  time_entry_id: Int!
+  timesheet_id: Int!
+  timesheet_entry_id: Int!
+}
+
+input UpdateTimeEntryPendingInput {
+  id: Int!
+  check_in_time: String!
+  check_in_day_type: DayTypeEnum!
+  check_out_time: String
+  check_out_day_type: DayTypeEnum
+  comments: String
+  timesheet_jobs_id: Int
+  timesheet_sub_jobs_id: Int
+}
+
+input QueryTimeEntryPendingInput {
+  timesheet_id: Int!
+}
+
+type Query {
+  getAllTimeEntryPending(
+    where: QueryTimeEntryPendingInput!
+    orgId: Int!
+    take: Int
+    cursor: Int
+    searchText: String
+  ): [TimeEntryPending]!
+  getTimeEntryPending(id: Int!): TimeEntryPending
+}
+
+type Mutation {
+  createTimeEntryPending(input: CreateTimeEntryPendingInput!): TimeEntryPending!
+  updateTimeEntryPending(input: UpdateTimeEntryPendingInput!): TimeEntryPending!
+  removeTimeEntryPending(id: Int!): TimeEntryPending
+  approveRejectTimeEntryPending(id: Int!, status: String!): TimeEntryPending
+}

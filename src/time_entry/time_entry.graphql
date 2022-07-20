@@ -1,6 +1,7 @@
 #import User, Organization from schema.graphql
 #import WorkDuration from work_durations.graphql
 #import Shift from shifts.graphql
+#import TimesheetJobSetting from timesheet_job_settings.graphql
 
 enum DayTypeEnum {
   NEXT
@@ -16,6 +17,8 @@ type TimeEntry {
   check_in_day_type: DayTypeEnum!
   check_out_time: DateTime!
   check_out_day_type: DayTypeEnum
+  job: TimesheetJobSetting
+  sub_job: TimesheetSubJobSetting
   comments: String
   created_by: User!
 }
@@ -26,10 +29,10 @@ input CreateTimeEntryInput {
   check_in_day_type: DayTypeEnum!
   check_out_time: String
   check_out_day_type: DayTypeEnum
-  timesheet_jobs_id: Int
-  timesheet_sub_jobs_id: Int
   comments: String
   timezone: String
+  timesheet_jobs_id: Int
+  timesheet_sub_jobs_id: Int
   created_by_id: Int!
 }
 

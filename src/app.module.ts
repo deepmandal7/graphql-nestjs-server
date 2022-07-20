@@ -26,6 +26,11 @@ import { WorkweeksModule } from './workweeks/workweeks.module';
 import { TimesheetGeoLocationsModule } from './timesheet_geo_locations/timesheet_geo_locations.module';
 import { TimesheetEntryModule } from './timesheet_entry/timesheet_entry.module';
 import { EmployeeBreaksModule } from './employee_breaks/employee_breaks.module';
+import { TimeOffTypeModule } from './time_off_type/time_off_type.module';
+import { TimeOffsModule } from './time_offs/time_offs.module';
+import { AttendanceModule } from './attendance/attendance.module';
+import { TimeEntryPendingModule } from './time_entry_pending/time_entry_pending.module';
+import { EmployeeBreakPendingModule } from './employee_break_pending/employee_break_pending.module';
 
 @Module({
   imports: [
@@ -79,6 +84,11 @@ import { EmployeeBreaksModule } from './employee_breaks/employee_breaks.module';
     }),
     TimesheetEntryModule,
     EmployeeBreaksModule,
+    TimeOffTypeModule,
+    TimeOffsModule,
+    AttendanceModule,
+    TimeEntryPendingModule,
+    EmployeeBreakPendingModule,
   ],
   controllers: [AppController],
   providers: [AppService],

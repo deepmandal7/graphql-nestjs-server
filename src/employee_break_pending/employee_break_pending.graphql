@@ -1,0 +1,60 @@
+type EmployeeBreakPending {
+  id: ID!
+  break_type: String!
+  duration: Int!
+  start_time: String!
+  start_day_type: DayTypeEnum!
+  end_time: String
+  end_day_type: DayTypeEnum
+  employee_break_id: Int!
+}
+
+input CreateEmployeeBreakPendingInput {
+  break_type: String!
+  duration: Int!
+  start_time: String!
+  start_day_type: DayTypeEnum!
+  end_time: String
+  end_day_type: DayTypeEnum
+  employee_break_id: Int!
+  timesheet_entry_id: Int!
+}
+
+input UpdateEmployeeBreakPendingInput {
+  id: Int!
+  break_type: String!
+  duration: Int!
+  start_time: String!
+  start_day_type: DayTypeEnum!
+  end_time: String
+  end_day_type: DayTypeEnum
+}
+
+input QueryEmployeeBreakPendingInput {
+  timesheetId: Int!
+}
+
+type Query {
+  getAllEmployeeBreakPending(
+    where: QueryEmployeeBreakPendingInput!
+    orgId: Int!
+    take: Int
+    cursor: Int
+    searchText: String
+  ): [EmployeeBreakPending]!
+  getEmployeeBreakPending(id: Int!): EmployeeBreakPending
+}
+
+type Mutation {
+  createEmployeeBreakPending(
+    input: CreateEmployeeBreakPendingInput!
+  ): EmployeeBreakPending!
+  updateEmployeeBreakPending(
+    input: UpdateEmployeeBreakPendingInput!
+  ): EmployeeBreakPending!
+  removeEmployeeBreakPending(id: Int!): EmployeeBreakPending
+  approveRejectEmployeeBreakPending(
+    id: Int!
+    status: String!
+  ): EmployeeBreakPending
+}

@@ -8,18 +8,8 @@ export class ShiftsResolver {
   constructor(private readonly shiftsService: ShiftsService) {}
 
   @Mutation('createShift')
-  create(@Args('createShiftInput') createShiftInput: CreateShiftInput) {
-    return this.shiftsService.create(createShiftInput);
-  }
-
-  @Query('getAllShifts')
-  findAll() {
-    return this.shiftsService.findAll();
-  }
-
-  @Query('getShift')
-  findOne(@Args('id') id: number) {
-    return this.shiftsService.findOne(id);
+  async create(@Args('createShiftInput') createShiftInput: CreateShiftInput[]) {
+    return await this.shiftsService.create(createShiftInput);
   }
 
   @Mutation('updateShift')

@@ -1,31 +1,34 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { CreateTimeEntryInput } from './dto/create-time_entry.input';
-import { UpdateTimeEntryInput } from './dto/update-time_entry.input';
 import { PrismaService } from 'src/prisma.service';
-import { mapIDArrayToEnum } from 'src/common/utils/common_utils';
-import { Prisma } from '@prisma/client';
-import { QueryTimeEntryInput } from './dto/query-time_entry.input';
+import { CreateTimeEntryPendingInput } from './dto/create-time_entry_pending.input';
+import { UpdateTimeEntryPendingInput } from './dto/update-time_entry_pending.input';
 import * as dayjs from 'dayjs';
 import * as utc from 'dayjs/plugin/utc';
 import * as timezone from 'dayjs/plugin/timezone';
+import { QueryTimeEntryPendingInput } from './dto/query-time_entry_pending.input';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.tz.setDefault('Europe/Prague');
 
 @Injectable()
-export class TimeEntryService {
+export class TimeEntryPendingService {
   constructor(private prisma: PrismaService) {}
 
-  async create(createTimeEntryInput: CreateTimeEntryInput) {
-    let insData: any = createTimeEntryInput;
-    insData.timesheet_entry = {
+  async create(createTimeEntryPendingInput: CreateTimeEntryPendingInput) {
+    let insData: any = createTimeEntryPendingInput;
+    insData.timesheet = {
       connect: {
-        id: insData.timesheet_entry_id,
+        id: insData.timesheet_id,
+      },
+    };
+    insData.time_entry = {
+      connect: {
+        id: insData.time_entry_id,
       },
     };
     insData.created_by = {
       connect: {
-        id: createTimeEntryInput.created_by_id,
+        id: createTimeEntryPendingInput.created_by_id,
       },
     };
     let timesheetEntry: any = await this.prisma.timesheet_entry.findUnique({
@@ -135,12 +138,11 @@ export class TimeEntryService {
       },
     );
 
-    let timesheetEntryUpdData: any = {};
     if (
       timesheetEntry.timesheet_clockin_time !=
       timesheetEntry.time_entry[0].check_in_time
     ) {
-      timesheetEntryUpdData.timesheet_clockin_time =
+      insData.timesheet_clockin_time =
         timesheetEntry.time_entry[0].check_in_time;
     }
     if (
@@ -148,18 +150,18 @@ export class TimeEntryService {
       timesheetEntry.time_entry[timesheetEntry.time_entry.length - 1]
         .check_out_time
     ) {
-      timesheetEntryUpdData.timesheet_clockout_time =
+      insData.timesheet_clockout_time =
         timesheetEntry.time_entry[
           timesheetEntry.time_entry.length - 1
         ].check_out_time;
     }
     if (totalWorkHours) {
-      timesheetEntryUpdData.total_work_in_ms = totalWorkHours;
-      timesheetEntryUpdData.total_hours_in_ms =
-        timesheetEntryUpdData.timesheet_clockout_time -
-        timesheetEntryUpdData.timesheet_clockin_time;
+      insData.total_work_in_ms = totalWorkHours;
+      insData.total_hours_in_ms =
+        insData.timesheet_clockout_time - insData.timesheet_clockin_time;
     }
-    delete insData.timesheet_entry_id;
+    delete insData.timesheet_id;
+    delete insData.time_entry_id;
     delete insData.timezone;
     delete insData.created_by_id;
 
@@ -180,20 +182,54 @@ export class TimeEntryService {
       };
     }
     delete insData.timesheet_sub_jobs_id;
-    let res = await this.prisma.$transaction([
-      this.prisma.timesheet_entry.update({
-        where: {
-          id: insData.timesheet_entry.connect.id,
-        },
-        data: timesheetEntryUpdData,
-      }),
-      this.prisma.time_entry.create({ data: insData }),
-    ]);
-    return res[1];
+    return await this.prisma.time_entry_pending.create({ data: insData });
   }
 
-  async update(id: number, updateTimeEntryInput: UpdateTimeEntryInput) {
-    let updData: any = updateTimeEntryInput;
+  async findAll(
+    take: number,
+    cursor,
+    queryTimeEntryPendingInput: QueryTimeEntryPendingInput,
+    orgId: number,
+    searchText: string | null,
+  ) {
+    let filter: any = {
+      where: {
+        timesheet_id: queryTimeEntryPendingInput.timesheet_id,
+      },
+      take,
+    };
+    if (cursor) {
+      filter.cursor = cursor;
+      filter.skip = 1;
+    }
+    return await this.prisma.time_entry_pending.findMany(filter);
+  }
+
+  async findOne(id: number) {
+    return await this.prisma.time_entry_pending.findUnique({
+      where: {
+        id,
+      },
+      select: {
+        id: true,
+        check_in_time: true,
+        check_in_day_type: true,
+        check_out_time: true,
+        check_out_day_type: true,
+        comments: true,
+        timesheet_jobs: true,
+        timesheet_sub_jobs: true,
+        created_by: true,
+        time_entry: true,
+      },
+    });
+  }
+
+  async update(
+    id: number,
+    updateTimeEntryPendingInput: UpdateTimeEntryPendingInput,
+  ) {
+    let updData: any = updateTimeEntryPendingInput;
     delete updData.id;
 
     let timesheetEntry: any = await this.prisma.timesheet_entry.findFirst({
@@ -315,35 +351,29 @@ export class TimeEntryService {
         return entry1.check_in_time - entry2.check_in_time;
       },
     );
-
-    let timesheetEntryUpdData: any = {};
     if (
       timesheetEntry.timesheet_clockin_time !=
       timesheetEntry.time_entry[0].check_in_time
     ) {
-      timesheetEntryUpdData.timesheet_clockin_time =
+      updData.timesheet_clockin_time =
         timesheetEntry.time_entry[0].check_in_time;
     }
     if (
-      timesheetEntry.time_entry[timesheetEntry.time_entry.length - 1]
-        .check_out_time &&
       timesheetEntry.timesheet_clockout_time !=
-        timesheetEntry.time_entry[timesheetEntry.time_entry.length - 1]
-          .check_out_time
+      timesheetEntry.time_entry[timesheetEntry.time_entry.length - 1]
+        .check_out_time
     ) {
-      timesheetEntryUpdData.timesheet_clockout_time =
+      updData.timesheet_clockout_time =
         timesheetEntry.time_entry[
           timesheetEntry.time_entry.length - 1
         ].check_out_time;
     }
     if (totalWorkHours) {
-      timesheetEntryUpdData.total_work_in_ms = totalWorkHours;
-      timesheetEntryUpdData.total_hours_in_ms =
-        timesheetEntryUpdData.timesheet_clockout_time -
-        timesheetEntryUpdData.timesheet_clockin_time;
+      updData.total_work_in_ms = totalWorkHours;
+      updData.total_hours_in_ms =
+        updData.timesheet_clockout_time - updData.timesheet_clockin_time;
     }
     delete updData.timezone;
-
     if (updData.timesheet_jobs_id) {
       updData.timesheet_jobs = {
         connect: {
@@ -361,35 +391,57 @@ export class TimeEntryService {
       };
       delete updData.timesheet_sub_jobs_id;
     }
-
-    let res = await this.prisma.$transaction([
-      this.prisma.timesheet_entry.update({
-        where: {
-          id: timesheetEntry.id,
-        },
-        data: timesheetEntryUpdData,
-      }),
-      this.prisma.time_entry.update({ where: { id }, data: updData }),
-    ]);
-    return res[1];
-    // let updData = updateTimeEntryInput;
-
-    // return await this.prisma.time_entry.update({
-    //   where: {
-    //     id,
-    //   },
-    //   data: updData,
-    // });
+    return await this.prisma.time_entry_pending.update({
+      where: { id },
+      data: updData,
+    });
   }
 
   async remove(id: number) {
-    return await this.prisma.time_entry.update({
+    return await this.prisma.time_entry_pending.delete({
       where: {
         id,
       },
-      data: {
-        status: 'DELETED',
-      },
     });
+  }
+
+  async approveReject(id: number, status: string) {
+    if (status == 'APPROVED') {
+      let timeEntryPending = await this.prisma.time_entry_pending.findUnique({
+        where: {
+          id,
+        },
+      });
+
+      let timesheetEntryUpdData: any = {
+        timesheet_clockin_time: timeEntryPending.timesheet_clockin_time,
+        timesheet_clockout_time: timeEntryPending.timesheet_clockout_time,
+        total_work_in_ms: timeEntryPending.total_work_in_ms,
+        total_hours_in_ms: timeEntryPending.total_hours_in_ms,
+      };
+
+      let res = await this.prisma.$transaction([
+        this.prisma.timesheet_entry.update({
+          where: {
+            id: timeEntryPending.timesheet_id,
+          },
+          data: timesheetEntryUpdData,
+        }),
+        this.prisma.time_entry.update({
+          where: { id },
+          data: timeEntryPending,
+        }),
+        this.prisma.time_entry_pending.delete({
+          where: { id },
+        }),
+      ]);
+      return res[1];
+    } else {
+      return await this.prisma.time_entry_pending.delete({
+        where: {
+          id,
+        },
+      });
+    }
   }
 }

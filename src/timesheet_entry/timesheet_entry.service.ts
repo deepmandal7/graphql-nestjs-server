@@ -2,11 +2,11 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { CreateTimesheetEntryInput } from './dto/create-timesheet_entry.input';
 import { UpdateTimesheetEntryInput } from './dto/update-timesheet_entry.input';
+import { Prisma } from '@prisma/client';
+import { QueryTimesheetEntryInput } from './dto/query-timesheet_entry.input';
 import * as dayjs from 'dayjs';
 import * as utc from 'dayjs/plugin/utc';
 import * as timezone from 'dayjs/plugin/timezone';
-import { Prisma } from '@prisma/client';
-import { QueryTimesheetEntryInput } from './dto/query-timesheet_entry.input';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.tz.setDefault('Europe/Prague');
@@ -114,14 +114,16 @@ export class TimesheetEntryService {
         },
       });
 
-    if (enable_daily_timesheet_approval) {
-      insData.status = 'PENDING';
+    if (!enable_daily_timesheet_approval) {
+      insData.status = 'APPROVED';
     }
 
     insData.timesheet_clockin_time = insData.time_entry[0].check_in_time;
     if (insData.time_entry[insData.time_entry.length - 1].check_out_time) {
       insData.timesheet_clockout_time =
         insData.time_entry[insData.time_entry.length - 1].check_out_time;
+      insData.total_hours_in_ms =
+        insData.timesheet_clockout_time - insData.timesheet_clockin_time;
     }
 
     insData.timesheet = {
@@ -193,12 +195,9 @@ export class TimesheetEntryService {
       let totalBreakHours = 0;
       if (insData.employee_break && insData.employee_break.length) {
         for (let entry of insData.employee_break) {
-          console.log(insData.timezone);
-          console.log(entry.start_time);
           entry.start_time = dayjs(`${insData.entry_date} ${entry.start_time}`)
             .tz(insData.timezone, true)
             .toDate();
-          console.log(entry.start_time);
           switch (entry.start_day_type) {
             case 'NEXT':
               // dayjs(entry.check_in_time).add(1, 'day');
@@ -437,6 +436,8 @@ export class TimesheetEntryService {
     }
     if (queryTimesheetEntryInput.userId) {
       filter.where.user_id = queryTimesheetEntryInput.userId;
+      filter.select.time_entry = true;
+      filter.select.employee_break = true;
     }
     if (queryTimesheetEntryInput.status) {
       filter.where.status = queryTimesheetEntryInput.status;
@@ -475,6 +476,13 @@ export class TimesheetEntryService {
           },
         },
         time_entry: {
+          where: {
+            status: {
+              not: 'DELETED',
+            },
+          },
+        },
+        employee_break: {
           where: {
             status: {
               not: 'DELETED',

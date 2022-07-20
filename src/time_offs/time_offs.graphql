@@ -1,0 +1,74 @@
+#import TimeOffType from time_off_type.graphql
+#import User from schema.graphql
+
+enum LeaveTypeEnum {
+  ALL
+  PARTIAL
+}
+
+enum TimeOffStatusEnum {
+  APPROVED
+  REJECTED
+  PENDING
+}
+
+type TimeOff {
+  id: ID!
+  time_off_type: TimeOffType!
+  user: User!
+  leave_type_enum: LeaveTypeEnum!
+  from_date: DateTime!
+  to_date: DateTime
+  from_time: DateTime
+  to_time: DateTime
+  reason: String!
+  status: TimeOffStatusEnum!
+}
+
+input CreateTimeOffInput {
+  time_off_type_id: Int!
+  user_id: Int!
+  leave_type_enum: LeaveTypeEnum!
+  from_date: DateTime!
+  to_date: DateTime
+  from_time: DateTime
+  to_time: DateTime
+  reason: String!
+  timesheet_id: Int!
+  timezone: String
+}
+
+input UpdateTimeOffInput {
+  id: Int!
+  time_off_type: Int!
+  leave_type_enum: LeaveTypeEnum!
+  from_date: DateTime!
+  to_date: DateTime
+  from_time: DateTime
+  to_time: DateTime
+  reason: String!
+  status: TimeOffStatusEnum
+}
+
+input QueryTimeOffInput {
+  user_id: Int
+  status: TimeOffStatusEnum
+  timesheet_id: Int
+}
+
+type Query {
+  getAllTimeOffs(
+    take: Int!
+    orgId: Int!
+    where: QueryTimeOffInput!
+    cursor: Int
+    searchText: String
+  ): [TimeOff]!
+  getTimeOff(id: Int!): TimeOff
+}
+
+type Mutation {
+  createTimeOff(input: CreateTimeOffInput!): TimeOff!
+  updateTimeOff(input: UpdateTimeOffInput!): TimeOff!
+  removeTimeOff(id: Int!): TimeOff
+}

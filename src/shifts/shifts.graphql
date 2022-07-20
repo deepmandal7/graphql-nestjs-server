@@ -1,29 +1,34 @@
 type Shift {
-  id: Int
-  org_id: Int
-  start_time: DateTime
-  end_time: DateTime
+  id: ID!
+  start_time: DateTime!
+  end_time: DateTime!
 }
 
 input CreateShiftInput {
-  org_id: Int
-  start_time: DateTime
-  end_time: DateTime
+  start_date: String!
+  end_date: String!
+  start_time: String!
+  end_time: String!
+  timesheet_id: Int!
+  user_id: Int!
+  timesheet_jobs_id: Int
+  timesheet_sub_jobs_id: Int
 }
 
 input UpdateShiftInput {
   id: Int!
-  start_time: DateTime
-  end_time: DateTime
-}
-
-type Query {
-  getAllShifts: [Shift]!
-  getShift(id: Int!): Shift
+  start_date: String!
+  end_date: String!
+  start_time: String!
+  end_time: String!
+  timesheet_id: Int!
+  user_id: Int!
+  timesheet_jobs_id: Int
+  timesheet_sub_jobs_id: Int
 }
 
 type Mutation {
-  createShift(createShiftInput: CreateShiftInput!): Shift!
-  updateShift(updateShiftInput: UpdateShiftInput!): Shift!
+  createShift(input: [CreateShiftInput!]): Shift!
+  updateShift(input: UpdateShiftInput!): Shift!
   removeShift(id: Int!): Shift
 }

@@ -24,39 +24,36 @@ enum DayTypeEnum {
   PREVIOUS = 'PREVIOUS',
 }
 
-export class CreateShiftInput {
-  @Field()
-  start_date: string;
+export class CreateEmployeeBreakPendingInput {
+  @Field((type) => Int)
+  @IsInt()
+  timesheet_manual_breaks_id: number;
 
-  @Field()
-  end_date: string;
+  @Field((type) => Int)
+  @IsInt()
+  timesheet_entry_id: number;
+
+  @Field((type) => Int)
+  @IsInt()
+  duration: number;
 
   @Field()
   start_time: string;
 
+  @Field((type) => DayTypeEnum)
+  @IsEnum(DayTypeEnum)
+  start_day_type: DayTypeEnum;
+
   @Field()
+  @IsOptional()
   end_time: string;
 
-  @Field((type) => Int)
-  @IsInt()
-  timesheet_id: number;
-
-  @Field((type) => Int)
-  @IsInt()
-  user_id: number;
-
-  @Field((type) => Int)
-  @IsInt()
-  timesheet_jobs_id: number;
-
-  @Field((type) => Int)
-  @IsInt()
-  timesheet_sub_jobs_id: number;
-
   @Field()
+  @IsOptional()
   timezone: string;
 
-  @Field((type) => Int)
-  @IsInt()
-  created_by_id: number;
+  @Field((type) => DayTypeEnum)
+  @IsEnum(DayTypeEnum)
+  @IsOptional()
+  end_day_type: DayTypeEnum;
 }

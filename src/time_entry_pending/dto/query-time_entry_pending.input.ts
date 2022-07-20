@@ -24,39 +24,8 @@ enum DayTypeEnum {
   PREVIOUS = 'PREVIOUS',
 }
 
-export class CreateShiftInput {
-  @Field()
-  start_date: string;
-
-  @Field()
-  end_date: string;
-
-  @Field()
-  start_time: string;
-
-  @Field()
-  end_time: string;
-
+export class QueryTimeEntryPendingInput {
   @Field((type) => Int)
   @IsInt()
   timesheet_id: number;
-
-  @Field((type) => Int)
-  @IsInt()
-  user_id: number;
-
-  @Field((type) => Int)
-  @IsInt()
-  timesheet_jobs_id: number;
-
-  @Field((type) => Int)
-  @IsInt()
-  timesheet_sub_jobs_id: number;
-
-  @Field()
-  timezone: string;
-
-  @Field((type) => Int)
-  @IsInt()
-  created_by_id: number;
 }
