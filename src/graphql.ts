@@ -134,15 +134,26 @@ export class UpdateEmployeeBreakInput {
 }
 
 export class CreateShiftInput {
-    org_id?: Nullable<number>;
-    start_time?: Nullable<DateTime>;
-    end_time?: Nullable<DateTime>;
+    start_date: string;
+    end_date: string;
+    start_time: string;
+    end_time: string;
+    timesheet_id: number;
+    user_id: number;
+    timesheet_jobs_id?: Nullable<number>;
+    timesheet_sub_jobs_id?: Nullable<number>;
 }
 
 export class UpdateShiftInput {
     id: number;
-    start_time?: Nullable<DateTime>;
-    end_time?: Nullable<DateTime>;
+    start_date: string;
+    end_date: string;
+    start_time: string;
+    end_time: string;
+    timesheet_id: number;
+    user_id: number;
+    timesheet_jobs_id?: Nullable<number>;
+    timesheet_sub_jobs_id?: Nullable<number>;
 }
 
 export class CreateSubTaskInput {
@@ -627,10 +638,6 @@ export abstract class IQuery {
 
     abstract getEmployeeBreakPending(id: number): Nullable<EmployeeBreakPending> | Promise<Nullable<EmployeeBreakPending>>;
 
-    abstract getAllShifts(): Nullable<Shift>[] | Promise<Nullable<Shift>[]>;
-
-    abstract getShift(id: number): Nullable<Shift> | Promise<Nullable<Shift>>;
-
     abstract subTasks(): Nullable<SubTask>[] | Promise<Nullable<SubTask>[]>;
 
     abstract subTask(id: number): Nullable<SubTask> | Promise<Nullable<SubTask>>;
@@ -728,9 +735,9 @@ export abstract class IMutation {
 
     abstract removeEmployeeBreak(id: number): Nullable<EmployeeBreak> | Promise<Nullable<EmployeeBreak>>;
 
-    abstract createShift(createShiftInput: CreateShiftInput): Shift | Promise<Shift>;
+    abstract createShift(input?: Nullable<CreateShiftInput[]>): Shift | Promise<Shift>;
 
-    abstract updateShift(updateShiftInput: UpdateShiftInput): Shift | Promise<Shift>;
+    abstract updateShift(input: UpdateShiftInput): Shift | Promise<Shift>;
 
     abstract removeShift(id: number): Nullable<Shift> | Promise<Nullable<Shift>>;
 
@@ -890,10 +897,9 @@ export class TagItem {
 }
 
 export class Shift {
-    id?: Nullable<number>;
-    org_id?: Nullable<number>;
-    start_time?: Nullable<DateTime>;
-    end_time?: Nullable<DateTime>;
+    id: string;
+    start_time: DateTime;
+    end_time: DateTime;
 }
 
 export class SubTask {

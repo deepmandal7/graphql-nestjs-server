@@ -84,7 +84,9 @@ export class TimesheetEntryService {
               (entry2.check_out_time &&
                 entry.check_out_time &&
                 entry.check_out_time >= entry2.check_in_time &&
-                entry.check_out_time <= entry2.check_out_time)
+                entry.check_out_time <= entry2.check_out_time) ||
+              (entry.check_in_time <= entry2.check_in_time &&
+                entry.check_out_time >= entry2.check_out_time)
             ) {
               throw new BadRequestException({
                 message: `Time entry(s) overlapped`,
@@ -245,7 +247,9 @@ export class TimesheetEntryService {
                 (entry2.end_time &&
                   entry.end_time &&
                   entry.end_time >= entry2.start_time &&
-                  entry.end_time <= entry2.end_time)
+                  entry.end_time <= entry2.end_time) ||
+                (entry.start_time <= entry2.start_time &&
+                  entry.end_time >= entry2.end_time)
               ) {
                 throw new BadRequestException({
                   message: `Breaks(s) overlapped`,

@@ -34,18 +34,35 @@ export class AttendanceService {
     let timeOffFilter: any = queryAttendanceInput;
     timeOffFilter.from_date = {
       gte: new Date(
-        +timesheetEntryFilter.from_date.split('-')[0],
-        +timesheetEntryFilter.from_date.split('-')[1] - 1,
-        +timesheetEntryFilter.from_date.split('-')[2],
+        +timeOffFilter.from_date.split('-')[0],
+        +timeOffFilter.from_date.split('-')[1] - 1,
+        +timeOffFilter.from_date.split('-')[2],
       ),
       lte: new Date(
-        +timesheetEntryFilter.to_date.split('-')[0],
-        +timesheetEntryFilter.to_date.split('-')[1] - 1,
-        +timesheetEntryFilter.to_date.split('-')[2],
+        +timeOffFilter.to_date.split('-')[0],
+        +timeOffFilter.to_date.split('-')[1] - 1,
+        +timeOffFilter.to_date.split('-')[2],
+      ),
+    };
+    let shiftFilter: any = queryAttendanceInput;
+    shiftFilter.start_time = {
+      gte: new Date(
+        +shiftFilter.from_date.split('-')[0],
+        +shiftFilter.from_date.split('-')[1] - 1,
+        +shiftFilter.from_date.split('-')[2],
+      ),
+      lte: new Date(
+        +shiftFilter.to_date.split('-')[0],
+        +shiftFilter.to_date.split('-')[1] - 1,
+        +shiftFilter.to_date.split('-')[2],
       ),
     };
     delete timesheetEntryFilter.from_date &&
-      delete timesheetEntryFilter.to_date;
+      delete timesheetEntryFilter.to_date &&
+      delete timeOffFilter.from_date &&
+      delete timeOffFilter.to_date &&
+      delete shiftFilter.from_date &&
+      delete shiftFilter.to_date;
 
     return {
       timesheet_entry: await this.prisma.timesheet_entry.findMany({
@@ -73,6 +90,9 @@ export class AttendanceService {
           from_time: true,
           to_time: true,
         },
+      }),
+      shift: await this.prisma.shift.findMany({
+        where: {},
       }),
     };
   }

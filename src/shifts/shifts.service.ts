@@ -41,6 +41,49 @@ export class ShiftsService {
       }
       delete entry.start_date;
       delete entry.end_date;
+      let shiftCheck = await this.prisma.shift.findFirst({
+        where: {
+          timesheet_id: entry.timesheet_id,
+          status: null,
+          user_id: {
+            equals: entry.user_id,
+          },
+          OR: [
+            {
+              start_time: {
+                gte: entry.start_time,
+                lte: entry.end_time,
+              },
+            },
+            {
+              end_time: {
+                lte: entry.end_time,
+                gte: entry.start_time,
+              },
+            },
+            {
+              AND: [
+                {
+                  start_time: {
+                    gte: entry.start_time,
+                  },
+                },
+                {
+                  end_time: {
+                    lte: entry.end_time,
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      });
+      if (shiftCheck) {
+        throw new BadRequestException({
+          message: `Shift already exists on given time duration(s)`,
+          error: 'Bad Request',
+        });
+      }
 
       entry.timesheet = {
         connect: {
@@ -82,7 +125,9 @@ export class ShiftsService {
               (entry2.end_time &&
                 entry.end_time &&
                 entry.end_time >= entry2.start_time &&
-                entry.end_time <= entry2.end_time)
+                entry.end_time <= entry2.end_time) ||
+              (entry.start_time <= entry2.start_time &&
+                entry.end_time >= entry2.end_time)
             ) {
               throw new BadRequestException({
                 message: `Time entry(s) overlapped`,
@@ -99,11 +144,105 @@ export class ShiftsService {
     });
   }
 
-  update(id: number, updateShiftInput: UpdateShiftInput) {
-    return `This action updates a #${id} shift`;
+  async update(id: number, updateShiftInput: UpdateShiftInput) {
+    let updData: any = updateShiftInput;
+    delete updData.id;
+    updData.start_time = dayjs(`${updData.start_date} ${updData.start_time}`)
+      .tz(updData.timezone, true)
+      .toDate();
+    let totalWorkHours = 0;
+    if (updData.end_date) {
+      updData.end_time = dayjs(`${updData.end_date} ${updData.end_time}`)
+        .tz(updData.timezone, true)
+        .toDate();
+
+      totalWorkHours += updData.end_time - updData.start_time;
+      if (totalWorkHours > 86400000) {
+        throw new BadRequestException({
+          message: `Time exceed 24 hours`,
+          error: 'Bad Request',
+        });
+      }
+    }
+    delete updData.start_date;
+    delete updData.end_date;
+    let shiftCheck = await this.prisma.shift.findFirst({
+      where: {
+        timesheet_id: updData.timesheet_id,
+        status: null,
+        user_id: {
+          equals: updData.user_id,
+        },
+        OR: [
+          {
+            start_time: {
+              gte: updData.start_time,
+              lte: updData.end_time,
+            },
+          },
+          {
+            end_time: {
+              lte: updData.end_time,
+              gte: updData.start_time,
+            },
+          },
+          {
+            AND: [
+              {
+                start_time: {
+                  gte: updData.start_time,
+                },
+              },
+              {
+                end_time: {
+                  lte: updData.end_time,
+                },
+              },
+            ],
+          },
+        ],
+      },
+    });
+    if (shiftCheck) {
+      throw new BadRequestException({
+        message: `Shift already exists on given time duration(s)`,
+        error: 'Bad Request',
+      });
+    }
+    if (updData.timesheet_jobs_id) {
+      updData.timesheet_jobs = {
+        connect: {
+          id: updData.timesheet_jobs_id,
+        },
+      };
+      delete updData.timesheet_jobs_id;
+    }
+    if (updData.timesheet_sub_jobs_id) {
+      updData.timesheet_sub_jobs = {
+        connect: {
+          id: updData.timesheet_sub_jobs_id,
+        },
+      };
+      delete updData.timesheet_sub_jobs_id;
+    }
+    delete updData.user_id;
+    delete updData.timesheet_id;
+    return this.prisma.shift.update({
+      where: {
+        id,
+      },
+      data: updData,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} shift`;
+  async remove(id: number) {
+    return await this.prisma.shift.update({
+      where: {
+        id,
+      },
+      data: {
+        status: 'DELETED',
+      },
+    });
   }
 }

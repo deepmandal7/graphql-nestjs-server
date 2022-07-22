@@ -112,7 +112,9 @@ export class EmployeeBreaksService {
             insData.end_time >= entry.start_time &&
             insData.end_time &&
             entry.end_time &&
-            insData.end_time <= entry.end_time)
+            insData.end_time <= entry.end_time) ||
+          (insData.start_time <= entry.start_time &&
+            insData.end_time >= entry.end_time)
         ) {
           throw new BadRequestException({
             message: `Break(s) overlapped`,
@@ -246,7 +248,9 @@ export class EmployeeBreaksService {
             updData.end_time >= entry.start_time &&
             updData.end_time &&
             entry.end_time &&
-            updData.end_time <= entry.end_time)
+            updData.end_time <= entry.end_time) ||
+          (updData.start_time <= entry.start_time &&
+            updData.end_time >= entry.end_time)
         ) {
           throw new BadRequestException({
             message: `Break(s) overlapped`,

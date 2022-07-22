@@ -104,7 +104,9 @@ export class TimeEntryPendingService {
           insData.check_out_time >= entry.check_in_time &&
           insData.check_out_time &&
           entry.check_out_time &&
-          insData.check_out_time <= entry.check_out_time)
+          insData.check_out_time <= entry.check_out_time) ||
+        (insData.check_in_time <= entry.check_in_time &&
+          insData.check_out_time >= entry.check_out_time)
       ) {
         throw new BadRequestException({
           message: `Time entry(s) overlapped`,
@@ -313,7 +315,9 @@ export class TimeEntryPendingService {
             updData.check_out_time >= entry.check_in_time &&
             updData.check_out_time &&
             entry.check_out_time &&
-            updData.check_out_time <= entry.check_out_time)
+            updData.check_out_time <= entry.check_out_time) ||
+          (updData.check_in_time <= entry.check_in_time &&
+            updData.check_out_time >= entry.check_out_time)
         ) {
           throw new BadRequestException({
             message: `Time entry(s) overlapped`,
