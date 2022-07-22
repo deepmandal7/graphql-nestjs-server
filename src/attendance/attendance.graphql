@@ -1,9 +1,11 @@
 #import TimesheetEntry from timesheet_entry.raphql
 #import TimeOff from time_offs.graphql
+#import Shift from shifts.graphql
 
 type Attendance {
   timesheet_entry: [TimesheetEntry]
   time_off: [TimeOff]
+  shift: [Shift]
 }
 
 input QueryAttendanceInput {
